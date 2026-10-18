@@ -1,2 +1,7 @@
+# Python bytecode and cache directories
+__pycache__/
+*.py[cod]
+
+# Private course reference materials — do not submit
 /docs/combined_summary.md
 /docs/Healthcare.pdf
