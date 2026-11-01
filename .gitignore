@@ -1,7 +1,15 @@
-# Python bytecode and cache directories
+# Python
 __pycache__/
 *.py[cod]
 
-# Private course reference materials — do not submit
+# Environment
+.env
+.venv/
+venv/
+
+# Local reference documents
 /docs/combined_summary.md
 /docs/Healthcare.pdf
+
+# Generated ChromaDB vector stores
+/data/vectorstores/

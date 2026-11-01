@@ -6,8 +6,8 @@ import re
 
 import chromadb
 
-from src.practo_agent.rag.chunkers import TextChunk
-from src.practo_agent.rag.embeddings import EmbeddingModel
+from practo_agent.rag.chunkers import TextChunk
+from practo_agent.rag.embeddings import EmbeddingModel
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]

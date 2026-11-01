@@ -1,0 +1,87 @@
+
+[
+  {
+    "query_id": "RAG-001",
+    "query": "How can a patient book a new appointment?",
+    "expected_relevant_sources": [
+      "appointment_booking"
+    ]
+  },
+  {
+    "query_id": "RAG-002",
+    "query": "What should a patient do if they want to cancel or reschedule an existing appointment?",
+    "expected_relevant_sources": [
+      "cancellation_rescheduling"
+    ]
+  },
+  {
+    "query_id": "RAG-003",
+    "query": "How are consultation fees determined and what charges should patients expect?",
+    "expected_relevant_sources": [
+      "fee_structure"
+    ]
+  },
+  {
+    "query_id": "RAG-004",
+    "query": "How can a patient submit an insurance claim for a consultation?",
+    "expected_relevant_sources": [
+      "insurance_claims"
+    ]
+  },
+  {
+    "query_id": "RAG-005",
+    "query": "What is the process for requesting a prescription refill?",
+    "expected_relevant_sources": [
+      "prescription_refills"
+    ]
+  },
+  {
+    "query_id": "RAG-006",
+    "query": "How long does it generally take for laboratory test results to become available?",
+    "expected_relevant_sources": [
+      "lab_turnaround"
+    ]
+  },
+  {
+    "query_id": "RAG-007",
+    "query": "How can a patient attend a consultation through telemedicine?",
+    "expected_relevant_sources": [
+      "telemedicine"
+    ]
+  },
+  {
+    "query_id": "RAG-008",
+    "query": "What should someone do if they are experiencing a medical emergency?",
+    "expected_relevant_sources": [
+      "emergency_visits"
+    ]
+  },
+  {
+    "query_id": "RAG-009",
+    "query": "How is patient information collected, stored, and protected?",
+    "expected_relevant_sources": [
+      "privacy_policy"
+    ]
+  },
+  {
+    "query_id": "RAG-010",
+    "query": "Are there any discounts or benefits available for follow-up consultations?",
+    "expected_relevant_sources": [
+      "follow_up_discounts"
+    ]
+  },
+  {
+    "query_id": "RAG-011",
+    "query": "Can a patient obtain a second medical opinion, and how can they arrange one?",
+    "expected_relevant_sources": [
+      "second_opinions"
+    ]
+  },
+  {
+    "query_id": "RAG-012",
+    "query": "Is it possible to arrange a doctor's home visit, and what is the process?",
+    "expected_relevant_sources": [
+      "home_visits"
+    ]
+  }
+]

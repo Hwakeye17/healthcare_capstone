@@ -1,0 +1,978 @@
+{
+  "top_k": 3,
+  "query_count": 12,
+  "strategies": {
+    "fixed_size": {
+      "strategy": "fixed_size",
+      "top_k": 3,
+      "query_count": 12,
+      "macro_precision": 0.625,
+      "macro_recall": 1.0,
+      "queries": [
+        {
+          "query_id": "RAG-001",
+          "query": "How can a patient book a new appointment?",
+          "expected_relevant_sources": [
+            "appointment_booking"
+          ],
+          "retrieved_source_ids": [
+            "appointment_booking",
+            "second_opinions",
+            "home_visits"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "appointment_booking::fixed::0001",
+              "source_id": "appointment_booking",
+              "distance": 0.375663697719574
+            },
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.3896409273147583
+            },
+            {
+              "chunk_id": "home_visits::fixed::0002",
+              "source_id": "home_visits",
+              "distance": 0.4205710291862488
+            }
+          ],
+          "true_positives": [
+            "appointment_booking"
+          ],
+          "false_positives": [
+            "home_visits",
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 2,
+          "fn_count": 0,
+          "precision": 0.3333333333333333,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-002",
+          "query": "What should a patient do if they want to cancel or reschedule an existing appointment?",
+          "expected_relevant_sources": [
+            "cancellation_rescheduling"
+          ],
+          "retrieved_source_ids": [
+            "cancellation_rescheduling",
+            "appointment_booking"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "cancellation_rescheduling::fixed::0001",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.23320770263671875
+            },
+            {
+              "chunk_id": "appointment_booking::fixed::0001",
+              "source_id": "appointment_booking",
+              "distance": 0.36550384759902954
+            },
+            {
+              "chunk_id": "cancellation_rescheduling::fixed::0000",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.38064396381378174
+            }
+          ],
+          "true_positives": [
+            "cancellation_rescheduling"
+          ],
+          "false_positives": [
+            "appointment_booking"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-003",
+          "query": "How are consultation fees determined and what charges should patients expect?",
+          "expected_relevant_sources": [
+            "fee_structure"
+          ],
+          "retrieved_source_ids": [
+            "second_opinions",
+            "fee_structure"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.32519614696502686
+            },
+            {
+              "chunk_id": "fee_structure::fixed::0000",
+              "source_id": "fee_structure",
+              "distance": 0.34325748682022095
+            },
+            {
+              "chunk_id": "fee_structure::fixed::0001",
+              "source_id": "fee_structure",
+              "distance": 0.35135912895202637
+            }
+          ],
+          "true_positives": [
+            "fee_structure"
+          ],
+          "false_positives": [
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-004",
+          "query": "How can a patient submit an insurance claim for a consultation?",
+          "expected_relevant_sources": [
+            "insurance_claims"
+          ],
+          "retrieved_source_ids": [
+            "insurance_claims",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "insurance_claims::fixed::0001",
+              "source_id": "insurance_claims",
+              "distance": 0.2875083088874817
+            },
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.40023118257522583
+            },
+            {
+              "chunk_id": "insurance_claims::fixed::0002",
+              "source_id": "insurance_claims",
+              "distance": 0.4316626191139221
+            }
+          ],
+          "true_positives": [
+            "insurance_claims"
+          ],
+          "false_positives": [
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-005",
+          "query": "What is the process for requesting a prescription refill?",
+          "expected_relevant_sources": [
+            "prescription_refills"
+          ],
+          "retrieved_source_ids": [
+            "prescription_refills",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "prescription_refills::fixed::0001",
+              "source_id": "prescription_refills",
+              "distance": 0.33368736505508423
+            },
+            {
+              "chunk_id": "prescription_refills::fixed::0000",
+              "source_id": "prescription_refills",
+              "distance": 0.35249871015548706
+            },
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.5134559869766235
+            }
+          ],
+          "true_positives": [
+            "prescription_refills"
+          ],
+          "false_positives": [
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-006",
+          "query": "How long does it generally take for laboratory test results to become available?",
+          "expected_relevant_sources": [
+            "lab_turnaround"
+          ],
+          "retrieved_source_ids": [
+            "lab_turnaround"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "lab_turnaround::fixed::0001",
+              "source_id": "lab_turnaround",
+              "distance": 0.23880302906036377
+            },
+            {
+              "chunk_id": "lab_turnaround::fixed::0000",
+              "source_id": "lab_turnaround",
+              "distance": 0.25946956872940063
+            },
+            {
+              "chunk_id": "lab_turnaround::fixed::0002",
+              "source_id": "lab_turnaround",
+              "distance": 0.5622360110282898
+            }
+          ],
+          "true_positives": [
+            "lab_turnaround"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-007",
+          "query": "How can a patient attend a consultation through telemedicine?",
+          "expected_relevant_sources": [
+            "telemedicine"
+          ],
+          "retrieved_source_ids": [
+            "telemedicine",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "telemedicine::fixed::0001",
+              "source_id": "telemedicine",
+              "distance": 0.2343422770500183
+            },
+            {
+              "chunk_id": "telemedicine::fixed::0000",
+              "source_id": "telemedicine",
+              "distance": 0.3601500988006592
+            },
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.43986231088638306
+            }
+          ],
+          "true_positives": [
+            "telemedicine"
+          ],
+          "false_positives": [
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-008",
+          "query": "What should someone do if they are experiencing a medical emergency?",
+          "expected_relevant_sources": [
+            "emergency_visits"
+          ],
+          "retrieved_source_ids": [
+            "emergency_visits"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "emergency_visits::fixed::0002",
+              "source_id": "emergency_visits",
+              "distance": 0.5041625499725342
+            },
+            {
+              "chunk_id": "emergency_visits::fixed::0000",
+              "source_id": "emergency_visits",
+              "distance": 0.5134240388870239
+            },
+            {
+              "chunk_id": "emergency_visits::fixed::0001",
+              "source_id": "emergency_visits",
+              "distance": 0.5239874124526978
+            }
+          ],
+          "true_positives": [
+            "emergency_visits"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-009",
+          "query": "How is patient information collected, stored, and protected?",
+          "expected_relevant_sources": [
+            "privacy_policy"
+          ],
+          "retrieved_source_ids": [
+            "insurance_claims",
+            "privacy_policy",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "insurance_claims::fixed::0001",
+              "source_id": "insurance_claims",
+              "distance": 0.5004429221153259
+            },
+            {
+              "chunk_id": "privacy_policy::fixed::0000",
+              "source_id": "privacy_policy",
+              "distance": 0.5416412353515625
+            },
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.6498202085494995
+            }
+          ],
+          "true_positives": [
+            "privacy_policy"
+          ],
+          "false_positives": [
+            "insurance_claims",
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 2,
+          "fn_count": 0,
+          "precision": 0.3333333333333333,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-010",
+          "query": "Are there any discounts or benefits available for follow-up consultations?",
+          "expected_relevant_sources": [
+            "follow_up_discounts"
+          ],
+          "retrieved_source_ids": [
+            "follow_up_discounts",
+            "second_opinions",
+            "telemedicine"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "follow_up_discounts::fixed::0000",
+              "source_id": "follow_up_discounts",
+              "distance": 0.35355138778686523
+            },
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.41888517141342163
+            },
+            {
+              "chunk_id": "telemedicine::fixed::0001",
+              "source_id": "telemedicine",
+              "distance": 0.46467119455337524
+            }
+          ],
+          "true_positives": [
+            "follow_up_discounts"
+          ],
+          "false_positives": [
+            "second_opinions",
+            "telemedicine"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 2,
+          "fn_count": 0,
+          "precision": 0.3333333333333333,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-011",
+          "query": "Can a patient obtain a second medical opinion, and how can they arrange one?",
+          "expected_relevant_sources": [
+            "second_opinions"
+          ],
+          "retrieved_source_ids": [
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "second_opinions::fixed::0000",
+              "source_id": "second_opinions",
+              "distance": 0.37662339210510254
+            },
+            {
+              "chunk_id": "second_opinions::fixed::0002",
+              "source_id": "second_opinions",
+              "distance": 0.45324772596359253
+            },
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.507023811340332
+            }
+          ],
+          "true_positives": [
+            "second_opinions"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-012",
+          "query": "Is it possible to arrange a doctor's home visit, and what is the process?",
+          "expected_relevant_sources": [
+            "home_visits"
+          ],
+          "retrieved_source_ids": [
+            "home_visits"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "home_visits::fixed::0001",
+              "source_id": "home_visits",
+              "distance": 0.4724379777908325
+            },
+            {
+              "chunk_id": "home_visits::fixed::0000",
+              "source_id": "home_visits",
+              "distance": 0.4760795831680298
+            },
+            {
+              "chunk_id": "home_visits::fixed::0002",
+              "source_id": "home_visits",
+              "distance": 0.5364611744880676
+            }
+          ],
+          "true_positives": [
+            "home_visits"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        }
+      ]
+    },
+    "sentence": {
+      "strategy": "sentence",
+      "top_k": 3,
+      "query_count": 12,
+      "macro_precision": 0.6527777777777778,
+      "macro_recall": 1.0,
+      "queries": [
+        {
+          "query_id": "RAG-001",
+          "query": "How can a patient book a new appointment?",
+          "expected_relevant_sources": [
+            "appointment_booking"
+          ],
+          "retrieved_source_ids": [
+            "appointment_booking",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "appointment_booking::sentence::0002",
+              "source_id": "appointment_booking",
+              "distance": 0.2949223518371582
+            },
+            {
+              "chunk_id": "second_opinions::sentence::0001",
+              "source_id": "second_opinions",
+              "distance": 0.3201169967651367
+            },
+            {
+              "chunk_id": "appointment_booking::sentence::0001",
+              "source_id": "appointment_booking",
+              "distance": 0.4038069248199463
+            }
+          ],
+          "true_positives": [
+            "appointment_booking"
+          ],
+          "false_positives": [
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-002",
+          "query": "What should a patient do if they want to cancel or reschedule an existing appointment?",
+          "expected_relevant_sources": [
+            "cancellation_rescheduling"
+          ],
+          "retrieved_source_ids": [
+            "cancellation_rescheduling",
+            "appointment_booking"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "cancellation_rescheduling::sentence::0001",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.23783618211746216
+            },
+            {
+              "chunk_id": "appointment_booking::sentence::0002",
+              "source_id": "appointment_booking",
+              "distance": 0.3223270773887634
+            },
+            {
+              "chunk_id": "cancellation_rescheduling::sentence::0000",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.3648601770401001
+            }
+          ],
+          "true_positives": [
+            "cancellation_rescheduling"
+          ],
+          "false_positives": [
+            "appointment_booking"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-003",
+          "query": "How are consultation fees determined and what charges should patients expect?",
+          "expected_relevant_sources": [
+            "fee_structure"
+          ],
+          "retrieved_source_ids": [
+            "fee_structure",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "fee_structure::sentence::0002",
+              "source_id": "fee_structure",
+              "distance": 0.2273222804069519
+            },
+            {
+              "chunk_id": "fee_structure::sentence::0000",
+              "source_id": "fee_structure",
+              "distance": 0.358381450176239
+            },
+            {
+              "chunk_id": "second_opinions::sentence::0001",
+              "source_id": "second_opinions",
+              "distance": 0.368499755859375
+            }
+          ],
+          "true_positives": [
+            "fee_structure"
+          ],
+          "false_positives": [
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-004",
+          "query": "How can a patient submit an insurance claim for a consultation?",
+          "expected_relevant_sources": [
+            "insurance_claims"
+          ],
+          "retrieved_source_ids": [
+            "insurance_claims",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "insurance_claims::sentence::0001",
+              "source_id": "insurance_claims",
+              "distance": 0.2534952163696289
+            },
+            {
+              "chunk_id": "insurance_claims::sentence::0002",
+              "source_id": "insurance_claims",
+              "distance": 0.3656851649284363
+            },
+            {
+              "chunk_id": "second_opinions::sentence::0001",
+              "source_id": "second_opinions",
+              "distance": 0.386791467666626
+            }
+          ],
+          "true_positives": [
+            "insurance_claims"
+          ],
+          "false_positives": [
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-005",
+          "query": "What is the process for requesting a prescription refill?",
+          "expected_relevant_sources": [
+            "prescription_refills"
+          ],
+          "retrieved_source_ids": [
+            "prescription_refills",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "prescription_refills::sentence::0001",
+              "source_id": "prescription_refills",
+              "distance": 0.24174416065216064
+            },
+            {
+              "chunk_id": "prescription_refills::sentence::0000",
+              "source_id": "prescription_refills",
+              "distance": 0.35764193534851074
+            },
+            {
+              "chunk_id": "second_opinions::sentence::0001",
+              "source_id": "second_opinions",
+              "distance": 0.5390840172767639
+            }
+          ],
+          "true_positives": [
+            "prescription_refills"
+          ],
+          "false_positives": [
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-006",
+          "query": "How long does it generally take for laboratory test results to become available?",
+          "expected_relevant_sources": [
+            "lab_turnaround"
+          ],
+          "retrieved_source_ids": [
+            "lab_turnaround"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "lab_turnaround::sentence::0001",
+              "source_id": "lab_turnaround",
+              "distance": 0.1546984314918518
+            },
+            {
+              "chunk_id": "lab_turnaround::sentence::0000",
+              "source_id": "lab_turnaround",
+              "distance": 0.28307557106018066
+            },
+            {
+              "chunk_id": "lab_turnaround::sentence::0002",
+              "source_id": "lab_turnaround",
+              "distance": 0.4036085605621338
+            }
+          ],
+          "true_positives": [
+            "lab_turnaround"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-007",
+          "query": "How can a patient attend a consultation through telemedicine?",
+          "expected_relevant_sources": [
+            "telemedicine"
+          ],
+          "retrieved_source_ids": [
+            "telemedicine"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "telemedicine::sentence::0002",
+              "source_id": "telemedicine",
+              "distance": 0.2813941240310669
+            },
+            {
+              "chunk_id": "telemedicine::sentence::0000",
+              "source_id": "telemedicine",
+              "distance": 0.38302457332611084
+            },
+            {
+              "chunk_id": "telemedicine::sentence::0001",
+              "source_id": "telemedicine",
+              "distance": 0.39829492568969727
+            }
+          ],
+          "true_positives": [
+            "telemedicine"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-008",
+          "query": "What should someone do if they are experiencing a medical emergency?",
+          "expected_relevant_sources": [
+            "emergency_visits"
+          ],
+          "retrieved_source_ids": [
+            "emergency_visits"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "emergency_visits::sentence::0001",
+              "source_id": "emergency_visits",
+              "distance": 0.3603830933570862
+            },
+            {
+              "chunk_id": "emergency_visits::sentence::0002",
+              "source_id": "emergency_visits",
+              "distance": 0.445609450340271
+            },
+            {
+              "chunk_id": "emergency_visits::sentence::0000",
+              "source_id": "emergency_visits",
+              "distance": 0.48887765407562256
+            }
+          ],
+          "true_positives": [
+            "emergency_visits"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-009",
+          "query": "How is patient information collected, stored, and protected?",
+          "expected_relevant_sources": [
+            "privacy_policy"
+          ],
+          "retrieved_source_ids": [
+            "insurance_claims",
+            "privacy_policy",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "insurance_claims::sentence::0002",
+              "source_id": "insurance_claims",
+              "distance": 0.5046780109405518
+            },
+            {
+              "chunk_id": "privacy_policy::sentence::0000",
+              "source_id": "privacy_policy",
+              "distance": 0.5539805889129639
+            },
+            {
+              "chunk_id": "second_opinions::sentence::0001",
+              "source_id": "second_opinions",
+              "distance": 0.5802652835845947
+            }
+          ],
+          "true_positives": [
+            "privacy_policy"
+          ],
+          "false_positives": [
+            "insurance_claims",
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 2,
+          "fn_count": 0,
+          "precision": 0.3333333333333333,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-010",
+          "query": "Are there any discounts or benefits available for follow-up consultations?",
+          "expected_relevant_sources": [
+            "follow_up_discounts"
+          ],
+          "retrieved_source_ids": [
+            "follow_up_discounts",
+            "fee_structure"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "follow_up_discounts::sentence::0001",
+              "source_id": "follow_up_discounts",
+              "distance": 0.3935587406158447
+            },
+            {
+              "chunk_id": "follow_up_discounts::sentence::0000",
+              "source_id": "follow_up_discounts",
+              "distance": 0.41181206703186035
+            },
+            {
+              "chunk_id": "fee_structure::sentence::0002",
+              "source_id": "fee_structure",
+              "distance": 0.4370945692062378
+            }
+          ],
+          "true_positives": [
+            "follow_up_discounts"
+          ],
+          "false_positives": [
+            "fee_structure"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-011",
+          "query": "Can a patient obtain a second medical opinion, and how can they arrange one?",
+          "expected_relevant_sources": [
+            "second_opinions"
+          ],
+          "retrieved_source_ids": [
+            "second_opinions",
+            "prescription_refills"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "second_opinions::sentence::0000",
+              "source_id": "second_opinions",
+              "distance": 0.41352325677871704
+            },
+            {
+              "chunk_id": "prescription_refills::sentence::0002",
+              "source_id": "prescription_refills",
+              "distance": 0.47675371170043945
+            },
+            {
+              "chunk_id": "second_opinions::sentence::0002",
+              "source_id": "second_opinions",
+              "distance": 0.4831876754760742
+            }
+          ],
+          "true_positives": [
+            "second_opinions"
+          ],
+          "false_positives": [
+            "prescription_refills"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-012",
+          "query": "Is it possible to arrange a doctor's home visit, and what is the process?",
+          "expected_relevant_sources": [
+            "home_visits"
+          ],
+          "retrieved_source_ids": [
+            "home_visits"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "home_visits::sentence::0002",
+              "source_id": "home_visits",
+              "distance": 0.35288870334625244
+            },
+            {
+              "chunk_id": "home_visits::sentence::0001",
+              "source_id": "home_visits",
+              "distance": 0.38562899827957153
+            },
+            {
+              "chunk_id": "home_visits::sentence::0000",
+              "source_id": "home_visits",
+              "distance": 0.49142563343048096
+            }
+          ],
+          "true_positives": [
+            "home_visits"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        }
+      ]
+    }
+  },
+  "configuration": {
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "similarity_metric": "cosine",
+    "top_k": 3,
+    "collections": {
+      "fixed_size": "practo_fixed_size",
+      "sentence": "practo_sentence"
+    },
+    "evaluation_case_count": 12
+  }
+}

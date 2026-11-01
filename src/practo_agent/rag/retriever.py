@@ -3,15 +3,15 @@
 
 from pathlib import Path
 
-from src.practo_agent.rag.chunkers import (
+from practo_agent.rag.chunkers import (
     fixed_size_chunk,
     sentence_based_chunk,
 )
-from src.practo_agent.rag.document_loader import (
+from practo_agent.rag.document_loader import (
     load_knowledge_documents,
 )
-from src.practo_agent.rag.embeddings import EmbeddingModel
-from src.practo_agent.rag.vectorstore import ChromaVectorStore
+from practo_agent.rag.embeddings import EmbeddingModel
+from practo_agent.rag.vectorstore import ChromaVectorStore
 
 
 def chunk_documents(strategy: str, documents) -> list:

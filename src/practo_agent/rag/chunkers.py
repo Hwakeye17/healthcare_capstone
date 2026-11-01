@@ -4,7 +4,7 @@
 from dataclasses import dataclass
 import re
 
-from src.practo_agent.rag.document_loader import KnowledgeDocument
+from practo_agent.rag.document_loader import KnowledgeDocument
 
 
 @dataclass(frozen=True)

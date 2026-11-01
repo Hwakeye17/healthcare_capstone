@@ -247,7 +247,99 @@ The repository should contain the project's own implementation, documentation, t
 
 The repository's `.gitignore` contains exclusions for these reference files.
 
-## 11. Decisions Still to Be Made
+## 11. Decision: Use a Consistent Python Import Convention with the `src` Layout
+
+**Status:** Implemented
+
+### Context
+
+The project follows a `src`-based Python package structure:
+
+```text
+healthcare_capstone/
+├── src/
+│   └── practo_agent/
+│       ├── __init__.py
+│       ├── rag/
+│       └── evaluation/
+├── scripts/
+└── tests/
+```
+
+During ingestion-script execution, an import error occurred because an internal module attempted to import another module using `src.practo_agent` as the package root.
+
+The error was:
+
+`ModuleNotFoundError: No module named 'src'`
+
+### Decision
+
+Use `practo_agent` as the Python package import root.
+
+Internal imports must follow this convention:
+
+```python
+from practo_agent.rag.chunkers import fixed_size_chunk
+from practo_agent.rag.document_loader import load_knowledge_base
+```
+
+Avoid imports such as:
+
+```python
+from src.practo_agent.rag.chunkers import fixed_size_chunk
+```
+
+### Rationale
+
+The `src` directory is the package-discovery location, not part of the actual Python package name.
+
+Adding `src` to Python's module search path allows Python to locate the `practo_agent` package directly.
+
+This convention provides consistent imports across application modules, scripts, and tests.
+
+### Script Execution
+
+Scripts executed directly from the project root must ensure that the `src` directory is available on Python's module search path.
+
+The current ingestion script explicitly adds the project's `src` directory to `sys.path`.
+
+For unit-test execution, the development environment currently uses:
+
+```powershell
+$env:PYTHONPATH = "src"
+```
+
+This setting applies to the current PowerShell session.
+
+### Alternatives Considered
+
+**1. Import through `src.practo_agent`**
+
+Rejected because `src` is not intended to be a Python package root in this project structure.
+
+**2. Move the application package outside `src`**
+
+Rejected because it would unnecessarily change the established project structure.
+
+**3. Configure the package for editable installation**
+
+Recognized as a more reusable long-term development setup. This can be introduced later through project packaging configuration if needed.
+
+### Trade-offs
+
+The current approach requires the Python path to be configured when running tests or scripts in certain execution contexts.
+
+A future editable installation could make this configuration more consistent across development environments.
+
+### Evidence
+
+The import issue was corrected by changing the internal import from `src.practo_agent` to `practo_agent`.
+
+The ingestion script subsequently loaded the Sentence Transformers model and successfully populated both ChromaDB collections.
+
+The full unit-test suite was rerun after the correction, with all 54 tests passing.
+
+## 12. Decisions Still to Be Made
 
 The following choices must be informed by implementation and evaluation evidence rather than assumed in advance:
 
@@ -259,6 +351,6 @@ The following choices must be informed by implementation and evaluation evidence
 
 These decisions will be documented as the corresponding components are implemented and evaluated.
 
-## 12. Maintenance
+## 13. Maintenance
 
 Update this document when a material architecture decision is made, when an experiment changes a previous conclusion, or when an important trade-off becomes better understood. Record observed results separately from expectations and assumptions.
