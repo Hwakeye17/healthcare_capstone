@@ -496,7 +496,58 @@ across the five initial calibration queries.
 Unit tests validate calibration-case loading, retrieval-distance
 collection, threshold evaluation, invalid inputs, and threshold selection.
 
-## 14. Decisions Still to Be Made
+## 14. Decision: Use Pydantic for Structured Agent Responses
+
+**Status:** Implemented
+
+### Context
+
+The support agent needs a consistent response format across its retrieval,
+generation, and agent orchestration components.
+
+Unstructured text responses make it difficult to distinguish successful
+answers from abstentions and to verify supporting knowledge-base sources.
+
+### Decision
+
+Use Pydantic models to define a structured response contract.
+
+The initial contract includes:
+
+- `GroundedResponse`: the overall response.
+- `ResponseStatus`: answered or abstained.
+- `SourceReference`: the knowledge-base source supporting an answer.
+
+Answered responses must include supporting sources. Abstained responses
+must provide an explanation and must not claim supporting sources.
+
+Unexpected fields are rejected to keep the response contract explicit.
+
+### Alternatives Considered
+
+- Returning unstructured strings.
+- Returning manually constructed dictionaries.
+- Using Pydantic models for validated response contracts.
+
+### Rationale
+
+Pydantic provides runtime validation and a reusable typed contract.
+Keeping the schema independent of the agent framework allows it to be
+reused by CrewAI, API endpoints, and other application components.
+
+### Trade-offs
+
+The response schema enforces structural consistency but cannot independently
+prove that an answer is factually supported by its cited sources.
+
+Groundedness validation must be implemented separately.
+
+### Evidence
+
+Unit tests validate successful responses, abstentions, source requirements,
+invalid combinations, and unexpected fields.
+
+## 15. Decisions Still to Be Made
 
 The following choices must be informed by implementation and evaluation
 evidence rather than assumed in advance:
@@ -507,6 +558,6 @@ evidence rather than assumed in advance:
 
 These decisions will be documented as the corresponding components are implemented and evaluated.
 
-## 15. Maintenance
+## 16. Maintenance
 
 Update this document when a material architecture decision is made, when an experiment changes a previous conclusion, or when an important trade-off becomes better understood. Record observed results separately from expectations and assumptions.
