@@ -699,7 +699,72 @@ Groundedness validation adds processing overhead and does not guarantee factual 
 - Six generated-response validation tests.
 - Complete project test suite: 147 passed.
 
-## 18. Decisions Still to Be Made
+
+## 18. Decision: Implement a Deterministic Appointment Lookup Tool
+
+**Status:** Implemented
+
+### Context
+
+The Practo Support Agent needs to handle appointment-related queries using structured appointment records.
+
+Appointment information should be retrieved deterministically rather than generated or inferred by an LLM. The tool must support appointment status lookup and provide an administrative prioritization signal based on the record's follow-up requirement and age.
+
+The project uses a synthetic dataset containing 50 appointment records.
+
+### Decision
+
+Implement a read-only Python function:
+
+`check_appointment_status(record_id: str) -> dict`
+
+The function retrieves appointment details from `data/generated/appointments.json` and returns the appointment status, consultation fee, and administrative prioritization score.
+
+The score is calculated using:
+
+\[
+E = 0.6F + 0.4\left(\frac{D}{30}\right)
+\]
+
+Where:
+
+- `F` is 1 when follow-up is required and 0 otherwise.
+- `D` is the number of days since record creation.
+- 30 is the maximum record age in the generated dataset.
+
+### Alternatives Considered
+
+- Allowing the LLM to answer appointment queries directly.
+- Using only the follow-up flag.
+- Using only record age.
+
+### Rationale
+
+A deterministic lookup function provides predictable and testable results for structured appointment queries and avoids relying on LLM-generated appointment details.
+
+The follow-up flag receives 60% weight because it explicitly identifies records requiring follow-up consideration. Record age contributes the remaining 40%.
+
+The dataset contains 10 follow-up records out of 50 (20%). Follow-up flags occur across multiple appointment statuses, so the score must always be interpreted alongside the actual appointment status.
+
+The score is an administrative prioritization heuristic, not a clinically validated urgency or risk measure. The selected weights are design assumptions rather than statistically optimized values.
+
+### Trade-offs
+
+The deterministic implementation provides predictable results but depends on the locally generated dataset.
+
+The current implementation loads the JSON dataset during each lookup. This is acceptable for the small synthetic dataset but may need optimization if the dataset grows.
+
+The prioritization score is specific to the project's synthetic data assumptions and should not be treated as a production clinical metric.
+
+### Evidence
+
+- Implementation: `src/practo_agent/tools/appointment_lookup.py`
+- Unit tests: `tests/unit/test_appointment_lookup.py`
+- Appointment lookup unit tests: 18 passed.
+- Complete project test suite: 165 passed, with 31 subtests passed.
+
+
+## 19. Decisions Still to Be Made
 
 The following choices must be informed by implementation and evaluation
 evidence rather than assumed in advance:
@@ -710,6 +775,6 @@ evidence rather than assumed in advance:
 
 These decisions will be documented as the corresponding components are implemented and evaluated.
 
-## 19. Maintenance
+## 20. Maintenance
 
 Update this document when a material architecture decision is made, when an experiment changes a previous conclusion, or when an important trade-off becomes better understood. Record observed results separately from expectations and assumptions.
