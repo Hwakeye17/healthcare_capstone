@@ -547,6 +547,68 @@ Groundedness validation must be implemented separately.
 Unit tests validate successful responses, abstentions, source requirements,
 invalid combinations, and unexpected fields.
 
+## 15. Decision: Separate Retrieval Evidence Validation from Generation
+
+**Status:** Implemented
+
+### Context
+
+The retrieval pipeline needs to determine whether retrieved knowledge-base
+content is sufficiently similar to a query before allowing answer generation.
+
+The abstention threshold was empirically calibrated in a separate evaluation
+experiment. Runtime evidence validation must apply that threshold without
+depending on evaluation labels or calibration datasets.
+
+### Decision
+
+Introduce a deterministic evidence-validation component in
+`src/practo_agent/rag/evidence.py`.
+
+The component:
+
+- Retrieves chunks using the centralized retrieval configuration.
+- Evaluates the minimum cosine distance against the configured abstention
+  threshold.
+- Preserves retrieved text and source metadata.
+- Rejects empty or unusable retrieval results.
+- Returns a structured Pydantic evidence assessment.
+
+The initial threshold is maintained in
+`src/practo_agent/config/grounding.py`.
+
+Evidence validation and response generation remain separate responsibilities.
+
+### Alternatives Considered
+
+- Allowing the LLM to decide whether retrieved evidence is sufficient.
+- Combining retrieval, evidence validation, and generation into one function.
+- Using a deterministic evidence-validation component before generation.
+
+### Rationale
+
+A deterministic threshold check makes the initial answer-versus-abstain
+decision reproducible and testable.
+
+Separating validation from generation prevents the LLM from overriding the
+retrieval acceptance decision.
+
+### Trade-offs and Limitations
+
+Cosine distance measures embedding similarity, not factual support.
+Passing the threshold does not guarantee that retrieved content answers
+the complete question.
+
+A separate groundedness check is still required after generation.
+
+The threshold is provisional because it was calibrated using only five
+queries.
+
+### Evidence
+
+Unit tests cover accepted evidence, rejected evidence, empty retrieval,
+threshold boundaries, retrieval configuration, and invalid source metadata.
+
 ## 15. Decisions Still to Be Made
 
 The following choices must be informed by implementation and evaluation
