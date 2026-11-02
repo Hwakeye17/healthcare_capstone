@@ -1,0 +1,153 @@
+{
+  "top_k": 3,
+  "query_results": [
+    {
+      "query_id": "ABS-001",
+      "query": "How can I reschedule my existing doctor appointment?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "cancellation_rescheduling"
+      ],
+      "retrieved_source_ids": [
+        "cancellation_rescheduling",
+        "appointment_booking"
+      ],
+      "best_distance": 0.331998348236084,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "ABS-002",
+      "query": "What documents are required to submit an insurance claim?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "insurance_claims"
+      ],
+      "retrieved_source_ids": [
+        "insurance_claims"
+      ],
+      "best_distance": 0.32472437620162964,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "ABS-003",
+      "query": "How long does it usually take to receive lab test results?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "lab_turnaround"
+      ],
+      "retrieved_source_ids": [
+        "lab_turnaround"
+      ],
+      "best_distance": 0.2363387942314148,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "ABS-004",
+      "query": "Can you diagnose my skin rash and recommend a suitable medicine?",
+      "expected_in_scope": false,
+      "expected_source_ids": [],
+      "retrieved_source_ids": [
+        "second_opinions",
+        "prescription_refills",
+        "home_visits"
+      ],
+      "best_distance": 0.7618024349212646,
+      "has_retrieval": true,
+      "expected_source_retrieved": false
+    },
+    {
+      "query_id": "ABS-005",
+      "query": "Who won the most recent Cricket World Cup?",
+      "expected_in_scope": false,
+      "expected_source_ids": [],
+      "retrieved_source_ids": [
+        "insurance_claims",
+        "lab_turnaround"
+      ],
+      "best_distance": 0.9296213388442993,
+      "has_retrieval": true,
+      "expected_source_retrieved": false
+    }
+  ],
+  "threshold_results": [
+    {
+      "threshold": 0.0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 3,
+      "precision": 0.0,
+      "recall": 0.0,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.236339,
+      "true_positive": 1,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 2,
+      "precision": 1.0,
+      "recall": 0.3333,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.324724,
+      "true_positive": 2,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 1,
+      "precision": 1.0,
+      "recall": 0.6667,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.331998,
+      "true_positive": 3,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.761802,
+      "true_positive": 3,
+      "false_positive": 1,
+      "true_negative": 1,
+      "false_negative": 0,
+      "precision": 0.75,
+      "recall": 1.0,
+      "false_acceptance_rate": 0.5
+    },
+    {
+      "threshold": 0.929621,
+      "true_positive": 3,
+      "false_positive": 2,
+      "true_negative": 0,
+      "false_negative": 0,
+      "precision": 0.6,
+      "recall": 1.0,
+      "false_acceptance_rate": 1.0
+    }
+  ],
+  "recommended_threshold": 0.331998,
+  "recommended_metrics": {
+    "threshold": 0.331998,
+    "true_positive": 3,
+    "false_positive": 0,
+    "true_negative": 2,
+    "false_negative": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "false_acceptance_rate": 0.0
+  },
+  "selection_rule": "Zero false acceptances, then maximum in-scope recall; ties are resolved using the lower threshold.",
+  "calibration_case_count": 5,
+  "in_scope_count": 3,
+  "out_of_scope_count": 2,
+  "warning": "A threshold selected from a small calibration set is provisional. It must be validated against a larger, representative query set."
+}

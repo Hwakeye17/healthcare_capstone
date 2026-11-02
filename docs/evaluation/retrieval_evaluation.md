@@ -878,12 +878,128 @@ The current evaluation queries each have one expected relevant source document. 
 - Precision and recall are document-level metrics and do not assess answer completeness.
 - The experiment does not evaluate abstention or generated-answer quality.
 
+## Abstention Threshold Calibration
+
+### Objective
+
+The objective of this experiment is to determine an empirical cosine-distance
+threshold for deciding whether retrieved knowledge-base evidence is sufficiently
+similar to a query to attempt an answer.
+
+The sentence-based ChromaDB collection is used because it was selected as the
+preferred chunking strategy in the previous retrieval comparison.
+
+A query is classified as answerable when its best retrieved cosine distance is
+less than or equal to the selected threshold. Lower cosine distance indicates
+greater embedding similarity.
+
+### Calibration Dataset
+
+The calibration cases are maintained in
+`evaluation/cases/abstention_cases.json`.
+
+The initial calibration dataset contains five queries:
+
+- Three in-scope administrative support queries.
+- One out-of-scope medical diagnosis and treatment query.
+- One out-of-scope general knowledge query about cricket.
+
+Each case contains a query ID, query text, expected scope classification, and
+expected source document IDs for in-scope queries.
+
+### Measurement Procedure
+
+1. Use the existing sentence-based ChromaDB collection.
+2. Retrieve the top three chunks for each query.
+3. Record the best (lowest) cosine distance returned for each query.
+4. Record the retrieved source document IDs.
+5. Check whether at least one expected source document was retrieved for
+   each in-scope query.
+6. Evaluate candidate thresholds using the expected in-scope and out-of-scope
+   labels.
+
+Expected source IDs are used for retrieval-relevance diagnostics. They are
+not used to determine the predicted scope classification.
+
+### Observed Results
+
+| Query ID | Expected scope | Best cosine distance | Expected source retrieved |
+|---|---|---:|---|
+| ABS-001 | In-scope | 0.331998 | Yes |
+| ABS-002 | In-scope | 0.324724 | Yes |
+| ABS-003 | In-scope | 0.236339 | Yes |
+| ABS-004 | Out-of-scope | 0.761802 | No |
+| ABS-005 | Out-of-scope | 0.929621 | No |
+
+All three in-scope queries retrieved their expected source documents. Neither
+out-of-scope query retrieved an expected source document.
+
+### Threshold Comparison
+
+| Threshold | TP | FP | TN | FN | Precision | Recall | False acceptance rate |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0.000000 | 0 | 0 | 2 | 3 | 0.0000 | 0.0000 | 0.0000 |
+| 0.236339 | 1 | 0 | 2 | 2 | 1.0000 | 0.3333 | 0.0000 |
+| 0.324724 | 2 | 0 | 2 | 1 | 1.0000 | 0.6667 | 0.0000 |
+| 0.331998 | 3 | 0 | 2 | 0 | 1.0000 | 1.0000 | 0.0000 |
+| 0.761802 | 3 | 1 | 1 | 0 | 0.7500 | 1.0000 | 0.5000 |
+| 0.929621 | 3 | 2 | 0 | 0 | 0.6000 | 1.0000 | 1.0000 |
+
+TP = True Positive; FP = False Positive; TN = True Negative; FN = False Negative.
+
+A false acceptance occurs when an out-of-scope query is classified as
+answerable. A false rejection occurs when an in-scope query is classified as
+unanswerable.
+
+### Selected Threshold and Rationale
+
+**Selected cosine-distance threshold: 0.331998**
+
+The threshold was selected using the following safety-first rule:
+
+1. Require zero false acceptances on the calibration dataset.
+2. Maximize recall over in-scope queries.
+3. If multiple thresholds provide the same recall, select the lower threshold.
+
+A threshold of 0.331998 accepts all three in-scope queries while rejecting
+both out-of-scope queries.
+
+Increasing the threshold to 0.761802 accepts the medical diagnosis query,
+resulting in one false acceptance. Therefore, 0.331998 provides the best
+observed balance under the defined selection rule.
+
+The threshold is applied inclusively: a query is accepted when its best
+retrieval distance is less than or equal to 0.331998.
+
+### Limitations
+
+- The calibration dataset contains only five queries.
+- Only two out-of-scope examples are included.
+- The results are specific to the current knowledge base, embedding model,
+  sentence-based chunking strategy, and top-k setting.
+- Cosine distance measures embedding similarity, not factual correctness.
+- A semantically similar passage may still fail to provide sufficient
+  information to answer a question.
+- Passing the threshold does not independently guarantee that a generated
+  answer is grounded.
+
+The selected threshold is therefore provisional and must be validated against
+a larger and more diverse evaluation dataset.
+
+### Conclusion
+
+The initial calibration experiment supports a cosine-distance threshold of
+0.331998 for the current retrieval configuration.
+
+The threshold will be used as the initial abstention configuration, together
+with separate retrieved-context and grounded-response validation.
+
 ### Next Steps
 
 [x] Inspect retrieved source content for selected low-precision queries.
 [x] Investigate repeated retrieval of second_opinions.
 [x] Verify the inspected expected-source labels against document content.
-[ ] Inspect the remaining evaluation queries.
-[ ] Complete the comparison report and select a preferred strategy.
+[x] Inspect the remaining evaluation queries.
+[x] Complete the comparison report and select a preferred strategy.
 
 The recommendation remains provisional until the retrieval results and evaluation labels have been inspected.

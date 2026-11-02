@@ -396,18 +396,117 @@ Retriever tests verify that configured values are passed to the vector store and
 
 The abstention threshold is intentionally deferred to a separate calibration experiment using in-scope and out-of-scope queries.
 
-## 13. Decisions Still to Be Made
+## 13. Decision: Use an Empirically Calibrated RAG Abstention Threshold
 
-The following choices must be informed by implementation and evaluation evidence rather than assumed in advance:
+**Status:** Initial threshold selected; further validation required.
 
-- Which chunking strategy provides better document-level precision and recall.
-- Which retrieval-distance threshold provides a suitable balance between answering and abstaining.
+### Context
+
+The retrieval pipeline needs a mechanism to determine whether retrieved
+knowledge-base evidence is sufficiently similar to a user query to attempt
+an answer.
+
+The system uses cosine distance, where a lower distance indicates greater
+embedding similarity.
+
+Selecting an arbitrary threshold could cause two types of errors:
+
+- False acceptance: answering an unsupported or out-of-scope query.
+- False rejection: abstaining when the knowledge base contains relevant
+  information.
+
+### Decision
+
+Use an empirically calibrated cosine-distance threshold of **0.331998**
+with the existing sentence-based retrieval configuration.
+
+A query is accepted for answer generation when its best retrieved cosine
+distance is less than or equal to this threshold.
+
+The threshold was selected using a safety-first rule:
+
+1. Require zero false acceptances on the calibration dataset.
+2. Maximize recall over in-scope queries.
+3. Resolve ties by selecting the lower threshold.
+
+The threshold is configurable and must not be treated as a universal
+similarity boundary.
+
+### Alternatives Considered
+
+- Selecting an arbitrary threshold based on intuition.
+- Always answering using the top retrieved chunks.
+- Always abstaining when retrieval confidence is uncertain.
+- Evaluating candidate thresholds against labeled in-scope and
+  out-of-scope queries.
+
+### Rationale
+
+The initial calibration experiment evaluated five queries: three in-scope
+administrative questions and two out-of-scope questions.
+
+At a threshold of 0.331998, all three in-scope queries were accepted and
+both out-of-scope queries were rejected.
+
+This produced:
+
+- True positives: 3
+- False positives: 0
+- True negatives: 2
+- False negatives: 0
+- Precision: 1.0000
+- Recall: 1.0000
+- False acceptance rate: 0.0000
+
+Increasing the threshold to 0.761802 caused the medical diagnosis query
+to be accepted, demonstrating the risk of using a more permissive threshold.
+
+The selected threshold therefore provides the best observed result under
+the defined selection rule.
+
+### Trade-offs and Limitations
+
+- The calibration dataset contains only five queries and is not
+  statistically representative.
+- Only two out-of-scope examples were evaluated.
+- Cosine distance measures semantic similarity rather than factual support.
+- A query may retrieve a semantically similar passage that does not
+  contain sufficient information to answer it.
+- The threshold depends on the current embedding model, knowledge base,
+  chunking strategy, and retrieval configuration.
+
+The threshold must be validated against a larger and more diverse query
+dataset before making stronger reliability claims.
+
+### Evidence
+
+The calibration implementation is located in
+`src/practo_agent/evaluation/abstention.py`.
+
+Calibration cases are maintained in
+`evaluation/cases/abstention_cases.json`.
+
+The experiment is executed using
+`scripts/calibrate_abstention.py`, with its detailed output saved to
+`evaluation/results/abstention_calibration.json`.
+
+The experiment produced zero false acceptances and zero false rejections
+across the five initial calibration queries.
+
+Unit tests validate calibration-case loading, retrieval-distance
+collection, threshold evaluation, invalid inputs, and threshold selection.
+
+## 14. Decisions Still to Be Made
+
+The following choices must be informed by implementation and evaluation
+evidence rather than assumed in advance:
+
 - How retrieval results should be passed into grounded response generation.
 - How the agent workflow should enforce tool permissions and structured response contracts.
 - How the final evaluation will measure accuracy, grounding, completeness, and safety.
 
 These decisions will be documented as the corresponding components are implemented and evaluated.
 
-## 14. Maintenance
+## 15. Maintenance
 
 Update this document when a material architecture decision is made, when an experiment changes a previous conclusion, or when an important trade-off becomes better understood. Record observed results separately from expectations and assumptions.
