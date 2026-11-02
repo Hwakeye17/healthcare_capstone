@@ -72,12 +72,29 @@ def build_vector_store(
 
     return store
 
-
 def retrieve(
     store: ChromaVectorStore,
     query: str,
-    top_k: int = 3,
+    top_k: int | None = None,
+    *,
+    config=None,
 ) -> list[dict]:
-    """Return ranked chunks for an administrative support query."""
+    """Return ranked chunks using validated retrieval configuration."""
 
-    return store.search(query, top_k=top_k)
+    from practo_agent.config import DEFAULT_RETRIEVAL_CONFIG
+
+    selected_config = config or DEFAULT_RETRIEVAL_CONFIG
+
+    if store.strategy != selected_config.strategy:
+        raise ValueError(
+            f"Retrieval configuration uses strategy "
+            f"{selected_config.strategy!r}, but the supplied store uses "
+            f"{store.strategy!r}."
+        )
+
+    selected_top_k = (
+        selected_config.top_k if top_k is None else top_k
+    )
+
+    return store.search(query, top_k=selected_top_k)
+

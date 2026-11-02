@@ -339,7 +339,64 @@ The ingestion script subsequently loaded the Sentence Transformers model and suc
 
 The full unit-test suite was rerun after the correction, with all 54 tests passing.
 
-## 12. Decisions Still to Be Made
+## 12. Decision: Centralize RAG Retrieval Configuration
+
+**Status:** Implemented
+
+### Context
+
+The retrieval pipeline previously used default values directly in its functions. For example, the retrieval function used a default top-k value of 3, while the vector-store implementation independently validated the same parameter.
+
+As the project grows, retrieval settings need to be managed consistently and explicitly.
+
+### Decision
+
+Introduce a centralized, immutable `RetrievalConfig` dataclass in `src/practo_agent/config/retrieval.py`.
+
+The default configuration uses:
+
+- Retrieval strategy: `sentence`
+- ChromaDB collection: `practo_sentence`
+- Top-k: `3`
+- Similarity metric: `cosine`
+
+The collection name is derived from the existing `COLLECTION_NAMES` mapping rather than duplicated.
+
+The configuration validates the selected strategy, positive integer top-k value, and supported similarity metric.
+
+The retrieval wrapper uses this configuration by default and verifies that the supplied vector store matches the configured strategy.
+
+An explicit top-k override remains available for backward compatibility and controlled experiments.
+
+### Alternatives Considered
+
+- Keeping retrieval settings as function-level defaults.
+- Defining configuration as module-level constants.
+- Using environment variables for every retrieval parameter.
+- Introducing a centralized immutable configuration object.
+
+### Rationale
+
+A dataclass provides a typed, explicit, and testable configuration contract. Immutability prevents accidental changes during execution.
+
+The selected sentence-based strategy follows the comparative retrieval experiment completed during Day 2.
+
+### Trade-offs
+
+- The configuration currently supports only cosine distance because that is the metric used by the existing ChromaDB collections.
+- The default top-k value remains 3 based on the previous evaluation setup; it has not been independently optimized.
+- Explicit per-call top-k overrides remain possible, so callers must use them deliberately.
+- The configuration selects a strategy but does not determine whether retrieved evidence is relevant enough to answer a query.
+
+### Evidence
+
+Unit tests validate default values, collection selection, custom top-k values, invalid configurations, and immutability.
+
+Retriever tests verify that configured values are passed to the vector store and mismatched strategies are rejected.
+
+The abstention threshold is intentionally deferred to a separate calibration experiment using in-scope and out-of-scope queries.
+
+## 13. Decisions Still to Be Made
 
 The following choices must be informed by implementation and evaluation evidence rather than assumed in advance:
 
@@ -351,6 +408,6 @@ The following choices must be informed by implementation and evaluation evidence
 
 These decisions will be documented as the corresponding components are implemented and evaluated.
 
-## 13. Maintenance
+## 14. Maintenance
 
 Update this document when a material architecture decision is made, when an experiment changes a previous conclusion, or when an important trade-off becomes better understood. Record observed results separately from expectations and assumptions.
