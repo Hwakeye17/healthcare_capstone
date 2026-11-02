@@ -654,7 +654,52 @@ queries.
 Unit tests cover accepted evidence, rejected evidence, empty retrieval,
 threshold boundaries, retrieval configuration, and invalid source metadata.
 
-## 17. Decisions Still to Be Made
+## 17. Decision: Validate Generated Claims Against Retrieved Evidence
+
+**Status:** Implemented
+
+### Context
+
+Retrieving relevant documents does not guarantee that every claim in a generated answer is supported by the retrieved evidence. A generated answer may contain unsupported information even when retrieval itself is successful.
+
+### Decision
+
+Introduce a separate groundedness-validation stage after answer generation.
+
+The validator evaluates individual claims against the retrieved evidence. The system returns the generated answer only when all assessed claims are supported. Unsupported claims, validation errors, or invalid assessment results cause the system to return a deterministic abstention response.
+
+Two implementations are provided:
+
+1. A deterministic mock validator based on exact normalized sentence matching.
+2. A Groq-based LLM validator using structured claim-level assessments.
+
+### Alternatives Considered
+
+- Trusting the answer generator without additional validation.
+- Checking only whether relevant documents were retrieved.
+- Using exact text matching as the only validation mechanism.
+- Using an LLM-based verifier for all execution modes.
+
+### Rationale
+
+Retrieval relevance and factual support are different concerns. A separate validation stage provides an additional check before generated content is returned.
+
+The mock implementation supports deterministic offline testing, while the Groq implementation supports semantic claim assessment.
+
+### Trade-offs
+
+Exact sentence matching is deterministic but cannot recognize semantic paraphrases. The LLM-based validator can assess semantic support but may produce incorrect judgments.
+
+Groundedness validation adds processing overhead and does not guarantee factual correctness. The system therefore fails closed when validation cannot be completed.
+
+### Evidence
+
+- Seven groundedness schema tests.
+- Eight groundedness validator tests.
+- Six generated-response validation tests.
+- Complete project test suite: 147 passed.
+
+## 18. Decisions Still to Be Made
 
 The following choices must be informed by implementation and evaluation
 evidence rather than assumed in advance:
@@ -665,6 +710,6 @@ evidence rather than assumed in advance:
 
 These decisions will be documented as the corresponding components are implemented and evaluated.
 
-## 18. Maintenance
+## 19. Maintenance
 
 Update this document when a material architecture decision is made, when an experiment changes a previous conclusion, or when an important trade-off becomes better understood. Record observed results separately from expectations and assumptions.

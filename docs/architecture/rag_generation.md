@@ -58,3 +58,85 @@ Passing the retrieval distance threshold does not prove that every generated sta
 Further groundedness validation and LLM-as-judge evaluation are required.
 
 The project is an educational administrative support prototype, not a clinically validated healthcare system.
+
+## 8. Generated-Answer Groundedness Validation
+
+### 8.1 Purpose
+
+Retrieving relevant documents does not guarantee that every claim in a generated answer is factually supported. Therefore, the system performs a separate groundedness validation step after answer generation.
+
+The validator evaluates the generated answer against the actual evidence retrieved from the knowledge base. The system returns an answer only when all assessed claims are supported by the retrieved evidence.
+
+### 8.2 Validation Workflow
+
+The validation workflow follows these steps:
+
+1. Generate an answer using the retrieved evidence.
+2. If the generator returns an abstained response, return it directly without running groundedness validation.
+3. Extract individual claims from the generated answer.
+4. Evaluate each claim against the retrieved evidence.
+5. Construct a structured `GroundednessAssessment` containing the claim, support decision, and explanation for each claim.
+6. Return the generated answer only if every assessed claim is supported.
+7. If any claim is unsupported, return a deterministic abstention response instead of the generated answer.
+8. If validation raises an exception or cannot produce a valid assessment, fail closed and return an abstention response.
+
+### 8.3 Validation Implementations
+
+The system supports two groundedness-validation implementations.
+
+#### Mock Groundedness Validator
+
+The mock validator provides deterministic validation for offline testing.
+
+- Splits the generated answer into individual sentences.
+- Normalizes text by converting it to lowercase and collapsing whitespace.
+- Checks whether each normalized sentence exactly matches a sentence in the retrieved evidence.
+- Marks a claim as supported only when an exact normalized match is found.
+
+This approach is suitable for deterministic tests but is intentionally conservative. It does not recognize semantically equivalent paraphrases and should not be considered a complete semantic verification mechanism.
+
+#### Groq Groundedness Validator
+
+The Groq validator uses an LLM-based structured-output approach.
+
+- Sends the generated answer and retrieved evidence to the model.
+- Instructs the model to assess each claim independently.
+- Requires a structured `GroundednessAssessment` response.
+- Uses the assessment to determine whether the complete answer can be returned.
+
+This approach can recognize semantic support that exact text matching cannot. However, an LLM-based verifier can still make mistakes or miss unsupported claims. It is an additional safeguard, not a guarantee of factual correctness.
+
+### 8.4 Fail-Closed Behavior
+
+The validation stage follows a fail-closed approach:
+
+- Unsupported claims cause the complete generated answer to be rejected.
+- Validation exceptions cause an abstention response.
+- Invalid or incomplete validation results cause an abstention response.
+- The original generated answer is never returned when validation fails.
+
+The abstention response directs the user to contact the relevant clinic or Practo support for assistance.
+
+### 8.5 Testing
+
+The implementation is covered by unit tests for:
+
+- Groundedness schema validation.
+- Supported and unsupported claims.
+- Exact normalized sentence matching.
+- Empty or invalid evidence.
+- Multiple claims in a generated answer.
+- Successful validation of a generated response.
+- Abstention when unsupported claims are detected.
+- Abstention when validation raises an exception.
+- Skipping validation when the generator already abstains.
+
+The complete project test suite passes with 147 tests.
+
+### 8.6 Limitations
+
+Groundedness validation does not establish that the knowledge base itself is correct or that the generated answer is medically accurate.
+
+The mock validator checks exact normalized sentence matches, while the Groq validator relies on an LLM's judgment. Both approaches have limitations.
+
+The system therefore retains its administrative-support-only scope and uses abstention when the available evidence is insufficient or validation cannot be completed.

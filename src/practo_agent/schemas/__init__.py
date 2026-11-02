@@ -10,10 +10,17 @@ from practo_agent.schemas.response import (
     SourceReference,
 )
 
+from practo_agent.schemas.grounding import (
+    ClaimAssessment,
+    GroundednessAssessment,
+)
+
 __all__ = [
     "EvidenceAssessment",
     "RetrievedEvidence",
     "GroundedResponse",
     "ResponseStatus",
     "SourceReference",
+    "ClaimAssessment",
+    "GroundednessAssessment",
 ]
