@@ -7,7 +7,7 @@ from dataclasses import dataclass
 class GroundingConfig:
     """Validated settings for retrieval evidence acceptance."""
 
-    abstention_threshold: float = 0.331998
+    abstention_threshold: float = 0.331998348236084
 
     def __post_init__(self) -> None:
         threshold = self.abstention_threshold

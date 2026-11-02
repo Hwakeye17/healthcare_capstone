@@ -48,7 +48,7 @@ def test_accepts_evidence_below_threshold():
 
     assert assessment.accepted is True
     assert assessment.best_distance == 0.25
-    assert assessment.threshold == 0.331998
+    assert assessment.threshold == 0.331998348236084
     assert len(assessment.evidence) == 2
 
 

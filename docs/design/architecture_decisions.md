@@ -764,7 +764,72 @@ The prioritization score is specific to the project's synthetic data assumptions
 - Complete project test suite: 165 passed, with 31 subtests passed.
 
 
-## 19. Decisions Still to Be Made
+## 19. Decision: Use Three Specialist Agents with Sequential CrewAI Orchestration
+
+**Status:** Implemented; execution behavior pending demonstration and evaluation
+
+### Context
+
+The Practo support system needs to combine knowledge-base retrieval, appointment lookup, and final response composition. Combining all responsibilities into one agent would make tool permissions, responsibility boundaries, and intermediate outputs harder to inspect.
+
+### Decision
+
+Use three specialist agents:
+
+1. Retrieval Agent — administrative knowledge-base retrieval.
+2. Lookup Agent — deterministic appointment lookup.
+3. Response Composer — final structured response generation.
+
+Coordinate them using CrewAI's `Process.sequential`.
+
+Each agent receives a dedicated Pydantic output contract. The Response Composer receives both specialist task outputs through explicit task context dependencies.
+
+### Alternatives Considered
+
+- A single agent with access to all tools.
+- A hierarchical CrewAI process with a manager agent.
+- A three-agent sequential workflow with explicit specialist responsibilities.
+
+### Rationale
+
+The sequential workflow provides clear task dependencies and inspectable intermediate results. Separating responsibilities makes tool permissions easier to enforce and test.
+
+A hierarchical process would introduce additional manager behavior that is not currently necessary for this fixed three-stage workflow.
+
+### Tool Permissions and Safety
+
+- Retrieval Agent receives only the RAG search tool.
+- Lookup Agent receives only the appointment lookup tool.
+- Response Composer receives no tools.
+- All agents have `allow_delegation=False`.
+- Specialist outputs and final responses use Pydantic schemas.
+- The workflow is restricted to administrative support.
+
+### Memory Decision
+
+CrewAI memory is disabled. Session memory will be implemented separately through LangChain so that its behavior, session isolation, and lifecycle can be tested explicitly.
+
+### Testing Evidence
+
+The agent, task, and crew configurations are covered by unit tests. The complete test suite reports 219 passing tests.
+
+A test-only CrewAI `BaseLLM` subclass is used to verify that construction does not invoke an external LLM.
+
+### Trade-offs and Limitations
+
+Sequential execution still runs all three tasks. An irrelevant specialist must return `NOT_NEEDED` rather than invoke its tool.
+
+Pydantic validation checks output structure but does not guarantee semantic correctness. Actual tool selection, intermediate results, and final answer grounding must be verified through execution traces.
+
+### Evidence Still Required
+
+- Demonstrate a knowledge-base query invoking the RAG tool.
+- Demonstrate an appointment query invoking the appointment lookup tool.
+- Verify that irrelevant tools are not called.
+- Inspect all three task outputs and the final structured response.
+- Test unsupported and not-found scenarios.
+
+## 20. Decisions Still to Be Made
 
 The following choices must be informed by implementation and evaluation
 evidence rather than assumed in advance:
@@ -775,6 +840,6 @@ evidence rather than assumed in advance:
 
 These decisions will be documented as the corresponding components are implemented and evaluated.
 
-## 20. Maintenance
+## 21. Maintenance
 
 Update this document when a material architecture decision is made, when an experiment changes a previous conclusion, or when an important trade-off becomes better understood. Record observed results separately from expectations and assumptions.

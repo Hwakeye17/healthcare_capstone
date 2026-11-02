@@ -97,4 +97,3 @@ def retrieve(
     )
 
     return store.search(query, top_k=selected_top_k)
-
