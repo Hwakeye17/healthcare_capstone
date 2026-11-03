@@ -1,0 +1,28 @@
+{
+  "demo": "context_aware_response_cache",
+  "mock_llm": true,
+  "query": "What is the status of APT-0001?",
+  "cases": {
+    "initial_request": {
+      "cache_hit": false
+    },
+    "normalized_equivalent_request": {
+      "cache_hit": true,
+      "same_response": true
+    },
+    "different_context": {
+      "cache_hit": false
+    },
+    "different_session": {
+      "cache_hit": false
+    }
+  },
+  "workflow_invocations": 3,
+  "cache_stats": {
+    "hits": 1,
+    "misses": 3,
+    "compute_invocations": 3,
+    "entries": 3
+  },
+  "passed": true
+}

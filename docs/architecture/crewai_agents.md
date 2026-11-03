@@ -121,6 +121,11 @@ rejected without being added to history. Histories are not persisted across
 process restarts; API integrations should retain and reuse one manager
 instance for the lifetime of the application process.
 
+`ConversationMemory` also uses the context-aware `ResponseCache`. Cache keys
+include the session ID, prior conversation context, and normalized current
+query. An immediately repeated equivalent turn can reuse an answered result
+without skipping the corresponding history update.
+
 This avoids introducing an additional uncontrolled memory mechanism.
 
 ## 8. LLM and Testing Strategy

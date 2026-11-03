@@ -115,6 +115,18 @@ The session histories use LangChain's in-process
 persist across process restarts. The demo writes separate multi-turn and
 fresh-session transcripts under `evaluation/results/`.
 
+Demonstrate response caching with normalized equivalent queries. The demo
+also checks that changed conversation context or session scope results in a
+cache miss:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python scripts\demo_response_cache.py
+```
+
+The cache is process-local, stores answered responses only, and reports
+cache-hit, miss, and workflow invocation counts.
+
 Demonstrate the output-side groundedness check by injecting an unsupported
 claim into a controlled offline Crew result. The application workflow must
 reject it and save a transcript:
@@ -150,9 +162,9 @@ python -m pytest -q
 The RAG and core CrewAI workflow are implemented and covered by tests.
 Fixed-format contact-number masking, phrase-based prompt-injection detection,
 CrewAI response groundedness validation, and session-based conversation
-memory are implemented and demonstrated. Remaining assignment work includes
-cache and runtime budget controls, FastAPI/WebSocket deployment and
-privacy-safe structured logging, the 15-query four-dimension evaluation, the
-AutoGen review stage, governance controls and their required demonstrations.
-Track these against the acceptance criteria in the handoff; do not mark a
-feature complete until its behavior is demonstrated and tested.
+memory, and context-aware response caching are implemented and demonstrated.
+Remaining assignment work includes runtime budget controls, FastAPI/WebSocket
+deployment and privacy-safe structured logging, the 15-query four-dimension
+evaluation, the AutoGen review stage, governance controls and their required
+demonstrations. Track these against the acceptance criteria in the handoff;
+do not mark a feature complete until its behavior is demonstrated and tested.

@@ -14,11 +14,20 @@ def _abstained_response():
     )
 
 
+def _return_abstained(query, **kwargs):
+    assert query
+    assert not kwargs["conversation_history"]
+    return _abstained_response()
+
+
 def test_conversation_memory_carries_turns_and_isolates_sessions(monkeypatch):
     observed_histories = []
 
-    def fake_run_practo_query(query, *, conversation_history=()):
-        observed_histories.append((query, list(conversation_history)))
+    def fake_run_practo_query(query, **_kwargs):
+        assert query
+        observed_histories.append(
+            (query, list(_kwargs["conversation_history"]))
+        )
         return _abstained_response()
 
     monkeypatch.setattr(memory, "run_practo_query", fake_run_practo_query)
@@ -39,11 +48,44 @@ def test_conversation_memory_carries_turns_and_isolates_sessions(monkeypatch):
     assert len(conversations.get_messages(session_id="session-b")) == 2
 
 
+def test_repeated_equivalent_turn_uses_cache_and_still_updates_history(
+    monkeypatch,
+):
+    calls = []
+
+    def fake_run_practo_query(query, **_kwargs):
+        assert query
+        assert not _kwargs["conversation_history"]
+        calls.append(query)
+        return AgentResponse(
+            status=ResponseStatus.ANSWERED,
+            answer="Appointment APT-0001 is scheduled.",
+            appointments=[{"record_id": "APT-0001"}],
+        )
+
+    monkeypatch.setattr(memory, "run_practo_query", fake_run_practo_query)
+    conversations = memory.ConversationMemory()
+
+    conversations.run_turn(
+        "What is the status of APT-0001?",
+        session_id="session-a",
+    )
+    conversations.run_turn(
+        " WHAT   IS THE STATUS OF apt-0001? ",
+        session_id="session-a",
+    )
+
+    assert len(calls) == 1
+    assert len(conversations.get_messages(session_id="session-a")) == 4
+    assert conversations.cache_stats["hits"] == 1
+    assert conversations.cache_stats["compute_invocations"] == 1
+
+
 def test_contact_number_is_masked_before_being_saved_in_history(monkeypatch):
     monkeypatch.setattr(
         memory,
         "run_practo_query",
-        lambda query, *, conversation_history=(): _abstained_response(),
+        _return_abstained,
     )
     conversations = memory.ConversationMemory()
 
@@ -68,7 +110,7 @@ def test_contact_number_in_assistant_response_is_masked_in_history(monkeypatch):
     monkeypatch.setattr(
         memory,
         "run_practo_query",
-        lambda query, *, conversation_history=(): response,
+        lambda query, **kwargs: _checked_response(query, kwargs, response),
     )
     conversations = memory.ConversationMemory()
 
@@ -84,10 +126,17 @@ def test_contact_number_in_assistant_response_is_masked_in_history(monkeypatch):
     assert "9876543210" not in messages[1].content
 
 
+def _checked_response(query, kwargs, response):
+    assert query
+    assert not kwargs["conversation_history"]
+    return response
+
+
 def test_prompt_injection_is_rejected_without_being_saved(monkeypatch):
     runner_calls = []
 
-    def fake_run_practo_query(query, *, conversation_history=()):
+    def fake_run_practo_query(query, **_kwargs):
+        assert not _kwargs.get("conversation_history", ())
         runner_calls.append(query)
         return _abstained_response()
 

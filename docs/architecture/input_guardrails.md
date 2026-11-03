@@ -99,6 +99,6 @@ offline Crew scenarios are also exercised by
 `scripts/demo_grounded_generation.py` and the integration tests.
 
 The input and output checks now run as part of the shared CrewAI request
-lifecycle. Session-based memory is implemented separately with
-`ConversationMemory`; caching, runtime budgets, API transports, logging, and
-other Milestone 3 work remain outstanding.
+lifecycle. Session-based memory and context-aware response caching are
+implemented in their respective packages. Runtime budgets, API transports,
+logging, and other Milestone 3 work remain outstanding.

@@ -37,6 +37,12 @@ answers are likewise masked before storage. This memory feature does not
 provide durable storage, cross-process synchronization, or general-purpose
 PII detection.
 
+The manager also uses the in-process `ResponseCache`. Cache keys include the
+normalized query, session ID, and prior conversation context. An immediately
+repeated equivalent turn can reuse an answered response while still appending
+the new user/assistant exchange to history. A changed context or a different
+session cannot reuse that entry. Abstentions are not cached.
+
 ## Demonstration
 
 Run the end-to-end offline demonstration from the repository root:
