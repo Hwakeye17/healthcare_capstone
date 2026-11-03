@@ -3,6 +3,8 @@ import os
 
 from dotenv import load_dotenv
 
+from practo_agent.config.runtime_budget import RuntimeBudget
+
 load_dotenv()
 
 
@@ -27,14 +29,25 @@ def get_llm_config() -> dict:
     }
 
 
-def create_crewai_llm(*, query: str | None = None):
+def create_crewai_llm(
+    *,
+    query: str | None = None,
+    runtime_budget: RuntimeBudget | None = None,
+):
     """Create the configured CrewAI model without network access in mock mode."""
     config = get_llm_config()
+    budget = (
+        runtime_budget
+        if runtime_budget is not None
+        else RuntimeBudget()
+    )
 
     if config["mock_mode"]:
         from practo_agent.agents.mock_llm import MockCrewAILLM
 
-        return MockCrewAILLM(query=query)
+        llm = MockCrewAILLM(query=query)
+        llm.set_runtime_budget(budget)
+        return llm
 
     api_key = os.getenv("GROQ_API_KEY")
 
@@ -45,10 +58,13 @@ def create_crewai_llm(*, query: str | None = None):
 
     from practo_agent.config.groq_llm import GroqReActLLM
 
-    return GroqReActLLM(
+    llm = GroqReActLLM(
         model=config["model"],
         provider="openai",
         api_key=api_key,
         base_url=GROQ_BASE_URL,
         temperature=config["temperature"],
+        max_completion_tokens=budget.config.max_completion_tokens_per_call,
     )
+    llm.set_runtime_budget(budget)
+    return llm

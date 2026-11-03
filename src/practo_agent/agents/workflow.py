@@ -8,6 +8,10 @@ from practo_agent.agents.crew import create_practo_crew
 from practo_agent.agents.mock_llm import MockCrewAILLM
 from practo_agent.agents.routing import route_query
 from practo_agent.config.llm import create_crewai_llm
+from practo_agent.config.runtime_budget import (
+    RuntimeBudget,
+    RuntimeBudgetExceeded,
+)
 from practo_agent.rag.groundedness import (
     GroundednessValidator,
     create_groundedness_validator,
@@ -46,6 +50,7 @@ def run_practo_query(
     llm=None,
     groundedness_validator: GroundednessValidator | None = None,
     conversation_history: Sequence[BaseMessage] = (),
+    runtime_budget: RuntimeBudget | None = None,
     verbose: bool = False,
 ) -> AgentResponse:
     """Run the routed CrewAI workflow and validate every structured result."""
@@ -84,6 +89,15 @@ def run_practo_query(
             reason="The request was rejected by the prompt-injection input guardrail.",
         )
 
+    budget = runtime_budget if runtime_budget is not None else RuntimeBudget()
+    try:
+        budget.check_request(
+            normalized_query,
+            conversation_context=conversation_context,
+        )
+    except RuntimeBudgetExceeded as exc:
+        return _budget_abstention(str(exc))
+
     route = route_query(contextual_query)
 
     if route.clarification_required:
@@ -96,8 +110,18 @@ def run_practo_query(
     crew_llm = (
         llm
         if llm is not None
-        else create_crewai_llm(query=normalized_query)
+        else create_crewai_llm(
+            query=normalized_query,
+            runtime_budget=budget,
+        )
     )
+    if llm is not None:
+        set_runtime_budget = getattr(crew_llm, "set_runtime_budget", None)
+        if set_runtime_budget is None:
+            raise TypeError(
+                "The configured LLM must support runtime budget enforcement."
+            )
+        set_runtime_budget(budget)
     if isinstance(crew_llm, MockCrewAILLM):
         crew_llm.set_query(contextual_query)
 
@@ -107,12 +131,15 @@ def run_practo_query(
         retrieval_enabled=route.retrieval_enabled,
         lookup_enabled=route.lookup_enabled,
     )
-    result = crew.kickoff(
-        inputs={
-            "user_query": normalized_query,
-            "conversation_context": conversation_context,
-        }
-    )
+    try:
+        result = crew.kickoff(
+            inputs={
+                "user_query": normalized_query,
+                "conversation_context": conversation_context,
+            }
+        )
+    except RuntimeBudgetExceeded as exc:
+        return _budget_abstention(str(exc))
 
     if len(result.tasks_output) != len(crew.tasks):
         raise RuntimeError(
@@ -185,11 +212,15 @@ def run_practo_query(
         validator = (
             groundedness_validator
             if groundedness_validator is not None
-            else create_groundedness_validator()
+            else create_groundedness_validator(
+                runtime_budget=budget,
+            )
         )
         validation = GroundednessAssessment.model_validate(
             validator.validate(response.answer, evidence)
         )
+    except RuntimeBudgetExceeded as exc:
+        return _budget_abstention(str(exc))
     except Exception:
         return _groundedness_abstention(
             "Groundedness validation could not be completed."
@@ -233,6 +264,17 @@ def _groundedness_abstention(reason: str) -> AgentResponse:
     return AgentResponse(
         status=ResponseStatus.ABSTAINED,
         answer=_GROUNDEDNESS_ABSTENTION,
+        reason=reason,
+    )
+
+
+def _budget_abstention(reason: str) -> AgentResponse:
+    return AgentResponse(
+        status=ResponseStatus.ABSTAINED,
+        answer=(
+            "I couldn't process this request within the configured usage "
+            "budget. Please shorten it or try again later."
+        ),
         reason=reason,
     )
 

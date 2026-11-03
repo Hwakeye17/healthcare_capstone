@@ -7,6 +7,10 @@ from typing import Protocol
 from langchain_core.prompts import ChatPromptTemplate
 
 from practo_agent.config.llm import get_llm_config
+from practo_agent.config.runtime_budget import (
+    RuntimeBudget,
+    RuntimeBudgetExceeded,
+)
 from practo_agent.schemas import (
     ClaimAssessment,
     GroundednessAssessment,
@@ -133,7 +137,12 @@ class MockGroundednessValidator:
 class GroqGroundednessValidator:
     """Use ChatGroq to assess individual answer claims against evidence."""
 
-    def __init__(self, model: str, temperature: float = 0.0):
+    def __init__(
+        self,
+        model: str,
+        temperature: float = 0.0,
+        runtime_budget: RuntimeBudget | None = None,
+    ):
         import os
         from langchain_groq import ChatGroq
 
@@ -148,7 +157,13 @@ class GroqGroundednessValidator:
             model=model,
             temperature=temperature,
             api_key=api_key,
+            max_tokens=(
+                runtime_budget.config.max_completion_tokens_per_call
+                if runtime_budget is not None
+                else 1024
+            ),
         )
+        self.runtime_budget = runtime_budget
 
         self.structured_llm = llm.with_structured_output(
             GroundednessAssessment
@@ -221,6 +236,12 @@ Assess every factual claim in the generated answer.
 
         try:
             chain = self.prompt | self.structured_llm
+            if self.runtime_budget is not None:
+                messages = self.prompt.format_messages(
+                    answer=answer,
+                    evidence=evidence_context,
+                )
+                self.runtime_budget.reserve_llm_call(messages)
 
             result = chain.invoke(
                 {
@@ -235,6 +256,8 @@ Assess every factual claim in the generated answer.
             return GroundednessAssessment.model_validate(result)
 
         except Exception as exc:
+            if isinstance(exc, RuntimeBudgetExceeded):
+                raise
             raise GroundednessValidationError(
                 "Groq groundedness validation failed."
             ) from exc
@@ -242,6 +265,7 @@ Assess every factual claim in the generated answer.
 
 def create_groundedness_validator(
     mock_mode: bool | None = None,
+    runtime_budget: RuntimeBudget | None = None,
 ) -> GroundednessValidator:
     """Create the configured groundedness validator."""
 
@@ -256,6 +280,7 @@ def create_groundedness_validator(
     return GroqGroundednessValidator(
         model=config["model"],
         temperature=0.0,
+        runtime_budget=runtime_budget,
     )
 
 

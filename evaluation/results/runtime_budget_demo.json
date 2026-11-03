@@ -1,0 +1,25 @@
+{
+  "status": "abstained",
+  "reason": "Estimated request input exceeds the configured token limit (10000 > 8192).",
+  "query_characters": 30000,
+  "budget": {
+    "estimated_request_input_tokens": 10000,
+    "estimated_llm_input_tokens": 0,
+    "reserved_output_tokens": 0,
+    "estimated_total_tokens": 0,
+    "max_request_input_tokens": 8192,
+    "max_total_estimated_tokens": 32768,
+    "max_completion_tokens_per_call": 1024,
+    "estimated_cost_usd": 0.0,
+    "max_estimated_cost_usd": 0.05,
+    "llm_calls": 0,
+    "rejected": true
+  },
+  "llm_call_count": 0,
+  "expected": {
+    "status": "abstained",
+    "rejected_before_llm": true,
+    "llm_call_count": 0
+  },
+  "result_matches_expectation": true
+}

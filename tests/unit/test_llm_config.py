@@ -104,6 +104,7 @@ class TestLLMConfig(unittest.TestCase):
             api_key="test-key",
             base_url=GROQ_BASE_URL,
             temperature=0.0,
+            max_completion_tokens=1024,
         )
 
 

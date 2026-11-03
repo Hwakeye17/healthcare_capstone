@@ -6,7 +6,9 @@ import re
 from typing import Any
 
 from crewai.llms.base_llm import BaseLLM
+from pydantic import PrivateAttr
 
+from practo_agent.config.runtime_budget import RuntimeBudget
 from practo_agent.schemas import (
     AgentResponse,
     AppointmentReference,
@@ -28,6 +30,8 @@ _RECORD_ID_PATTERN = re.compile(r"\b[A-Z]{3,5}-\d{4}\b", re.IGNORECASE)
 class MockCrewAILLM(BaseLLM):
     """Run CrewAI tool workflows deterministically without model requests."""
 
+    _runtime_budget: RuntimeBudget | None = PrivateAttr(default=None)
+
     def __init__(self, query: str | None = None) -> None:
         os.environ["OTEL_SDK_DISABLED"] = "true"
         super().__init__(
@@ -45,6 +49,11 @@ class MockCrewAILLM(BaseLLM):
 
         self.query = query
 
+    def set_runtime_budget(self, runtime_budget: RuntimeBudget) -> None:
+        """Attach the request budget shared by the workflow's model calls."""
+
+        self._runtime_budget = runtime_budget
+
     def call(
         self,
         messages: str | list[Any],
@@ -55,6 +64,8 @@ class MockCrewAILLM(BaseLLM):
         from_agent: Any = None,
         response_model: Any = None,
     ) -> str:
+        if self._runtime_budget is not None:
+            self._runtime_budget.reserve_llm_call(messages)
         self.call_count += 1
         role = getattr(from_agent, "role", None)
 

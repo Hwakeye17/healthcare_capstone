@@ -6,6 +6,10 @@ from pydantic import ValidationError
 from practo_agent.agents import workflow
 from practo_agent.agents.mock_llm import MockCrewAILLM
 from practo_agent.agents.routing import QueryRoute
+from practo_agent.config.runtime_budget import (
+    RuntimeBudget,
+    RuntimeBudgetConfig,
+)
 from practo_agent.schemas import AgentResponse, ResponseStatus
 
 
@@ -166,3 +170,54 @@ def test_prompt_injection_is_rejected_before_routing_or_crew(monkeypatch):
     assert response.status == ResponseStatus.ABSTAINED
     assert "cannot" in response.answer
     assert "prompt-injection input guardrail" in response.reason
+
+
+def test_oversized_request_is_rejected_before_routing_or_llm(monkeypatch):
+    llm = MockCrewAILLM(query="x" * 31)
+    budget = RuntimeBudget(
+        RuntimeBudgetConfig(
+            max_request_input_tokens=10,
+            max_total_estimated_tokens=1100,
+            max_completion_tokens_per_call=1024,
+        )
+    )
+
+    def fail_if_called(*args, **kwargs):
+        raise AssertionError(
+            "An oversized request must be rejected before routing or Crew."
+        )
+
+    monkeypatch.setattr(workflow, "route_query", fail_if_called)
+    monkeypatch.setattr(workflow, "create_practo_crew", fail_if_called)
+
+    response = workflow.run_practo_query(
+        "x" * 31,
+        llm=llm,
+        runtime_budget=budget,
+    )
+
+    assert response.status == ResponseStatus.ABSTAINED
+    assert "request input exceeds" in response.reason
+    assert llm.call_count == 0
+    assert budget.stats["rejected"] is True
+
+
+def test_llm_call_budget_exhaustion_returns_abstention(monkeypatch):
+    monkeypatch.setenv("MOCK_LLM", "true")
+    budget = RuntimeBudget(
+        RuntimeBudgetConfig(
+            max_request_input_tokens=8192,
+            max_total_estimated_tokens=1100,
+            max_completion_tokens_per_call=1024,
+        )
+    )
+
+    response = workflow.run_practo_query(
+        "How do I reschedule appointment APT-1234?",
+        runtime_budget=budget,
+    )
+
+    assert response.status == ResponseStatus.ABSTAINED
+    assert "total token budget" in response.reason
+    assert budget.stats["llm_calls"] == 0
+    assert budget.stats["rejected"] is True
