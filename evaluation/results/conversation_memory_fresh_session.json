@@ -1,0 +1,21 @@
+{
+  "demo": "fresh_session_isolation",
+  "mock_llm": true,
+  "session_id": "fresh-conversation",
+  "history_before_first_turn": [],
+  "query": "What is its consultation fee?",
+  "response": {
+    "status": "answered",
+    "answer": "According to Consultation Fee Structure: These amounts are illustrative dataset values and may not reflect the fees of any real clinician or clinic. The applicable fee should be confirmed for the selected clinician and appointment before booking is finalized. Additional services, tests, or procedures are not included in these sample consultation fees unless explicitly stated.\n\nAccording to Consultation Fee Structure: This document defines synthetic consultation fees for capstone testing and does not describe actual Practo prices. Sample consultation fees are ₹500 for General Medicine, ₹1,000 for Cardiology, ₹700 for Dermatology, ₹600 for Pediatrics, and ₹800 for Orthopedics. These amounts are illustrative dataset values and may not reflect the fees of any real clinician or clinic.",
+    "reason": null,
+    "sources": [
+      {
+        "source_id": "fee_structure",
+        "title": "Consultation Fee Structure"
+      }
+    ],
+    "appointments": []
+  },
+  "prior_session_appointment_leaked": false,
+  "passed": true
+}

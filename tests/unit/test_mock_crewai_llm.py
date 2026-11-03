@@ -55,6 +55,25 @@ def test_lookup_tool_action_uses_declared_argument_schema_not_tool_name():
     )
 
 
+def test_lookup_tool_action_deduplicates_ids_in_conversation_context():
+    llm = MockCrewAILLM(
+        "What is the status of APT-0001? "
+        "Assistant: Appointment APT-0001 is scheduled."
+    )
+    agent = _agent(
+        "Practo Appointment Lookup Specialist",
+        "rag_lookup",
+        LookupArguments,
+    )
+
+    response = llm.call(
+        messages=[{"role": "user", "content": "What is its fee?"}],
+        from_agent=agent,
+    )
+
+    assert 'Action Input: {"record_id": "APT-0001"}' in response
+
+
 def test_retrieval_result_is_parsed_from_assistant_observation_only():
     assessment = EvidenceAssessment(
         accepted=True,

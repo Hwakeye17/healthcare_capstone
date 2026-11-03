@@ -143,7 +143,10 @@ def test_contact_number_is_masked_before_mock_llm_and_crew(monkeypatch):
 
     assert routed_queries == [masked_query]
     assert llm.query == masked_query
-    assert received_inputs == {"user_query": masked_query}
+    assert received_inputs == {
+        "user_query": masked_query,
+        "conversation_context": "",
+    }
     assert "9876543210" not in llm.query
 
 

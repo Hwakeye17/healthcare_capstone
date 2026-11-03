@@ -102,6 +102,19 @@ $env:PYTHONPATH = Join-Path (Get-Location) 'src'
 python scripts\demo_prompt_injection.py
 ```
 
+Demonstrate session-based conversation memory, including a multi-turn
+appointment follow-up and a separate fresh session:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python scripts\demo_conversation_memory.py
+```
+
+The session histories use LangChain's in-process
+`InMemoryChatMessageHistory` and `RunnableWithMessageHistory`; they do not
+persist across process restarts. The demo writes separate multi-turn and
+fresh-session transcripts under `evaluation/results/`.
+
 Demonstrate the output-side groundedness check by injecting an unsupported
 claim into a controlled offline Crew result. The application workflow must
 reject it and save a transcript:
@@ -136,10 +149,10 @@ python -m pytest -q
 
 The RAG and core CrewAI workflow are implemented and covered by tests.
 Fixed-format contact-number masking, phrase-based prompt-injection detection,
-and CrewAI response groundedness validation are implemented and demonstrated.
-Remaining assignment work includes session-based memory, cache and runtime
-budget controls, FastAPI/WebSocket deployment and privacy-safe structured
-logging, the 15-query four-dimension evaluation, the AutoGen review stage,
-governance controls and their required demonstrations. Track these against
-the acceptance criteria in the handoff; do not mark a feature complete until
-its behavior is demonstrated and tested.
+CrewAI response groundedness validation, and session-based conversation
+memory are implemented and demonstrated. Remaining assignment work includes
+cache and runtime budget controls, FastAPI/WebSocket deployment and
+privacy-safe structured logging, the 15-query four-dimension evaluation, the
+AutoGen review stage, governance controls and their required demonstrations.
+Track these against the acceptance criteria in the handoff; do not mark a
+feature complete until its behavior is demonstrated and tested.

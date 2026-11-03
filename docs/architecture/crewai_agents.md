@@ -108,9 +108,18 @@ credentials or external network access.
 
 CrewAI memory is disabled (`memory=False`).
 
-The current workflow uses the outputs of its explicitly defined tasks as the
-information handoff mechanism. Session-level conversational memory will be
-implemented separately using LangChain.
+The application can use `ConversationMemory`, which wraps the validated
+request workflow with LangChain `RunnableWithMessageHistory` and
+`InMemoryChatMessageHistory`. Each `ConversationMemory` instance owns
+in-process histories keyed by caller-supplied session IDs. Prior turns are
+passed to the agents as explicitly untrusted context; current input guardrails
+still run before routing or agent execution.
+
+Contact numbers are masked before the user turn is stored, and the assistant
+answer is masked before being added to history. Prompt-injection attempts are
+rejected without being added to history. Histories are not persisted across
+process restarts; API integrations should retain and reuse one manager
+instance for the lifetime of the application process.
 
 This avoids introducing an additional uncontrolled memory mechanism.
 

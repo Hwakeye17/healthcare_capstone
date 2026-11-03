@@ -1,5 +1,9 @@
 """Validated entry point for the Practo CrewAI support workflow."""
 
+from collections.abc import Sequence
+
+from langchain_core.messages import BaseMessage
+
 from practo_agent.agents.crew import create_practo_crew
 from practo_agent.agents.mock_llm import MockCrewAILLM
 from practo_agent.agents.routing import route_query
@@ -41,6 +45,7 @@ def run_practo_query(
     *,
     llm=None,
     groundedness_validator: GroundednessValidator | None = None,
+    conversation_history: Sequence[BaseMessage] = (),
     verbose: bool = False,
 ) -> AgentResponse:
     """Run the routed CrewAI workflow and validate every structured result."""
@@ -60,7 +65,26 @@ def run_practo_query(
             reason="The request was rejected by the prompt-injection input guardrail.",
         )
 
-    route = route_query(normalized_query)
+    conversation_context = _format_conversation_history(
+        conversation_history
+    )
+    contextual_query = (
+        f"{conversation_context}\n\nCurrent user request: {normalized_query}"
+        if conversation_context
+        else normalized_query
+    )
+    if detect_prompt_injection(contextual_query) is not None:
+        return AgentResponse(
+            status=ResponseStatus.ABSTAINED,
+            answer=(
+                "I can help with Practo administrative questions, but cannot "
+                "follow requests to override instructions or disclose "
+                "restricted information."
+            ),
+            reason="The request was rejected by the prompt-injection input guardrail.",
+        )
+
+    route = route_query(contextual_query)
 
     if route.clarification_required:
         return AgentResponse(
@@ -75,7 +99,7 @@ def run_practo_query(
         else create_crewai_llm(query=normalized_query)
     )
     if isinstance(crew_llm, MockCrewAILLM):
-        crew_llm.set_query(normalized_query)
+        crew_llm.set_query(contextual_query)
 
     crew = create_practo_crew(
         llm=crew_llm,
@@ -83,7 +107,12 @@ def run_practo_query(
         retrieval_enabled=route.retrieval_enabled,
         lookup_enabled=route.lookup_enabled,
     )
-    result = crew.kickoff(inputs={"user_query": normalized_query})
+    result = crew.kickoff(
+        inputs={
+            "user_query": normalized_query,
+            "conversation_context": conversation_context,
+        }
+    )
 
     if len(result.tasks_output) != len(crew.tasks):
         raise RuntimeError(
@@ -206,3 +235,24 @@ def _groundedness_abstention(reason: str) -> AgentResponse:
         answer=_GROUNDEDNESS_ABSTENTION,
         reason=reason,
     )
+
+
+def _format_conversation_history(
+    history: Sequence[BaseMessage],
+) -> str:
+    """Render prior turns as context while retaining their speaker labels."""
+
+    if not isinstance(history, Sequence) or isinstance(history, str):
+        raise TypeError("conversation_history must be a sequence of messages.")
+
+    lines = []
+    for message in history:
+        if not isinstance(message, BaseMessage):
+            raise TypeError(
+                "conversation_history must contain LangChain messages."
+            )
+        content = message.content
+        if isinstance(content, str) and content.strip():
+            lines.append(f"{message.type}: {content.strip()}")
+
+    return "\n".join(lines)

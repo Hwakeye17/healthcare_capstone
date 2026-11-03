@@ -51,10 +51,12 @@ def route_query(query: str) -> QueryRoute:
         raise ValueError("query must be a non-empty string.")
 
     normalized_query = query.casefold()
-    record_ids = [
-        match.upper()
-        for match in _RECORD_ID_PATTERN.findall(query)
-    ]
+    record_ids = list(
+        dict.fromkeys(
+            match.upper()
+            for match in _RECORD_ID_PATTERN.findall(query)
+        )
+    )
 
     if len(record_ids) > 1:
         return QueryRoute(

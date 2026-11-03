@@ -98,12 +98,17 @@ class MockCrewAILLM(BaseLLM):
         if argument_name == "query":
             value = self.query
         else:
-            matches = _RECORD_ID_PATTERN.findall(self.query)
+            matches = list(
+                dict.fromkeys(
+                    match.upper()
+                    for match in _RECORD_ID_PATTERN.findall(self.query)
+                )
+            )
             if len(matches) != 1:
                 raise RuntimeError(
                     "Appointment lookup requires exactly one record ID."
                 )
-            value = matches[0].upper()
+            value = matches[0]
 
         tool = candidates[0]
         self.tool_actions.append(tool.name)

@@ -45,3 +45,13 @@ def test_route_query_does_not_guess_when_multiple_record_ids_are_supplied():
     assert route.lookup_enabled is False
     assert route.record_id is None
     assert route.clarification_required is True
+
+
+def test_repeated_reference_to_same_record_id_is_not_ambiguous():
+    route = route_query(
+        "Earlier I asked about APT-0001. What is the status of APT-0001?"
+    )
+
+    assert route.lookup_enabled is True
+    assert route.record_id == "APT-0001"
+    assert route.clarification_required is False
