@@ -49,6 +49,10 @@ calibration set.
   outputs.
 - Every specialist handoff and final response is validated against its
   Pydantic contract. Invalid JSON or invalid fields are rejected.
+- The CrewAI request workflow masks fixed-format Indian mobile numbers before
+  routing or model execution. This targeted pattern does not detect arbitrary
+  free-text PII; see
+  [`docs/architecture/input_guardrails.md`](docs/architecture/input_guardrails.md).
 - `MOCK_LLM=true` selects a deterministic CrewAI `BaseLLM` implementation.
   The mock workflow uses actual local embeddings, the persisted ChromaDB
   collection, and the synthetic appointment dataset; it does not require a
@@ -71,6 +75,14 @@ out-of-scope abstention:
 ```powershell
 $env:PYTHONPATH = Join-Path (Get-Location) 'src'
 python scripts\demo_grounded_generation.py
+```
+
+Demonstrate that a fabricated contact number is masked before routing and the
+offline mock LLM. The safe transcript is saved without the raw number:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python scripts\demo_input_guardrails.py
 ```
 
 Run the live CrewAI demonstration with the Groq API:
@@ -96,10 +108,12 @@ python -m pytest -q
 
 ## Remaining assignment reconciliation
 
-The RAG and CrewAI workflow are implemented and covered by tests. Remaining
-assignment work includes session-based memory, input guardrails, cache and
-runtime budget controls, FastAPI/WebSocket deployment and privacy-safe
-structured logging, the 15-query four-dimension evaluation, the AutoGen review
-stage, governance controls and their required demonstrations. Track these
-against the acceptance criteria in the handoff; do not mark a feature complete
-until its behavior is demonstrated and tested.
+The RAG and core CrewAI workflow are implemented and covered by tests.
+Fixed-format contact-number input masking is implemented and demonstrated.
+Remaining assignment work includes prompt-injection detection, session-based
+memory, Crew-integrated output groundedness validation, cache and runtime
+budget controls, FastAPI/WebSocket deployment and privacy-safe structured
+logging, the 15-query four-dimension evaluation, the AutoGen review stage,
+governance controls and their required demonstrations. Track these against
+the acceptance criteria in the handoff; do not mark a feature complete until
+its behavior is demonstrated and tested.

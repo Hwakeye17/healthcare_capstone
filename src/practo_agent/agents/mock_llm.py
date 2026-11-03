@@ -40,6 +40,11 @@ class MockCrewAILLM(BaseLLM):
         self._retrieval_output: RetrievalAgentOutput | None = None
         self._lookup_output: LookupAgentOutput | None = None
 
+    def set_query(self, query: str) -> None:
+        """Set the sanitized request used to simulate tool selection."""
+
+        self.query = query
+
     def call(
         self,
         messages: str | list[Any],

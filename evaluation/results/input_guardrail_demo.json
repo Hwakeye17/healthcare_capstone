@@ -1,0 +1,28 @@
+{
+  "demo": "input_contact_number_masking",
+  "mock_llm": true,
+  "synthetic_input": "My contact number is [SYNTHETIC_CONTACT_NUMBER]. How can I reschedule my existing doctor appointment?",
+  "raw_synthetic_number_persisted": false,
+  "routing_input": "My contact number is [REDACTED_CONTACT_NUMBER]. How can I reschedule my existing doctor appointment?",
+  "mock_llm_input": "My contact number is [REDACTED_CONTACT_NUMBER]. How can I reschedule my existing doctor appointment?",
+  "tool_actions": [
+    "search_practo_knowledge_base"
+  ],
+  "response": {
+    "status": "answered",
+    "answer": "According to Appointment Cancellation and Rescheduling: For this sample policy, patients are encouraged to submit cancellation or rescheduling requests at least 24 hours before the appointment. A requested change is not confirmed until the updated status or time is communicated by the booking system or clinic. If a slot cannot be changed, the patient may request another option or contact clinic support; any applicable cancellation charge must be disclosed before it is applied.\n\nAccording to Appointment Booking: Appointment requests remain pending until the clinic or booking system confirms the slot. Availability depends on the selected specialty, clinician schedule, and clinic operating hours. Patients should retain their appointment reference and review the confirmed date and time before attending if the requested slot is available.",
+    "reason": null,
+    "sources": [
+      {
+        "source_id": "cancellation_rescheduling",
+        "title": "Appointment Cancellation and Rescheduling"
+      },
+      {
+        "source_id": "appointment_booking",
+        "title": "Appointment Booking"
+      }
+    ],
+    "appointments": []
+  },
+  "passed": true
+}

@@ -1,8 +1,10 @@
 """Validated entry point for the Practo CrewAI support workflow."""
 
 from practo_agent.agents.crew import create_practo_crew
+from practo_agent.agents.mock_llm import MockCrewAILLM
 from practo_agent.agents.routing import route_query
 from practo_agent.config.llm import create_crewai_llm
+from practo_agent.guardrails import mask_contact_numbers
 from practo_agent.schemas import (
     AgentResponse,
     LookupAgentOutput,
@@ -28,7 +30,7 @@ def run_practo_query(
     if not isinstance(query, str) or not query.strip():
         raise ValueError("query must be a non-empty string.")
 
-    normalized_query = query.strip()
+    normalized_query = mask_contact_numbers(query.strip())
     route = route_query(normalized_query)
 
     if route.clarification_required:
@@ -43,6 +45,9 @@ def run_practo_query(
         if llm is not None
         else create_crewai_llm(query=normalized_query)
     )
+    if isinstance(crew_llm, MockCrewAILLM):
+        crew_llm.set_query(normalized_query)
+
     crew = create_practo_crew(
         llm=crew_llm,
         verbose=verbose,
