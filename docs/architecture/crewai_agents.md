@@ -76,6 +76,11 @@ routing and crew construction:
 3. Policy questions use the Retrieval Agent.
 4. Requests containing one appointment record ID use the Lookup Agent.
 5. Mixed policy and record questions use both specialists.
+
+Before returning an answered result, the workflow validates citations against
+the successful specialist outputs and checks every answer claim against the
+retrieved knowledge-base evidence and/or validated appointment lookup fields.
+Unsupported claims and validation errors produce a fail-closed abstention.
 5. The Response Composer receives outputs only from enabled specialist tasks.
 
 Questions outside the supported scope are sent through calibrated retrieval so

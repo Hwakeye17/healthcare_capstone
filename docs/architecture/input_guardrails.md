@@ -69,8 +69,35 @@ fails if routing or Crew construction is reached. Its safe transcript,
 `evaluation/results/prompt_injection_demo.json`, omits the attack text while
 recording the detected category and rejection result.
 
-## Remaining guardrail work
+## CrewAI output groundedness
 
-The separate output-side groundedness validator exists for the standalone RAG
-flow, but integrating it into the CrewAI response lifecycle remains
-outstanding.
+Before returning an `ANSWERED` CrewAI result, the workflow gathers evidence
+from the validated Retrieval Agent output and successful appointment lookup
+output. Knowledge-base citations and appointment references must correspond
+to those specialist results. The groundedness validator checks each answer
+claim against that evidence. Existing specialist abstentions pass through
+without validation; missing evidence, unsupported claims, invalid references,
+or validator errors fail closed as an abstention without retaining citations.
+
+The offline validator uses conservative normalized exact-text matching; it
+does not establish semantic entailment and does not accept arbitrary
+paraphrases. Live mode uses the configured Groq groundedness validator. Neither
+validator replaces source permissions, structured-output checks, or human
+review.
+
+Demonstrate rejection of a deliberately unsupported answer through the
+application workflow:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python .\scripts\demo_groundedness_guardrail.py
+```
+
+The script uses a controlled Crew result to exercise the real workflow gate
+and saves `evaluation/results/groundedness_guardrail_demo.json`. Supported
+offline Crew scenarios are also exercised by
+`scripts/demo_grounded_generation.py` and the integration tests.
+
+The input and output checks now run as part of the shared CrewAI request
+lifecycle. Session-based memory, caching, runtime budgets, API transports,
+logging, and other Milestone 3 work remain outstanding.

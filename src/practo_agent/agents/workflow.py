@@ -4,14 +4,23 @@ from practo_agent.agents.crew import create_practo_crew
 from practo_agent.agents.mock_llm import MockCrewAILLM
 from practo_agent.agents.routing import route_query
 from practo_agent.config.llm import create_crewai_llm
+from practo_agent.rag.groundedness import (
+    GroundednessValidator,
+    create_groundedness_validator,
+)
 from practo_agent.guardrails import (
     detect_prompt_injection,
     mask_contact_numbers,
 )
 from practo_agent.schemas import (
+    AppointmentDetails,
     AgentResponse,
+    GroundednessAssessment,
     LookupAgentOutput,
+    LookupAgentStatus,
+    RetrievedEvidence,
     RetrievalAgentOutput,
+    RetrievalAgentStatus,
     ResponseStatus,
 )
 
@@ -21,11 +30,17 @@ _OUTPUT_MODELS = {
     "Practo Appointment Lookup Specialist": LookupAgentOutput,
 }
 
+_GROUNDEDNESS_ABSTENTION = (
+    "I couldn't verify the generated response against the available "
+    "information. Please contact the relevant clinic or Practo support."
+)
+
 
 def run_practo_query(
     query: str,
     *,
     llm=None,
+    groundedness_validator: GroundednessValidator | None = None,
     verbose: bool = False,
 ) -> AgentResponse:
     """Run the routed CrewAI workflow and validate every structured result."""
@@ -75,9 +90,119 @@ def run_practo_query(
             "CrewAI returned a different number of task outputs than tasks."
         )
 
+    evidence: list[RetrievedEvidence] = []
+    retrieved_source_ids: set[str] = set()
+    appointment_record_ids: set[str] = set()
+
     for task, task_output in zip(crew.tasks, result.tasks_output):
         model = _OUTPUT_MODELS.get(task.agent.role)
-        if model is not None:
-            model.model_validate_json(task_output.raw)
+        if model is None:
+            continue
 
-    return AgentResponse.model_validate_json(result.raw)
+        specialist_output = model.model_validate_json(task_output.raw)
+
+        if (
+            isinstance(specialist_output, RetrievalAgentOutput)
+            and specialist_output.status == RetrievalAgentStatus.SUCCESS
+        ):
+            assessment = specialist_output.assessment
+            if assessment is None:
+                raise RuntimeError(
+                    "A successful retrieval has no evidence assessment."
+                )
+            evidence.extend(assessment.evidence)
+            retrieved_source_ids.update(
+                item.source_id
+                for item in assessment.evidence
+            )
+        elif (
+            isinstance(specialist_output, LookupAgentOutput)
+            and specialist_output.status == LookupAgentStatus.SUCCESS
+        ):
+            appointment = specialist_output.appointment
+            if appointment is None:
+                raise RuntimeError(
+                    "A successful appointment lookup has no appointment."
+                )
+            evidence.append(_appointment_as_evidence(appointment))
+            appointment_record_ids.add(appointment.record_id)
+
+    response = AgentResponse.model_validate_json(result.raw)
+    if response.status == ResponseStatus.ABSTAINED:
+        return response
+
+    if not evidence:
+        return _groundedness_abstention(
+            "No validated specialist evidence was available to verify the response."
+        )
+
+    if not {item.source_id for item in response.sources}.issubset(
+        retrieved_source_ids
+    ):
+        return _groundedness_abstention(
+            "The response cited a source that was not present in the "
+            "validated retrieval results."
+        )
+
+    if not {item.record_id for item in response.appointments}.issubset(
+        appointment_record_ids
+    ):
+        return _groundedness_abstention(
+            "The response cited an appointment that was not present in the "
+            "validated lookup results."
+        )
+
+    try:
+        validator = (
+            groundedness_validator
+            if groundedness_validator is not None
+            else create_groundedness_validator()
+        )
+        validation = GroundednessAssessment.model_validate(
+            validator.validate(response.answer, evidence)
+        )
+    except Exception:
+        return _groundedness_abstention(
+            "Groundedness validation could not be completed."
+        )
+
+    if not validation.grounded:
+        return _groundedness_abstention(
+            "Groundedness validation found one or more unsupported claims."
+        )
+
+    return response
+
+
+def _appointment_as_evidence(
+    appointment: AppointmentDetails,
+) -> RetrievedEvidence:
+    """Represent validated lookup fields as evidence for response checking."""
+
+    text = (
+        f"Appointment {appointment.record_id} is in specialty "
+        f"{appointment.specialty} with status {appointment.status}. "
+        f"The consultation fee is INR "
+        f"{appointment.consultation_fee_inr}. The record is "
+        f"{appointment.days_since_created} days old and its "
+        f"follow-up-required flag is {appointment.follow_up_required}. "
+        f"Its administrative escalation score is "
+        f"{appointment.escalation_score:.4f}; escalation required: "
+        f"{appointment.escalation_required}. "
+        f"{appointment.escalation_reason}"
+    )
+    return RetrievedEvidence(
+        chunk_id=f"appointment_lookup::{appointment.record_id}",
+        text=text,
+        source_id=f"appointment_lookup::{appointment.record_id}",
+        title=f"Appointment lookup {appointment.record_id}",
+        distance=0.0,
+    )
+
+
+def _groundedness_abstention(reason: str) -> AgentResponse:
+    return AgentResponse(
+        status=ResponseStatus.ABSTAINED,
+        answer=_GROUNDEDNESS_ABSTENTION,
+        reason=reason,
+    )

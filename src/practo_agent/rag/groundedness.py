@@ -78,7 +78,13 @@ class MockGroundednessValidator:
             " ".join(item.text for item in evidence)
         )
 
-        claims = _extract_sentences(answer)
+        claim_text = re.sub(
+            r"\bAccording to [^:\n]+:\s*",
+            "",
+            answer,
+            flags=re.IGNORECASE,
+        )
+        claims = _extract_sentences(claim_text)
 
         if not claims:
             raise ValueError("No claims could be extracted from the answer.")

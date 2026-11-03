@@ -58,6 +58,9 @@ calibration set.
   model execution. This phrase-based detector is a limited input filter, not
   a comprehensive security boundary; see
   [`docs/architecture/input_guardrails.md`](docs/architecture/input_guardrails.md).
+- Answered CrewAI responses are checked against validated retrieval evidence
+  and successful appointment lookup results before return. Unsupported claims,
+  invalid citations, or validator failures produce an abstention.
 - `MOCK_LLM=true` selects a deterministic CrewAI `BaseLLM` implementation.
   The mock workflow uses actual local embeddings, the persisted ChromaDB
   collection, and the synthetic appointment dataset; it does not require a
@@ -99,6 +102,15 @@ $env:PYTHONPATH = Join-Path (Get-Location) 'src'
 python scripts\demo_prompt_injection.py
 ```
 
+Demonstrate the output-side groundedness check by injecting an unsupported
+claim into a controlled offline Crew result. The application workflow must
+reject it and save a transcript:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python scripts\demo_groundedness_guardrail.py
+```
+
 Run the live CrewAI demonstration with the Groq API:
 
 ```powershell
@@ -123,11 +135,11 @@ python -m pytest -q
 ## Remaining assignment reconciliation
 
 The RAG and core CrewAI workflow are implemented and covered by tests.
-Fixed-format contact-number masking and phrase-based prompt-injection
-detection are implemented and demonstrated. Remaining assignment work includes
-session-based memory, Crew-integrated output groundedness validation, cache
-and runtime budget controls, FastAPI/WebSocket deployment and privacy-safe
-structured logging, the 15-query four-dimension evaluation, the AutoGen review
-stage, governance controls and their required demonstrations. Track these
-against the acceptance criteria in the handoff; do not mark a feature complete
-until its behavior is demonstrated and tested.
+Fixed-format contact-number masking, phrase-based prompt-injection detection,
+and CrewAI response groundedness validation are implemented and demonstrated.
+Remaining assignment work includes session-based memory, cache and runtime
+budget controls, FastAPI/WebSocket deployment and privacy-safe structured
+logging, the 15-query four-dimension evaluation, the AutoGen review stage,
+governance controls and their required demonstrations. Track these against
+the acceptance criteria in the handoff; do not mark a feature complete until
+its behavior is demonstrated and tested.

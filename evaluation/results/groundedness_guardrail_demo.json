@@ -1,0 +1,16 @@
+{
+  "demo": "crew_response_groundedness_guardrail",
+  "mock_llm": true,
+  "test_claim": "Every appointment is automatically confirmed.",
+  "evidence_source": "appointment_booking",
+  "response_status": "abstained",
+  "unsupported_claim_returned": false,
+  "response": {
+    "status": "abstained",
+    "answer": "I couldn't verify the generated response against the available information. Please contact the relevant clinic or Practo support.",
+    "reason": "Groundedness validation found one or more unsupported claims.",
+    "sources": [],
+    "appointments": []
+  },
+  "passed": true
+}
