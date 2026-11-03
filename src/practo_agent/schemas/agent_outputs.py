@@ -30,12 +30,17 @@ class LookupAgentStatus(str, Enum):
 class AppointmentDetails(BaseModel):
     """Validated appointment information returned by the lookup tool."""
 
-    model_config = ConfigDict(extra="forbid", frozen=True)
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
 
     record_id: str = Field(min_length=1)
+    specialty: str = Field(min_length=1)
     status: str = Field(min_length=1)
     consultation_fee_inr: int = Field(ge=0)
+    days_since_created: int = Field(ge=0, le=30)
+    follow_up_required: bool
     escalation_score: float = Field(ge=0.0, le=1.0)
+    escalation_required: bool
+    escalation_reason: str = Field(min_length=1)
 
 
 class RetrievalAgentOutput(BaseModel):

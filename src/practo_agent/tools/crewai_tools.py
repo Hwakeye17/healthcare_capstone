@@ -105,9 +105,14 @@ def lookup_appointment(record_id: str) -> str:
         if result["found"]:
             appointment = AppointmentDetails(
                 record_id=result["record_id"],
+                specialty=result["specialty"],
                 status=result["status"],
                 consultation_fee_inr=result["consultation_fee_inr"],
+                days_since_created=result["days_since_created"],
+                follow_up_required=result["follow_up_required"],
                 escalation_score=result["escalation_score"],
+                escalation_required=result["escalation_required"],
+                escalation_reason=result["escalation_reason"],
             )
 
             output = LookupAgentOutput(

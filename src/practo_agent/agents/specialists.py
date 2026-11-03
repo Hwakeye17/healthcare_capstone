@@ -1,4 +1,3 @@
-
 """Definitions of the three specialist CrewAI agents."""
 
 from crewai import Agent
@@ -9,7 +8,13 @@ from practo_agent.tools.crewai_tools import (
 )
 
 
-def create_specialist_agents(llm, *, verbose: bool = True) -> dict[str, Agent]:
+def create_specialist_agents(
+    llm,
+    *,
+    verbose: bool = True,
+    retrieval_enabled: bool = True,
+    lookup_enabled: bool = True,
+) -> dict[str, Agent]:
     """Create the Retrieval, Lookup and Response Composer agents.
 
     Tool access is assigned explicitly here. Agents cannot delegate work
@@ -31,7 +36,11 @@ def create_specialist_agents(llm, *, verbose: bool = True) -> dict[str, Agent]:
             "If evidence is insufficient, clearly report that no supported "
             "answer is available."
         ),
-        tools=[search_practo_knowledge_base],
+        tools=(
+            [search_practo_knowledge_base]
+            if retrieval_enabled
+            else []
+        ),
         llm=llm,
         verbose=verbose,
         allow_delegation=False,
@@ -50,7 +59,7 @@ def create_specialist_agents(llm, *, verbose: bool = True) -> dict[str, Agent]:
             "escalation score without modifying records or inventing details. "
             "If no appointment is found, report that clearly."
         ),
-        tools=[lookup_appointment],
+        tools=[lookup_appointment] if lookup_enabled else [],
         llm=llm,
         verbose=verbose,
         allow_delegation=False,

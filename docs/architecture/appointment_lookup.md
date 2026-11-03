@@ -22,11 +22,14 @@ Each record contains the following fields:
 | Field | Description |
 |---|---|
 | `record_id` | Unique appointment identifier |
-| `category` | Appointment category |
+| `category` | Appointment category in the source dataset |
 | `status` | Current appointment status |
 | `consultation_fee_inr` | Consultation fee in INR |
 | `days_since_created` | Number of days since the record was created |
 | `follow_up_required` | Boolean indicating whether follow-up is flagged |
+| `escalation_score` | Deterministic administrative prioritization score |
+| `escalation_required` | Whether the score meets the configured threshold |
+| `escalation_reason` | Explanation of the threshold decision |
 
 The dataset covers five appointment categories:
 
@@ -85,9 +88,14 @@ When a matching appointment is found, the function returns:
 
 - `found`: Indicates that the appointment was found.
 - `record_id`: The matched appointment identifier.
+- `specialty`: The specialty mapped from the dataset's `category`.
 - `status`: The current appointment status.
 - `consultation_fee_inr`: The consultation fee.
+- `days_since_created`: The age of the synthetic record in days.
+- `follow_up_required`: The dataset's follow-up flag.
 - `escalation_score`: The calculated administrative prioritization score.
+- `escalation_required`: Whether the score is at least `0.6`.
+- `escalation_reason`: A human-readable explanation of the decision.
 
 Example:
 
@@ -95,9 +103,14 @@ Example:
 {
     "found": True,
     "record_id": "APT-0001",
+    "specialty": "General Medicine",
     "status": "Cancelled",
     "consultation_fee_inr": 500,
-    "escalation_score": 0.0667
+    "days_since_created": 5,
+    "follow_up_required": False,
+    "escalation_score": 0.0667,
+    "escalation_required": False,
+    "escalation_reason": "The score is below the administrative escalation threshold of 0.6."
 }
 ```
 
@@ -174,6 +187,13 @@ E = 0.0667
 
 The resulting score is approximately `0.0667`.
 
+The configured administrative escalation threshold is `0.6`, and the
+comparison is inclusive. In the current 50-record dataset, 10 records (20%)
+have `follow_up_required=True`. Those records score at least `0.6`; records
+without that flag score at most `0.4`. Thus this threshold separates the
+follow-up-flagged records in this generated dataset. It is a project heuristic,
+not a validated service policy or clinical threshold.
+
 ### Interpretation and limitations
 
 The score is intended only as an administrative prioritization heuristic.
@@ -210,7 +230,7 @@ The implementation is covered by unit tests in:
 
 `tests/unit/test_appointment_lookup.py`
 
-The 18 test cases cover:
+The unit tests cover:
 
 - Successful appointment lookup.
 - Unknown appointment lookup.
@@ -219,24 +239,11 @@ The 18 test cases cover:
 - Invalid record ID inputs.
 - Score calculation with and without follow-up.
 - Minimum and maximum record-age boundaries.
+- The inclusive administrative escalation threshold.
 - Invalid follow-up values.
 - Invalid record-age values.
 - Missing dataset handling.
 - Invalid dataset structure handling.
-
-### Test results
-
-The appointment lookup unit tests completed successfully:
-
-- 18 tests passed.
-
-The complete project test suite also passed:
-
-- 165 tests passed.
-- 31 subtests passed.
-- 1 external dependency warning.
-
-The warning originates from the installed AnyIO pytest plugin and concerns the deprecated `CallSpec2` alias. It does not indicate a failure in the project tests.
 
 ## 7. Limitations and Future Considerations
 

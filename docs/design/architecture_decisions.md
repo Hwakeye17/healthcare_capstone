@@ -379,7 +379,8 @@ An explicit top-k override remains available for backward compatibility and cont
 
 A dataclass provides a typed, explicit, and testable configuration contract. Immutability prevents accidental changes during execution.
 
-The selected sentence-based strategy follows the comparative retrieval experiment completed during Day 2.
+The selected sentence-based strategy follows the completed comparative
+retrieval experiment.
 
 ### Trade-offs
 

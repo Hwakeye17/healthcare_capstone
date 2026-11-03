@@ -10,6 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DATASET_PATH = (
     PROJECT_ROOT / "data" / "generated" / "appointments.json"
 )
+ESCALATION_THRESHOLD = 0.6
 
 
 def _load_appointments() -> list[dict[str, Any]]:
@@ -73,15 +74,30 @@ def check_appointment_status(record_id: str) -> dict[str, Any]:
                 follow_up_required=appointment["follow_up_required"],
                 days_since_created=appointment["days_since_created"],
             )
+            escalation_required = (
+                escalation_score >= ESCALATION_THRESHOLD
+            )
+            escalation_reason = (
+                "The score meets the administrative escalation threshold "
+                f"of {ESCALATION_THRESHOLD:.1f}."
+                if escalation_required
+                else "The score is below the administrative escalation "
+                f"threshold of {ESCALATION_THRESHOLD:.1f}."
+            )
 
             return {
                 "found": True,
                 "record_id": appointment["record_id"],
+                "specialty": appointment["category"],
                 "status": appointment["status"],
                 "consultation_fee_inr": appointment[
                     "consultation_fee_inr"
                 ],
+                "days_since_created": appointment["days_since_created"],
+                "follow_up_required": appointment["follow_up_required"],
                 "escalation_score": escalation_score,
+                "escalation_required": escalation_required,
+                "escalation_reason": escalation_reason,
             }
 
     return {

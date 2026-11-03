@@ -53,9 +53,16 @@ def rejected_assessment():
 def appointment():
     return AppointmentDetails(
         record_id="APT-0001",
+        specialty="General Medicine",
         status="Cancelled",
         consultation_fee_inr=500,
+        days_since_created=5,
+        follow_up_required=False,
         escalation_score=0.0667,
+        escalation_required=False,
+        escalation_reason=(
+            "The score is below the administrative escalation threshold of 0.6."
+        ),
     )
 
 
@@ -65,6 +72,7 @@ def appointment():
 
 def test_appointment_details_accepts_valid_data(appointment):
     assert appointment.record_id == "APT-0001"
+    assert appointment.specialty == "General Medicine"
     assert appointment.consultation_fee_inr == 500
     assert appointment.escalation_score == 0.0667
 
@@ -74,6 +82,8 @@ def test_appointment_details_accepts_valid_data(appointment):
     [
         {"record_id": ""},
         {"status": ""},
+        {"days_since_created": "5"},
+        {"follow_up_required": "false"},
         {"consultation_fee_inr": -1},
         {"escalation_score": -0.1},
         {"escalation_score": 1.1},
@@ -83,9 +93,14 @@ def test_appointment_details_accepts_valid_data(appointment):
 def test_appointment_details_rejects_invalid_data(overrides):
     data = {
         "record_id": "APT-0001",
+        "specialty": "General Medicine",
         "status": "Cancelled",
         "consultation_fee_inr": 500,
-        "escalation_score": 0.5,
+        "days_since_created": 5,
+        "follow_up_required": False,
+        "escalation_score": 0.0667,
+        "escalation_required": False,
+        "escalation_reason": "Below threshold.",
     }
     data.update(overrides)
 

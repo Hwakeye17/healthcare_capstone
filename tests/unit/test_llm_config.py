@@ -3,6 +3,8 @@ import os
 import unittest
 from unittest.mock import patch
 
+from practo_agent.agents.mock_llm import MockCrewAILLM
+from practo_agent.config.groq_llm import GroqReActLLM
 from practo_agent.config.llm import (
     GROQ_BASE_URL,
     create_crewai_llm,
@@ -20,7 +22,7 @@ class TestLLMConfig(unittest.TestCase):
         self.assertEqual(config["provider"], "groq")
         self.assertEqual(
             config["model"],
-            "openai/gpt-oss-120b",
+            "qwen/qwen3.8-27b",
         )
         self.assertEqual(config["temperature"], 0.0)
 
@@ -50,21 +52,46 @@ class TestLLMConfig(unittest.TestCase):
 
         self.assertTrue(config["mock_mode"])
 
-    def test_missing_api_key_raises_error(self):
-        with patch.dict(os.environ, {}, clear=True):
+    def test_mock_mode_creates_offline_crewai_llm_without_api_key(self):
+        with patch.dict(os.environ, {"MOCK_LLM": "true"}, clear=True):
+            llm = create_crewai_llm(query="test query")
+            telemetry_disabled = os.environ.get("OTEL_SDK_DISABLED")
+
+        self.assertIsInstance(llm, MockCrewAILLM)
+        self.assertEqual(llm.query, "test query")
+        self.assertEqual(telemetry_disabled, "true")
+
+    def test_missing_api_key_raises_error_when_mock_mode_is_disabled(self):
+        with patch.dict(
+            os.environ,
+            {"MOCK_LLM": "false"},
+            clear=True,
+        ):
             with self.assertRaisesRegex(
                 ValueError,
                 "GROQ_API_KEY",
             ):
                 create_crewai_llm()
 
-    @patch("crewai.LLM")
-    def test_creates_native_crewai_llm(self, mock_llm):
+    def test_live_crewai_llm_uses_react_tool_execution(self):
+        llm = GroqReActLLM(
+            model="qwen/qwen3.8-27b",
+            provider="openai",
+            api_key="test-key",
+            base_url=GROQ_BASE_URL,
+            temperature=0.0,
+        )
+
+        self.assertFalse(llm.supports_function_calling())
+
+    @patch("practo_agent.config.groq_llm.GroqReActLLM")
+    def test_creates_groq_react_llm(self, mock_llm):
         with patch.dict(
             os.environ,
             {
                 "GROQ_API_KEY": "test-key",
-                "GROQ_MODEL": "openai/gpt-oss-120b",
+                "MOCK_LLM": "false",
+                "GROQ_MODEL": "qwen/qwen3.8-27b",
                 "GROQ_TEMPERATURE": "0",
             },
             clear=True,
@@ -72,7 +99,7 @@ class TestLLMConfig(unittest.TestCase):
             create_crewai_llm()
 
         mock_llm.assert_called_once_with(
-            model="openai/gpt-oss-120b",
+            model="qwen/qwen3.8-27b",
             provider="openai",
             api_key="test-key",
             base_url=GROQ_BASE_URL,

@@ -19,7 +19,7 @@ def get_llm_config() -> dict:
         "provider": "groq",
         "model": os.getenv(
             "GROQ_MODEL",
-            "openai/gpt-oss-120b",
+            "qwen/qwen3.8-27b",
         ),
         "temperature": float(
             os.getenv("GROQ_TEMPERATURE", "0")
@@ -27,20 +27,25 @@ def get_llm_config() -> dict:
     }
 
 
-def create_crewai_llm():
-    """Create CrewAI's native LLM using Groq's OpenAI-compatible API."""
-
-    from crewai import LLM
-
+def create_crewai_llm(*, query: str | None = None):
+    """Create the configured CrewAI model without network access in mock mode."""
     config = get_llm_config()
+
+    if config["mock_mode"]:
+        from practo_agent.agents.mock_llm import MockCrewAILLM
+
+        return MockCrewAILLM(query=query)
+
     api_key = os.getenv("GROQ_API_KEY")
 
     if not api_key:
         raise ValueError(
-            "GROQ_API_KEY is required to create the CrewAI LLM."
+            "GROQ_API_KEY is required when MOCK_LLM=false."
         )
 
-    return LLM(
+    from practo_agent.config.groq_llm import GroqReActLLM
+
+    return GroqReActLLM(
         model=config["model"],
         provider="openai",
         api_key=api_key,

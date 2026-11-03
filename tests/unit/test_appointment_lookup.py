@@ -58,9 +58,16 @@ def test_lookup_existing_appointment(temporary_dataset):
     assert result == {
         "found": True,
         "record_id": "APT-0001",
+        "specialty": "General Medicine",
         "status": "Scheduled",
         "consultation_fee_inr": 500,
+        "days_since_created": 15,
+        "follow_up_required": True,
         "escalation_score": 0.8,
+        "escalation_required": True,
+        "escalation_reason": (
+            "The score meets the administrative escalation threshold of 0.6."
+        ),
     }
 
 
@@ -137,6 +144,42 @@ def test_escalation_score_rejects_non_boolean_follow_up():
             follow_up_required=1,
             days_since_created=10,
         )
+
+
+def test_escalation_threshold_includes_follow_up_record(temporary_dataset):
+    result = appointment_lookup.check_appointment_status("APT-0001")
+
+    assert result["escalation_score"] == 0.8
+    assert result["escalation_required"] is True
+    assert "threshold of 0.6" in result["escalation_reason"]
+
+
+def test_escalation_threshold_is_inclusive_at_exact_boundary(
+    temporary_dataset,
+    sample_appointments,
+):
+    sample_appointments[0]["days_since_created"] = 0
+    temporary_dataset.write_text(
+        json.dumps(sample_appointments),
+        encoding="utf-8",
+    )
+
+    result = appointment_lookup.check_appointment_status("APT-0001")
+
+    assert result["escalation_score"] == 0.6
+    assert result["escalation_required"] is True
+
+
+def test_maximum_age_without_follow_up_does_not_meet_escalation_threshold(
+    temporary_dataset,
+):
+    result = appointment_lookup.check_appointment_status("APT-0002")
+
+    assert result["escalation_score"] == 0.4
+    assert result["escalation_required"] is False
+    assert result["escalation_reason"] == (
+        "The score is below the administrative escalation threshold of 0.6."
+    )
 
 
 @pytest.mark.parametrize(
