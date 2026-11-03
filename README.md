@@ -61,6 +61,14 @@ calibration set.
 - Answered CrewAI responses are checked against validated retrieval evidence
   and successful appointment lookup results before return. Unsupported claims,
   invalid citations, or validator failures produce an abstention.
+- Per-request token and estimated-cost budgets are checked before routing and
+  before each model call. The byte-based token counts and configured-rate
+  costs are estimates; see
+  [`docs/runtime_budget_design.md`](docs/runtime_budget_design.md).
+- FastAPI exposes health and structured query endpoints plus a multi-turn
+  WebSocket backed by the same session memory. Its offline demonstration and
+  limitations are documented in
+  [`docs/architecture/api.md`](docs/architecture/api.md).
 - `MOCK_LLM=true` selects a deterministic CrewAI `BaseLLM` implementation.
   The mock workflow uses actual local embeddings, the persisted ChromaDB
   collection, and the synthetic appointment dataset; it does not require a
@@ -127,6 +135,27 @@ python scripts\demo_response_cache.py
 The cache is process-local, stores answered responses only, and reports
 cache-hit, miss, and workflow invocation counts.
 
+Run the local HTTP and WebSocket API in offline mock mode:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+$env:MOCK_LLM = 'true'
+python -m uvicorn practo_agent.api.app:app --host 127.0.0.1 --port 8000
+```
+
+The API provides `GET /health`, `POST /query`, and a session-based
+`/ws/{session_id}` conversation endpoint. Open `http://127.0.0.1:8000/docs`
+for the interactive HTTP interface. Run the offline HTTP-to-WebSocket
+multi-turn demonstration and save its transcript with:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python scripts\demo_api.py
+```
+
+See [`docs/architecture/api.md`](docs/architecture/api.md) for request
+schemas, validation behavior, session limitations, and expected demo results.
+
 Demonstrate the output-side groundedness check by injecting an unsupported
 claim into a controlled offline Crew result. The application workflow must
 reject it and save a transcript:
@@ -163,8 +192,9 @@ The RAG and core CrewAI workflow are implemented and covered by tests.
 Fixed-format contact-number masking, phrase-based prompt-injection detection,
 CrewAI response groundedness validation, and session-based conversation
 memory, and context-aware response caching are implemented and demonstrated.
-Remaining assignment work includes runtime budget controls, FastAPI/WebSocket
-deployment and privacy-safe structured logging, the 15-query four-dimension
-evaluation, the AutoGen review stage, governance controls and their required
-demonstrations. Track these against the acceptance criteria in the handoff;
-do not mark a feature complete until its behavior is demonstrated and tested.
+Runtime token/cost controls and the FastAPI HTTP/WebSocket interface are
+implemented with offline demonstrations. Remaining work includes
+privacy-safe structured logging, the 15-query four-dimension evaluation, the
+AutoGen review stage, governance controls, and final acceptance demonstrations.
+Track remaining requirements in the internal handoff; do not mark a feature
+complete until its behavior is demonstrated and tested.

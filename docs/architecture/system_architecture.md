@@ -156,19 +156,16 @@ Retrieval results should retain their source information so answers and evaluati
 
 ## 6. Planned Integration
 
-The following components are planned for future implementation and are not
-described as completed:
+The current implementation includes LangChain session memory, input and
+output guardrails, a FastAPI HTTP/WebSocket interface, runtime token/cost
+budgets, and session-aware response caching. The API details and process-local
+session limitations are documented in
+[`docs/architecture/api.md`](api.md).
 
-- Session memory using LangChain's message-history integration.
-- Input and output guardrails.
-- A FastAPI interface with HTTP endpoints and a multi-turn WebSocket.
-- Request tracing, timing, and JSONL audit logs with PII masking.
-- Retrieval threshold calibration and LLM-as-judge evaluation.
-- A two-agent AutoGen review workflow.
-- Runtime cost limits, normalized-query caching, and tool-access governance.
-
-These components should be added to the architecture as they are implemented
-and tested.
+Remaining system work includes request tracing and JSONL audit logging with
+PII masking, the final evaluation workflow, the AutoGen review stage, and
+governance enforcement. Update this architecture as those components are
+implemented and tested.
 
 ## 7. Quality and Safety Principles
 
@@ -185,17 +182,17 @@ The implementation should follow these principles:
 
 ## 8. Current Verification Status
 
-The project has unit tests for dataset generation and validation,
-knowledge-base validation, document loading, chunking, embeddings, and
-vector-store behavior. The agent workflow also has unit and integration coverage for
-routing, specialist tools, Pydantic output validation, unknown appointment
-IDs, and the offline CrewAI workflow.
+The project has unit and integration tests for dataset generation,
+knowledge-base validation, retrieval, routing, specialist tools, structured
+response validation, runtime budgets, HTTP validation, WebSocket session
+context, and the offline CrewAI workflow.
 
-The verified full test run contains 264 passing tests and 31 passing subtests.
-The end-to-end tests exercise real local retrieval and appointment lookup
-through CrewAI `kickoff()` and reject external network connections in the
-offline workflow. Dependency deprecation warnings remain. These results are
-evidence of tested behavior, not proof of general semantic retrieval quality.
+The latest verified full test run contains 334 passing tests and 31 passing
+subtests. The API demonstration exercises a real local retrieval/appointment
+workflow through HTTP and a context-dependent WebSocket follow-up. The offline
+CrewAI integration test rejects external network connections. Dependency
+deprecation warnings remain. These results are evidence of tested behavior,
+not proof of general semantic retrieval quality.
 
 The remaining assignment reconciliation includes verifying both collections
 against the required dataset and evaluation specifications and comparing the

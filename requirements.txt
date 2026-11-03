@@ -6,3 +6,5 @@ langchain-groq
 langchain-core
 python-dotenv
 crewai
+fastapi
+uvicorn[standard]

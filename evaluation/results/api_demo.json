@@ -1,0 +1,47 @@
+{
+  "demo": "offline_fastapi_and_websocket",
+  "mock_llm": true,
+  "health_status_code": 200,
+  "http_query": {
+    "status_code": 200,
+    "query": "What is the status of APT-0001?",
+    "response": {
+      "status": "answered",
+      "answer": "Appointment APT-0001 is in specialty General Medicine with status No-Show. The consultation fee is INR 500. The record is 24 days old and its follow-up-required flag is True. Its administrative escalation score is 0.9200; escalation required: True. The score meets the administrative escalation threshold of 0.6.",
+      "reason": null,
+      "sources": [],
+      "appointments": [
+        {
+          "record_id": "APT-0001"
+        }
+      ]
+    }
+  },
+  "websocket_follow_up": {
+    "query": "What is its consultation fee?",
+    "response": {
+      "status": "answered",
+      "answer": "According to Consultation Fee Structure: These amounts are illustrative dataset values and may not reflect the fees of any real clinician or clinic. The applicable fee should be confirmed for the selected clinician and appointment before booking is finalized. Additional services, tests, or procedures are not included in these sample consultation fees unless explicitly stated.\n\nAccording to Follow-up Consultation Discounts: Eligibility may depend on the original consultation, clinician, and service offered. The discount applies only to the eligible consultation fee and does not automatically cover tests, medicines, procedures, or other services. Patients should confirm the final fee and eligibility with the clinic before booking, and the support agent must not promise a discount without supporting evidence.\n\nAppointment APT-0001 is in specialty General Medicine with status No-Show. The consultation fee is INR 500. The record is 24 days old and its follow-up-required flag is True. Its administrative escalation score is 0.9200; escalation required: True. The score meets the administrative escalation threshold of 0.6.",
+      "reason": null,
+      "sources": [
+        {
+          "source_id": "fee_structure",
+          "title": "Consultation Fee Structure"
+        },
+        {
+          "source_id": "follow_up_discounts",
+          "title": "Follow-up Consultation Discounts"
+        }
+      ],
+      "appointments": [
+        {
+          "record_id": "APT-0001"
+        }
+      ]
+    }
+  },
+  "session_message_count": 4,
+  "follow_up_retained_appointment_context": true,
+  "websocket_closed_gracefully": true,
+  "passed": true
+}
