@@ -33,7 +33,7 @@ class TestEvaluationCases(unittest.TestCase):
                 "query": f"Sample query {index}",
                 "expected_relevant_sources": ["booking"],
             }
-            for index in range(1, 6)
+            for index in range(1, 26)
         ]
 
         self.write_cases(self.valid_cases)
@@ -56,7 +56,7 @@ class TestEvaluationCases(unittest.TestCase):
     def test_loads_valid_evaluation_cases(self):
         cases = self.load_cases()
 
-        self.assertEqual(len(cases), 5)
+        self.assertEqual(len(cases), 25)
         self.assertIsInstance(cases[0], EvaluationCase)
 
     def test_preserves_query_and_expected_sources(self):
@@ -79,10 +79,10 @@ class TestEvaluationCases(unittest.TestCase):
         with self.assertRaises(AttributeError):
             cases[0].query = "Changed query"
 
-    def test_rejects_fewer_than_five_cases(self):
+    def test_rejects_fewer_than_25_cases(self):
         self.write_cases(self.valid_cases[:4])
 
-        with self.assertRaisesRegex(ValueError, "At least 5"):
+        with self.assertRaisesRegex(ValueError, "At least 25"):
             self.load_cases()
 
     def test_rejects_duplicate_query_ids(self):

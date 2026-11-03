@@ -5,6 +5,36 @@ support using a project-authored knowledge base and a synthetic appointment
 dataset. It is not a clinical system and does not provide diagnosis or
 treatment recommendations.
 
+## Dataset design
+
+The deterministic generator uses seed `42` and produces 240 synthetic records.
+Categories and appointment statuses use equal weights (20% each), yielding 48
+records for every required category and status. Follow-up is assigned at a
+20% rate (48 of 240 records). Creation age is sampled uniformly from 0 to 30
+days. Consultation fees are fixed synthetic values by category, from INR 500
+to INR 1,000: General Medicine 500, Cardiology 1,000, Dermatology 700,
+Pediatrics 600, and Orthopedics 800. These are sample values, not Practo
+prices. Reproduce the dataset with:
+
+```powershell
+python .\dataset.py --count 240 --seed 42
+```
+
+The knowledge base contains the 12 required policy topics, with 2–5 sentences
+per document. The retrieval comparison uses 25 in-scope labeled queries for
+both chunking strategies; abstention calibration uses the same 25 in-scope
+queries plus two out-of-scope queries.
+
+At top-k 2, the measured document-level retrieval results are fixed-size
+precision/recall `0.7400/0.9600` and sentence-based `0.8200/1.0000`.
+Sentence-based is selected because it achieved higher precision and recall on
+this evaluation set. Its empirically selected abstention distance is
+`0.6976266205310822`, the midpoint between the maximum in-scope best distance
+(`0.645258`) and the minimum out-of-scope best distance (`0.749995`). It
+achieved zero false acceptances and full in-scope recall on 25 in-scope and
+two out-of-scope queries. The threshold is provisional and specific to this
+calibration set.
+
 ## Implemented functionality
 
 - The appointment lookup is deterministic and read-only. It returns the
@@ -12,7 +42,7 @@ treatment recommendations.
   administrative score, and the threshold decision with its reason.
 - The score is `0.6 * follow_up_required + 0.4 * (days_since_created / 30)`.
   The inclusive administrative threshold is `0.6`. In the current generated
-  50-record dataset, 10 records (20%) meet it. This is a project heuristic,
+  240-record dataset, 48 records (20%) meet it. This is a project heuristic,
   not a clinical or official Practo policy.
 - A deterministic router selects the Retrieval Agent, Lookup Agent, or both
   for mixed requests. The Response Composer receives only enabled specialist
@@ -33,6 +63,14 @@ Run the end-to-end offline examples in PowerShell:
 ```powershell
 $env:PYTHONPATH = Join-Path (Get-Location) 'src'
 python scripts\demo_offline_workflow.py
+```
+
+Demonstrate grounded generation for the full retrieval query set and an
+out-of-scope abstention:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python scripts\demo_grounded_generation.py
 ```
 
 Run the live CrewAI demonstration with the Groq API:
@@ -58,8 +96,10 @@ python -m pytest -q
 
 ## Remaining assignment reconciliation
 
-The repository is not yet complete against every PDF acceptance criterion.
-The appointment dataset currently contains 50 records while the brief requires
-240, and the retrieval evaluation set contains 12 queries while the brief
-requires 25 for its comparison. These requirements remain open and are not
-masked by changing test expectations.
+The RAG and CrewAI workflow are implemented and covered by tests. Remaining
+assignment work includes session-based memory, input guardrails, cache and
+runtime budget controls, FastAPI/WebSocket deployment and privacy-safe
+structured logging, the 15-query four-dimension evaluation, the AutoGen review
+stage, governance controls and their required demonstrations. Track these
+against the acceptance criteria in the handoff; do not mark a feature complete
+until its behavior is demonstrated and tested.

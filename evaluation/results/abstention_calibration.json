@@ -1,9 +1,210 @@
 {
-  "top_k": 3,
+  "top_k": 2,
   "query_results": [
     {
-      "query_id": "ABS-001",
-      "query": "How can I reschedule my existing doctor appointment?",
+      "query_id": "RAG-001",
+      "query": "How can a patient book a new appointment?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "appointment_booking"
+      ],
+      "retrieved_source_ids": [
+        "second_opinions",
+        "appointment_booking"
+      ],
+      "best_distance": 0.3356146216392517,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-002",
+      "query": "What should a patient do if they want to cancel or reschedule an existing appointment?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "cancellation_rescheduling"
+      ],
+      "retrieved_source_ids": [
+        "cancellation_rescheduling"
+      ],
+      "best_distance": 0.2447255253791809,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-003",
+      "query": "How are consultation fees determined and what charges should patients expect?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "fee_structure"
+      ],
+      "retrieved_source_ids": [
+        "fee_structure",
+        "follow_up_discounts"
+      ],
+      "best_distance": 0.2537505626678467,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-004",
+      "query": "How can a patient submit an insurance claim for a consultation?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "insurance_claims"
+      ],
+      "retrieved_source_ids": [
+        "insurance_claims",
+        "second_opinions"
+      ],
+      "best_distance": 0.2534952163696289,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-005",
+      "query": "What is the process for requesting a prescription refill?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "prescription_refills"
+      ],
+      "retrieved_source_ids": [
+        "prescription_refills"
+      ],
+      "best_distance": 0.2633102536201477,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-006",
+      "query": "How long does it generally take for laboratory test results to become available?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "lab_turnaround"
+      ],
+      "retrieved_source_ids": [
+        "lab_turnaround"
+      ],
+      "best_distance": 0.14060062170028687,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-007",
+      "query": "How can a patient attend a consultation through telemedicine?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "telemedicine"
+      ],
+      "retrieved_source_ids": [
+        "telemedicine"
+      ],
+      "best_distance": 0.22869008779525757,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-008",
+      "query": "What should someone do if they are experiencing a medical emergency?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "emergency_visits"
+      ],
+      "retrieved_source_ids": [
+        "emergency_visits"
+      ],
+      "best_distance": 0.3896638751029968,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-009",
+      "query": "How is patient information collected, stored, and protected?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "privacy_policy"
+      ],
+      "retrieved_source_ids": [
+        "second_opinions",
+        "privacy_policy"
+      ],
+      "best_distance": 0.5526867508888245,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-010",
+      "query": "Are there any discounts or benefits available for follow-up consultations?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "follow_up_discounts"
+      ],
+      "retrieved_source_ids": [
+        "follow_up_discounts"
+      ],
+      "best_distance": 0.34818190336227417,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-011",
+      "query": "Can a patient obtain a second medical opinion, and how can they arrange one?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "second_opinions"
+      ],
+      "retrieved_source_ids": [
+        "second_opinions"
+      ],
+      "best_distance": 0.40611088275909424,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-012",
+      "query": "Is it possible to arrange a doctor's home visit, and what is the process?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "home_visits"
+      ],
+      "retrieved_source_ids": [
+        "home_visits"
+      ],
+      "best_distance": 0.34934794902801514,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-013",
+      "query": "Which specialty, preferred date, and time window should I provide for an appointment request?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "appointment_booking"
+      ],
+      "retrieved_source_ids": [
+        "appointment_booking"
+      ],
+      "best_distance": 0.3509232997894287,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-014",
+      "query": "When is an appointment slot considered confirmed?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "appointment_booking"
+      ],
+      "retrieved_source_ids": [
+        "appointment_booking",
+        "cancellation_rescheduling"
+      ],
+      "best_distance": 0.23083317279815674,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-015",
+      "query": "How far in advance should I ask to change my appointment?",
       "expected_in_scope": true,
       "expected_source_ids": [
         "cancellation_rescheduling"
@@ -12,13 +213,43 @@
         "cancellation_rescheduling",
         "appointment_booking"
       ],
-      "best_distance": 0.331998348236084,
+      "best_distance": 0.3876293897628784,
       "has_retrieval": true,
       "expected_source_retrieved": true
     },
     {
-      "query_id": "ABS-002",
-      "query": "What documents are required to submit an insurance claim?",
+      "query_id": "RAG-016",
+      "query": "Can the clinic charge a cancellation fee without telling me?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "cancellation_rescheduling"
+      ],
+      "retrieved_source_ids": [
+        "cancellation_rescheduling",
+        "fee_structure"
+      ],
+      "best_distance": 0.34920501708984375,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-017",
+      "query": "Should I confirm the consultation price before booking?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "fee_structure"
+      ],
+      "retrieved_source_ids": [
+        "fee_structure",
+        "follow_up_discounts"
+      ],
+      "best_distance": 0.34309184551239014,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-018",
+      "query": "Can support promise that my insurer will reimburse the claim?",
       "expected_in_scope": true,
       "expected_source_ids": [
         "insurance_claims"
@@ -26,13 +257,27 @@
       "retrieved_source_ids": [
         "insurance_claims"
       ],
-      "best_distance": 0.32472437620162964,
+      "best_distance": 0.4115467667579651,
       "has_retrieval": true,
       "expected_source_retrieved": true
     },
     {
-      "query_id": "ABS-003",
-      "query": "How long does it usually take to receive lab test results?",
+      "query_id": "RAG-019",
+      "query": "Who decides whether a prescription refill is approved?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "prescription_refills"
+      ],
+      "retrieved_source_ids": [
+        "prescription_refills"
+      ],
+      "best_distance": 0.25118160247802734,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-020",
+      "query": "What could cause a laboratory result to take longer?",
       "expected_in_scope": true,
       "expected_source_ids": [
         "lab_turnaround"
@@ -40,7 +285,78 @@
       "retrieved_source_ids": [
         "lab_turnaround"
       ],
-      "best_distance": 0.2363387942314148,
+      "best_distance": 0.31800490617752075,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-021",
+      "query": "What should I check to join a remote consultation?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "telemedicine"
+      ],
+      "retrieved_source_ids": [
+        "telemedicine"
+      ],
+      "best_distance": 0.39983808994293213,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-022",
+      "query": "Should I wait for a chatbot if my condition may be life-threatening?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "emergency_visits"
+      ],
+      "retrieved_source_ids": [
+        "emergency_visits",
+        "telemedicine"
+      ],
+      "best_distance": 0.2649875283241272,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-023",
+      "query": "How does the support system protect information in application logs?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "privacy_policy"
+      ],
+      "retrieved_source_ids": [
+        "privacy_policy"
+      ],
+      "best_distance": 0.6452579498291016,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-024",
+      "query": "Does the follow-up discount apply to tests and medicines too?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "follow_up_discounts"
+      ],
+      "retrieved_source_ids": [
+        "follow_up_discounts"
+      ],
+      "best_distance": 0.29520684480667114,
+      "has_retrieval": true,
+      "expected_source_retrieved": true
+    },
+    {
+      "query_id": "RAG-025",
+      "query": "Which details must the clinic confirm before a home visit?",
+      "expected_in_scope": true,
+      "expected_source_ids": [
+        "home_visits"
+      ],
+      "retrieved_source_ids": [
+        "home_visits"
+      ],
+      "best_distance": 0.29893624782562256,
       "has_retrieval": true,
       "expected_source_retrieved": true
     },
@@ -51,10 +367,9 @@
       "expected_source_ids": [],
       "retrieved_source_ids": [
         "second_opinions",
-        "prescription_refills",
         "home_visits"
       ],
-      "best_distance": 0.7618024349212646,
+      "best_distance": 0.7499952912330627,
       "has_retrieval": true,
       "expected_source_retrieved": false
     },
@@ -78,34 +393,494 @@
       "true_positive": 0,
       "false_positive": 0,
       "true_negative": 2,
-      "false_negative": 3,
+      "false_negative": 25,
       "precision": 0.0,
       "recall": 0.0,
       "false_acceptance_rate": 0.0
     },
     {
-      "threshold": 0.236339,
+      "threshold": 0.14060062170028687,
       "true_positive": 1,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 24,
+      "precision": 1.0,
+      "recall": 0.04,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.18464535474777222,
+      "true_positive": 1,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 24,
+      "precision": 1.0,
+      "recall": 0.04,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.22869008779525757,
+      "true_positive": 2,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 23,
+      "precision": 1.0,
+      "recall": 0.08,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.22976163029670715,
+      "true_positive": 2,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 23,
+      "precision": 1.0,
+      "recall": 0.08,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.23083317279815674,
+      "true_positive": 3,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 22,
+      "precision": 1.0,
+      "recall": 0.12,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.23777934908866882,
+      "true_positive": 3,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 22,
+      "precision": 1.0,
+      "recall": 0.12,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.2447255253791809,
+      "true_positive": 4,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 21,
+      "precision": 1.0,
+      "recall": 0.16,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.24795356392860413,
+      "true_positive": 4,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 21,
+      "precision": 1.0,
+      "recall": 0.16,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.25118160247802734,
+      "true_positive": 5,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 20,
+      "precision": 1.0,
+      "recall": 0.2,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.2523384094238281,
+      "true_positive": 5,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 20,
+      "precision": 1.0,
+      "recall": 0.2,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.2534952163696289,
+      "true_positive": 6,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 19,
+      "precision": 1.0,
+      "recall": 0.24,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.2536228895187378,
+      "true_positive": 6,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 19,
+      "precision": 1.0,
+      "recall": 0.24,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.2537505626678467,
+      "true_positive": 7,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 18,
+      "precision": 1.0,
+      "recall": 0.28,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.2585304081439972,
+      "true_positive": 7,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 18,
+      "precision": 1.0,
+      "recall": 0.28,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.2633102536201477,
+      "true_positive": 8,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 17,
+      "precision": 1.0,
+      "recall": 0.32,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.26414889097213745,
+      "true_positive": 8,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 17,
+      "precision": 1.0,
+      "recall": 0.32,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.2649875283241272,
+      "true_positive": 9,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 16,
+      "precision": 1.0,
+      "recall": 0.36,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.28009718656539917,
+      "true_positive": 9,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 16,
+      "precision": 1.0,
+      "recall": 0.36,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.29520684480667114,
+      "true_positive": 10,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 15,
+      "precision": 1.0,
+      "recall": 0.4,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.29707154631614685,
+      "true_positive": 10,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 15,
+      "precision": 1.0,
+      "recall": 0.4,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.29893624782562256,
+      "true_positive": 11,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 14,
+      "precision": 1.0,
+      "recall": 0.44,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.30847057700157166,
+      "true_positive": 11,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 14,
+      "precision": 1.0,
+      "recall": 0.44,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.31800490617752075,
+      "true_positive": 12,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 13,
+      "precision": 1.0,
+      "recall": 0.48,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.32680976390838623,
+      "true_positive": 12,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 13,
+      "precision": 1.0,
+      "recall": 0.48,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.3356146216392517,
+      "true_positive": 13,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 12,
+      "precision": 1.0,
+      "recall": 0.52,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.3393532335758209,
+      "true_positive": 13,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 12,
+      "precision": 1.0,
+      "recall": 0.52,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.34309184551239014,
+      "true_positive": 14,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 11,
+      "precision": 1.0,
+      "recall": 0.56,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.34563687443733215,
+      "true_positive": 14,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 11,
+      "precision": 1.0,
+      "recall": 0.56,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.34818190336227417,
+      "true_positive": 15,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 10,
+      "precision": 1.0,
+      "recall": 0.6,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.34869346022605896,
+      "true_positive": 15,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 10,
+      "precision": 1.0,
+      "recall": 0.6,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.34920501708984375,
+      "true_positive": 16,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 9,
+      "precision": 1.0,
+      "recall": 0.64,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.34927648305892944,
+      "true_positive": 16,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 9,
+      "precision": 1.0,
+      "recall": 0.64,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.34934794902801514,
+      "true_positive": 17,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 8,
+      "precision": 1.0,
+      "recall": 0.68,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.3501356244087219,
+      "true_positive": 17,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 8,
+      "precision": 1.0,
+      "recall": 0.68,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.3509232997894287,
+      "true_positive": 18,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 7,
+      "precision": 1.0,
+      "recall": 0.72,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.36927634477615356,
+      "true_positive": 18,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 7,
+      "precision": 1.0,
+      "recall": 0.72,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.3876293897628784,
+      "true_positive": 19,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 6,
+      "precision": 1.0,
+      "recall": 0.76,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.3886466324329376,
+      "true_positive": 19,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 6,
+      "precision": 1.0,
+      "recall": 0.76,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.3896638751029968,
+      "true_positive": 20,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 5,
+      "precision": 1.0,
+      "recall": 0.8,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.3947509825229645,
+      "true_positive": 20,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 5,
+      "precision": 1.0,
+      "recall": 0.8,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.39983808994293213,
+      "true_positive": 21,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 4,
+      "precision": 1.0,
+      "recall": 0.84,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.4029744863510132,
+      "true_positive": 21,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 4,
+      "precision": 1.0,
+      "recall": 0.84,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.40611088275909424,
+      "true_positive": 22,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 3,
+      "precision": 1.0,
+      "recall": 0.88,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.40882882475852966,
+      "true_positive": 22,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 3,
+      "precision": 1.0,
+      "recall": 0.88,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.4115467667579651,
+      "true_positive": 23,
       "false_positive": 0,
       "true_negative": 2,
       "false_negative": 2,
       "precision": 1.0,
-      "recall": 0.3333,
+      "recall": 0.92,
       "false_acceptance_rate": 0.0
     },
     {
-      "threshold": 0.324724,
-      "true_positive": 2,
+      "threshold": 0.4821167588233948,
+      "true_positive": 23,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 2,
+      "precision": 1.0,
+      "recall": 0.92,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.5526867508888245,
+      "true_positive": 24,
       "false_positive": 0,
       "true_negative": 2,
       "false_negative": 1,
       "precision": 1.0,
-      "recall": 0.6667,
+      "recall": 0.96,
       "false_acceptance_rate": 0.0
     },
     {
-      "threshold": 0.331998,
-      "true_positive": 3,
+      "threshold": 0.598972350358963,
+      "true_positive": 24,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 1,
+      "precision": 1.0,
+      "recall": 0.96,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.6452579498291016,
+      "true_positive": 25,
       "false_positive": 0,
       "true_negative": 2,
       "false_negative": 0,
@@ -114,30 +889,50 @@
       "false_acceptance_rate": 0.0
     },
     {
-      "threshold": 0.761802,
-      "true_positive": 3,
+      "threshold": 0.6976266205310822,
+      "true_positive": 25,
+      "false_positive": 0,
+      "true_negative": 2,
+      "false_negative": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_acceptance_rate": 0.0
+    },
+    {
+      "threshold": 0.7499952912330627,
+      "true_positive": 25,
       "false_positive": 1,
       "true_negative": 1,
       "false_negative": 0,
-      "precision": 0.75,
+      "precision": 0.9615,
       "recall": 1.0,
       "false_acceptance_rate": 0.5
     },
     {
-      "threshold": 0.929621,
-      "true_positive": 3,
+      "threshold": 0.839808315038681,
+      "true_positive": 25,
+      "false_positive": 1,
+      "true_negative": 1,
+      "false_negative": 0,
+      "precision": 0.9615,
+      "recall": 1.0,
+      "false_acceptance_rate": 0.5
+    },
+    {
+      "threshold": 0.9296213388442993,
+      "true_positive": 25,
       "false_positive": 2,
       "true_negative": 0,
       "false_negative": 0,
-      "precision": 0.6,
+      "precision": 0.9259,
       "recall": 1.0,
       "false_acceptance_rate": 1.0
     }
   ],
-  "recommended_threshold": 0.331998,
+  "recommended_threshold": 0.6976266205310822,
   "recommended_metrics": {
-    "threshold": 0.331998,
-    "true_positive": 3,
+    "threshold": 0.6976266205310822,
+    "true_positive": 25,
     "false_positive": 0,
     "true_negative": 2,
     "false_negative": 0,
@@ -145,9 +940,16 @@
     "recall": 1.0,
     "false_acceptance_rate": 0.0
   },
-  "selection_rule": "Zero false acceptances, then maximum in-scope recall; ties are resolved using the lower threshold.",
-  "calibration_case_count": 5,
-  "in_scope_count": 3,
+  "selection_rule": "Zero false acceptances, then maximum in-scope recall; when the observed classes are fully separable, select the midpoint between their nearest boundaries; otherwise select the lower threshold among tied candidates.",
+  "separating_midpoint": 0.6976266205310822,
+  "calibration_case_count": 27,
+  "in_scope_count": 25,
   "out_of_scope_count": 2,
-  "warning": "A threshold selected from a small calibration set is provisional. It must be validated against a larger, representative query set."
+  "warning": "A threshold selected from a small calibration set is provisional. It must be validated against a larger, representative query set.",
+  "configuration": {
+    "strategy": "sentence",
+    "collection": "practo_sentence",
+    "top_k": 2,
+    "similarity_metric": "cosine"
+  }
 }

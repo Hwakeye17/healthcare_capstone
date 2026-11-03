@@ -1,0 +1,408 @@
+{
+  "configuration": {
+    "mock_llm": true,
+    "retrieval_strategy": "sentence",
+    "collection": "practo_sentence",
+    "top_k": 2,
+    "abstention_threshold": 0.6976266205310822,
+    "in_scope_query_count": 25,
+    "out_of_scope_query_count": 1
+  },
+  "results": [
+    {
+      "query_id": "RAG-001",
+      "query": "How can a patient book a new appointment?",
+      "status": "answered",
+      "expected_sources": [
+        "appointment_booking"
+      ],
+      "cited_sources": [
+        "appointment_booking",
+        "second_opinions"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Second-Opinion Consultations: The patient should bring relevant medical records, previous reports, prescriptions, and other information requested by the consulting clinician; availability, fees, and appointment requirements depend on the selected clinician and clinic. The support agent may explain the booking process but must not compare clinical diagnoses or recommend which medical opinion is correct. Clinical interpretation and treatment decisions remain the responsibility of qualified healthcare professionals and the patient in consultation with them.\n\nAccording to Appointment Booking: Appointment requests remain pending until the clinic or booking system confirms the slot. Availability depends on the selected specialty, clinician schedule, and clinic operating hours. Patients should retain their appointment reference and review the confirmed date and time before attending if the requested slot is available."
+    },
+    {
+      "query_id": "RAG-002",
+      "query": "What should a patient do if they want to cancel or reschedule an existing appointment?",
+      "status": "answered",
+      "expected_sources": [
+        "cancellation_rescheduling"
+      ],
+      "cited_sources": [
+        "cancellation_rescheduling"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Appointment Cancellation and Rescheduling: For this sample policy, patients are encouraged to submit cancellation or rescheduling requests at least 24 hours before the appointment. A requested change is not confirmed until the updated status or time is communicated by the booking system or clinic. If a slot cannot be changed, the patient may request another option or contact clinic support; any applicable cancellation charge must be disclosed before it is applied.\n\nAccording to Appointment Cancellation and Rescheduling: This document defines a synthetic cancellation and rescheduling policy for capstone testing, not an actual Practo policy. Patients should use the designated booking channel and provide their appointment reference when requesting a cancellation or a new time. For this sample policy, patients are encouraged to submit cancellation or rescheduling requests at least 24 hours before the appointment."
+    },
+    {
+      "query_id": "RAG-003",
+      "query": "How are consultation fees determined and what charges should patients expect?",
+      "status": "answered",
+      "expected_sources": [
+        "fee_structure"
+      ],
+      "cited_sources": [
+        "fee_structure",
+        "follow_up_discounts"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Consultation Fee Structure: These amounts are illustrative dataset values and may not reflect the fees of any real clinician or clinic. The applicable fee should be confirmed for the selected clinician and appointment before booking is finalized. Additional services, tests, or procedures are not included in these sample consultation fees unless explicitly stated.\n\nAccording to Follow-up Consultation Discounts: Eligibility may depend on the original consultation, clinician, and service offered. The discount applies only to the eligible consultation fee and does not automatically cover tests, medicines, procedures, or other services. Patients should confirm the final fee and eligibility with the clinic before booking, and the support agent must not promise a discount without supporting evidence."
+    },
+    {
+      "query_id": "RAG-004",
+      "query": "How can a patient submit an insurance claim for a consultation?",
+      "status": "answered",
+      "expected_sources": [
+        "insurance_claims"
+      ],
+      "cited_sources": [
+        "insurance_claims",
+        "second_opinions"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Insurance Claims: A claim submission may require an itemized bill, consultation receipt, claim form, and other documents specified by the insurer. The support team can explain the administrative documents available from the clinic but cannot guarantee reimbursement or claim approval. Patients should retain copies of submitted documents and any claim reference provided by their insurer.\n\nAccording to Second-Opinion Consultations: The patient should bring relevant medical records, previous reports, prescriptions, and other information requested by the consulting clinician; availability, fees, and appointment requirements depend on the selected clinician and clinic. The support agent may explain the booking process but must not compare clinical diagnoses or recommend which medical opinion is correct. Clinical interpretation and treatment decisions remain the responsibility of qualified healthcare professionals and the patient in consultation with them."
+    },
+    {
+      "query_id": "RAG-005",
+      "query": "What is the process for requesting a prescription refill?",
+      "status": "answered",
+      "expected_sources": [
+        "prescription_refills"
+      ],
+      "cited_sources": [
+        "prescription_refills"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Prescription Refills: A refill request may require review and approval by a qualified clinician before a prescription is issued; administrative support staff cannot authorize medication, change a dosage, or guarantee approval. The patient may be asked to schedule a consultation if the clinician determines that a review is needed. Patients should contact an appropriate healthcare professional for medication-related concerns rather than relying on an administrative support agent.\n\nAccording to Prescription Refills: This document defines a synthetic prescription-refill support policy for capstone testing, not an actual Practo clinical policy. Patients requesting a prescription refill should provide the relevant appointment details and an existing prescription when available. A refill request may require review and approval by a qualified clinician before a prescription is issued; administrative support staff cannot authorize medication, change a dosage, or guarantee approval."
+    },
+    {
+      "query_id": "RAG-006",
+      "query": "How long does it generally take for laboratory test results to become available?",
+      "status": "answered",
+      "expected_sources": [
+        "lab_turnaround"
+      ],
+      "cited_sources": [
+        "lab_turnaround"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Laboratory Test Turnaround: Specialized tests may require approximately 3 to 5 business days, depending on the test and laboratory processing requirements. These are illustrative estimates rather than guaranteed deadlines, and the performing laboratory should confirm the expected reporting time. Delays may occur because of repeat testing, sample quality issues, holidays, or additional processing requirements; patients should contact the laboratory or ordering clinic for an update about a specific result.\n\nAccording to Laboratory Test Turnaround: This document defines synthetic laboratory turnaround guidance for capstone testing, not an actual Practo laboratory policy. For this sample policy, routine laboratory results are estimated to be available within 24 to 48 hours after the laboratory receives the sample. Specialized tests may require approximately 3 to 5 business days, depending on the test and laboratory processing requirements."
+    },
+    {
+      "query_id": "RAG-007",
+      "query": "How can a patient attend a consultation through telemedicine?",
+      "status": "answered",
+      "expected_sources": [
+        "telemedicine"
+      ],
+      "cited_sources": [
+        "telemedicine"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Telemedicine Consultations: Patients should use a private setting and a reliable connection when sharing information during a consultation. A clinician may determine that a remote consultation is unsuitable and recommend an in-person assessment instead. Telemedicine is not a substitute for emergency care, and an administrative support agent must not diagnose a patient or determine clinical suitability.\n\nAccording to Telemedicine Consultations: This document defines a synthetic telemedicine-support policy for capstone testing, not an actual Practo telemedicine policy. Patients may request a remote consultation when the service is offered by the selected clinician, and the booking confirmation should specify the consultation time and supported method for joining. Patients should use a private setting and a reliable connection when sharing information during a consultation."
+    },
+    {
+      "query_id": "RAG-008",
+      "query": "What should someone do if they are experiencing a medical emergency?",
+      "status": "answered",
+      "expected_sources": [
+        "emergency_visits"
+      ],
+      "cited_sources": [
+        "emergency_visits"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Emergency Visits: Anyone experiencing a potentially life-threatening or rapidly worsening condition should contact local emergency services or go to the nearest appropriate emergency department immediately rather than wait for a routine appointment confirmation or chatbot response. The support agent must not attempt to diagnose the emergency, recommend treatment, or decide that delaying care is safe. If a conversation indicates an emergency, the response must prioritize immediate professional assistance over routine administrative information.\n\nAccording to Emergency Visits: This document defines synthetic emergency-routing guidance for capstone testing, not an actual Practo emergency-service policy. Appointment booking and administrative support channels are not intended to manage medical emergencies. Anyone experiencing a potentially life-threatening or rapidly worsening condition should contact local emergency services or go to the nearest appropriate emergency department immediately rather than wait for a routine appointment confirmation or chatbot response."
+    },
+    {
+      "query_id": "RAG-009",
+      "query": "How is patient information collected, stored, and protected?",
+      "status": "answered",
+      "expected_sources": [
+        "privacy_policy"
+      ],
+      "cited_sources": [
+        "privacy_policy",
+        "second_opinions"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Second-Opinion Consultations: The patient should bring relevant medical records, previous reports, prescriptions, and other information requested by the consulting clinician; availability, fees, and appointment requirements depend on the selected clinician and clinic. The support agent may explain the booking process but must not compare clinical diagnoses or recommend which medical opinion is correct. Clinical interpretation and treatment decisions remain the responsibility of qualified healthcare professionals and the patient in consultation with them.\n\nAccording to Privacy and Information Handling: This document defines synthetic privacy guidance for capstone testing, not an actual Practo privacy policy. Patients should share only the information necessary to complete an administrative request through an appropriate channel. Appointment references and contact details must not be disclosed to unrelated users or included unnecessarily in prompts and application logs; fixed-format contact numbers must be masked before request text is logged or sent to model-facing components."
+    },
+    {
+      "query_id": "RAG-010",
+      "query": "Are there any discounts or benefits available for follow-up consultations?",
+      "status": "answered",
+      "expected_sources": [
+        "follow_up_discounts"
+      ],
+      "cited_sources": [
+        "follow_up_discounts"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Follow-up Consultation Discounts: Eligibility may depend on the original consultation, clinician, and service offered. The discount applies only to the eligible consultation fee and does not automatically cover tests, medicines, procedures, or other services. Patients should confirm the final fee and eligibility with the clinic before booking, and the support agent must not promise a discount without supporting evidence.\n\nAccording to Follow-up Consultation Discounts: This document defines a synthetic follow-up discount policy for capstone testing, not an actual Practo promotion. For this sample policy, an eligible follow-up consultation booked within seven calendar days of the original consultation may qualify for a 10% discount on the consultation fee, subject to confirmation by the participating clinic. Eligibility may depend on the original consultation, clinician, and service offered."
+    },
+    {
+      "query_id": "RAG-011",
+      "query": "Can a patient obtain a second medical opinion, and how can they arrange one?",
+      "status": "answered",
+      "expected_sources": [
+        "second_opinions"
+      ],
+      "cited_sources": [
+        "second_opinions"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Second-Opinion Consultations: This document defines synthetic second-opinion booking guidance for capstone testing, not an actual Practo clinical policy. Patients may request a consultation with another qualified clinician when they want an independent professional opinion. The patient should bring relevant medical records, previous reports, prescriptions, and other information requested by the consulting clinician; availability, fees, and appointment requirements depend on the selected clinician and clinic.\n\nAccording to Second-Opinion Consultations: The patient should bring relevant medical records, previous reports, prescriptions, and other information requested by the consulting clinician; availability, fees, and appointment requirements depend on the selected clinician and clinic. The support agent may explain the booking process but must not compare clinical diagnoses or recommend which medical opinion is correct. Clinical interpretation and treatment decisions remain the responsibility of qualified healthcare professionals and the patient in consultation with them."
+    },
+    {
+      "query_id": "RAG-012",
+      "query": "Is it possible to arrange a doctor's home visit, and what is the process?",
+      "status": "answered",
+      "expected_sources": [
+        "home_visits"
+      ],
+      "cited_sources": [
+        "home_visits"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Home-Visit Requests: The clinic must confirm the visit time, service scope, total fee, and any travel-related charges before the request is treated as confirmed. A home-visit request is not an emergency response service and must not delay urgent medical assistance. If home visits are unavailable or unsuitable, the patient may contact the clinic to discuss other appointment options.\n\nAccording to Home-Visit Requests: This document defines synthetic home-visit booking guidance for capstone testing, not an actual Practo home-visit policy. Patients may ask whether a clinician or eligible healthcare service offers home visits in their area; availability depends on the service, clinician schedule, location, and applicable requirements. The clinic must confirm the visit time, service scope, total fee, and any travel-related charges before the request is treated as confirmed."
+    },
+    {
+      "query_id": "RAG-013",
+      "query": "Which specialty, preferred date, and time window should I provide for an appointment request?",
+      "status": "answered",
+      "expected_sources": [
+        "appointment_booking"
+      ],
+      "cited_sources": [
+        "appointment_booking"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Appointment Booking: Appointment requests remain pending until the clinic or booking system confirms the slot. Availability depends on the selected specialty, clinician schedule, and clinic operating hours. Patients should retain their appointment reference and review the confirmed date and time before attending if the requested slot is available.\n\nAccording to Appointment Booking: This document defines a synthetic appointment-booking policy for capstone testing, not an actual Practo policy. Patients can request an appointment by providing their preferred specialty, date, time window, and contact details through the designated booking channel. Appointment requests remain pending until the clinic or booking system confirms the slot."
+    },
+    {
+      "query_id": "RAG-014",
+      "query": "When is an appointment slot considered confirmed?",
+      "status": "answered",
+      "expected_sources": [
+        "appointment_booking"
+      ],
+      "cited_sources": [
+        "appointment_booking",
+        "cancellation_rescheduling"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Appointment Booking: Appointment requests remain pending until the clinic or booking system confirms the slot. Availability depends on the selected specialty, clinician schedule, and clinic operating hours. Patients should retain their appointment reference and review the confirmed date and time before attending if the requested slot is available.\n\nAccording to Appointment Cancellation and Rescheduling: For this sample policy, patients are encouraged to submit cancellation or rescheduling requests at least 24 hours before the appointment. A requested change is not confirmed until the updated status or time is communicated by the booking system or clinic. If a slot cannot be changed, the patient may request another option or contact clinic support; any applicable cancellation charge must be disclosed before it is applied."
+    },
+    {
+      "query_id": "RAG-015",
+      "query": "How far in advance should I ask to change my appointment?",
+      "status": "answered",
+      "expected_sources": [
+        "cancellation_rescheduling"
+      ],
+      "cited_sources": [
+        "appointment_booking",
+        "cancellation_rescheduling"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Appointment Cancellation and Rescheduling: For this sample policy, patients are encouraged to submit cancellation or rescheduling requests at least 24 hours before the appointment. A requested change is not confirmed until the updated status or time is communicated by the booking system or clinic. If a slot cannot be changed, the patient may request another option or contact clinic support; any applicable cancellation charge must be disclosed before it is applied.\n\nAccording to Appointment Booking: Appointment requests remain pending until the clinic or booking system confirms the slot. Availability depends on the selected specialty, clinician schedule, and clinic operating hours. Patients should retain their appointment reference and review the confirmed date and time before attending if the requested slot is available."
+    },
+    {
+      "query_id": "RAG-016",
+      "query": "Can the clinic charge a cancellation fee without telling me?",
+      "status": "answered",
+      "expected_sources": [
+        "cancellation_rescheduling"
+      ],
+      "cited_sources": [
+        "cancellation_rescheduling",
+        "fee_structure"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Appointment Cancellation and Rescheduling: For this sample policy, patients are encouraged to submit cancellation or rescheduling requests at least 24 hours before the appointment. A requested change is not confirmed until the updated status or time is communicated by the booking system or clinic. If a slot cannot be changed, the patient may request another option or contact clinic support; any applicable cancellation charge must be disclosed before it is applied.\n\nAccording to Consultation Fee Structure: These amounts are illustrative dataset values and may not reflect the fees of any real clinician or clinic. The applicable fee should be confirmed for the selected clinician and appointment before booking is finalized. Additional services, tests, or procedures are not included in these sample consultation fees unless explicitly stated."
+    },
+    {
+      "query_id": "RAG-017",
+      "query": "Should I confirm the consultation price before booking?",
+      "status": "answered",
+      "expected_sources": [
+        "fee_structure"
+      ],
+      "cited_sources": [
+        "fee_structure",
+        "follow_up_discounts"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Consultation Fee Structure: These amounts are illustrative dataset values and may not reflect the fees of any real clinician or clinic. The applicable fee should be confirmed for the selected clinician and appointment before booking is finalized. Additional services, tests, or procedures are not included in these sample consultation fees unless explicitly stated.\n\nAccording to Follow-up Consultation Discounts: Eligibility may depend on the original consultation, clinician, and service offered. The discount applies only to the eligible consultation fee and does not automatically cover tests, medicines, procedures, or other services. Patients should confirm the final fee and eligibility with the clinic before booking, and the support agent must not promise a discount without supporting evidence."
+    },
+    {
+      "query_id": "RAG-018",
+      "query": "Can support promise that my insurer will reimburse the claim?",
+      "status": "answered",
+      "expected_sources": [
+        "insurance_claims"
+      ],
+      "cited_sources": [
+        "insurance_claims"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Insurance Claims: A claim submission may require an itemized bill, consultation receipt, claim form, and other documents specified by the insurer. The support team can explain the administrative documents available from the clinic but cannot guarantee reimbursement or claim approval. Patients should retain copies of submitted documents and any claim reference provided by their insurer.\n\nAccording to Insurance Claims: This document defines a synthetic insurance-support policy for capstone testing, not an actual Practo insurance policy. Patients should confirm policy coverage, network eligibility, and documentation requirements directly with their insurer before a consultation; questions about claim rejection, exclusions, limits, or payment timelines must also be directed to the insurer. A claim submission may require an itemized bill, consultation receipt, claim form, and other documents specified by the insurer."
+    },
+    {
+      "query_id": "RAG-019",
+      "query": "Who decides whether a prescription refill is approved?",
+      "status": "answered",
+      "expected_sources": [
+        "prescription_refills"
+      ],
+      "cited_sources": [
+        "prescription_refills"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Prescription Refills: A refill request may require review and approval by a qualified clinician before a prescription is issued; administrative support staff cannot authorize medication, change a dosage, or guarantee approval. The patient may be asked to schedule a consultation if the clinician determines that a review is needed. Patients should contact an appropriate healthcare professional for medication-related concerns rather than relying on an administrative support agent.\n\nAccording to Prescription Refills: This document defines a synthetic prescription-refill support policy for capstone testing, not an actual Practo clinical policy. Patients requesting a prescription refill should provide the relevant appointment details and an existing prescription when available. A refill request may require review and approval by a qualified clinician before a prescription is issued; administrative support staff cannot authorize medication, change a dosage, or guarantee approval."
+    },
+    {
+      "query_id": "RAG-020",
+      "query": "What could cause a laboratory result to take longer?",
+      "status": "answered",
+      "expected_sources": [
+        "lab_turnaround"
+      ],
+      "cited_sources": [
+        "lab_turnaround"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Laboratory Test Turnaround: Specialized tests may require approximately 3 to 5 business days, depending on the test and laboratory processing requirements. These are illustrative estimates rather than guaranteed deadlines, and the performing laboratory should confirm the expected reporting time. Delays may occur because of repeat testing, sample quality issues, holidays, or additional processing requirements; patients should contact the laboratory or ordering clinic for an update about a specific result.\n\nAccording to Laboratory Test Turnaround: This document defines synthetic laboratory turnaround guidance for capstone testing, not an actual Practo laboratory policy. For this sample policy, routine laboratory results are estimated to be available within 24 to 48 hours after the laboratory receives the sample. Specialized tests may require approximately 3 to 5 business days, depending on the test and laboratory processing requirements."
+    },
+    {
+      "query_id": "RAG-021",
+      "query": "What should I check to join a remote consultation?",
+      "status": "answered",
+      "expected_sources": [
+        "telemedicine"
+      ],
+      "cited_sources": [
+        "telemedicine"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Telemedicine Consultations: Patients should use a private setting and a reliable connection when sharing information during a consultation. A clinician may determine that a remote consultation is unsuitable and recommend an in-person assessment instead. Telemedicine is not a substitute for emergency care, and an administrative support agent must not diagnose a patient or determine clinical suitability.\n\nAccording to Telemedicine Consultations: This document defines a synthetic telemedicine-support policy for capstone testing, not an actual Practo telemedicine policy. Patients may request a remote consultation when the service is offered by the selected clinician, and the booking confirmation should specify the consultation time and supported method for joining. Patients should use a private setting and a reliable connection when sharing information during a consultation."
+    },
+    {
+      "query_id": "RAG-022",
+      "query": "Should I wait for a chatbot if my condition may be life-threatening?",
+      "status": "answered",
+      "expected_sources": [
+        "emergency_visits"
+      ],
+      "cited_sources": [
+        "emergency_visits",
+        "telemedicine"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Emergency Visits: Anyone experiencing a potentially life-threatening or rapidly worsening condition should contact local emergency services or go to the nearest appropriate emergency department immediately rather than wait for a routine appointment confirmation or chatbot response. The support agent must not attempt to diagnose the emergency, recommend treatment, or decide that delaying care is safe. If a conversation indicates an emergency, the response must prioritize immediate professional assistance over routine administrative information.\n\nAccording to Telemedicine Consultations: Patients should use a private setting and a reliable connection when sharing information during a consultation. A clinician may determine that a remote consultation is unsuitable and recommend an in-person assessment instead. Telemedicine is not a substitute for emergency care, and an administrative support agent must not diagnose a patient or determine clinical suitability."
+    },
+    {
+      "query_id": "RAG-023",
+      "query": "How does the support system protect information in application logs?",
+      "status": "answered",
+      "expected_sources": [
+        "privacy_policy"
+      ],
+      "cited_sources": [
+        "privacy_policy"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Privacy and Information Handling: Appointment references and contact details must not be disclosed to unrelated users or included unnecessarily in prompts and application logs; fixed-format contact numbers must be masked before request text is logged or sent to model-facing components. Access to appointment information must be limited to the specific lookup purpose and authorized application component. Requests for information that the system is not authorized to disclose must be refused or routed to an appropriate support channel.\n\nAccording to Privacy and Information Handling: This document defines synthetic privacy guidance for capstone testing, not an actual Practo privacy policy. Patients should share only the information necessary to complete an administrative request through an appropriate channel. Appointment references and contact details must not be disclosed to unrelated users or included unnecessarily in prompts and application logs; fixed-format contact numbers must be masked before request text is logged or sent to model-facing components."
+    },
+    {
+      "query_id": "RAG-024",
+      "query": "Does the follow-up discount apply to tests and medicines too?",
+      "status": "answered",
+      "expected_sources": [
+        "follow_up_discounts"
+      ],
+      "cited_sources": [
+        "follow_up_discounts"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Follow-up Consultation Discounts: This document defines a synthetic follow-up discount policy for capstone testing, not an actual Practo promotion. For this sample policy, an eligible follow-up consultation booked within seven calendar days of the original consultation may qualify for a 10% discount on the consultation fee, subject to confirmation by the participating clinic. Eligibility may depend on the original consultation, clinician, and service offered.\n\nAccording to Follow-up Consultation Discounts: Eligibility may depend on the original consultation, clinician, and service offered. The discount applies only to the eligible consultation fee and does not automatically cover tests, medicines, procedures, or other services. Patients should confirm the final fee and eligibility with the clinic before booking, and the support agent must not promise a discount without supporting evidence."
+    },
+    {
+      "query_id": "RAG-025",
+      "query": "Which details must the clinic confirm before a home visit?",
+      "status": "answered",
+      "expected_sources": [
+        "home_visits"
+      ],
+      "cited_sources": [
+        "home_visits"
+      ],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "According to Home-Visit Requests: The clinic must confirm the visit time, service scope, total fee, and any travel-related charges before the request is treated as confirmed. A home-visit request is not an emergency response service and must not delay urgent medical assistance. If home visits are unavailable or unsuitable, the patient may contact the clinic to discuss other appointment options.\n\nAccording to Home-Visit Requests: This document defines synthetic home-visit booking guidance for capstone testing, not an actual Practo home-visit policy. Patients may ask whether a clinician or eligible healthcare service offers home visits in their area; availability depends on the service, clinician schedule, location, and applicable requirements. The clinic must confirm the visit time, service scope, total fee, and any travel-related charges before the request is treated as confirmed."
+    },
+    {
+      "query_id": "ABS-004",
+      "query": "Can you diagnose my skin rash and recommend a suitable medicine?",
+      "status": "abstained",
+      "expected_sources": [],
+      "cited_sources": [],
+      "tool_actions": [
+        "search_practo_knowledge_base"
+      ],
+      "answer": "I couldn't find supported policy information in the available knowledge base."
+    }
+  ]
+}

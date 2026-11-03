@@ -22,6 +22,8 @@ REQUIRED_DOCUMENTS = {
     "second_opinions.md",
     "home_visits.md",
 }
+MIN_SENTENCES = 2
+MAX_SENTENCES = 5
 
 
 def count_sentences(markdown_text: str) -> int:
@@ -76,9 +78,10 @@ def validate_knowledge_base(
         sentence_count = count_sentences(text)
         sentence_counts[filename] = sentence_count
 
-        if sentence_count < 2:
+        if not MIN_SENTENCES <= sentence_count <= MAX_SENTENCES:
             errors.append(
-                f"{filename}: expected at least 2 sentences, "
+                f"{filename}: expected {MIN_SENTENCES} to {MAX_SENTENCES} "
+                "sentences, "
                 f"found {sentence_count}."
             )
 

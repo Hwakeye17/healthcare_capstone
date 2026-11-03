@@ -83,5 +83,96 @@
     "expected_relevant_sources": [
       "home_visits"
     ]
+  },
+  {
+    "query_id": "RAG-013",
+    "query": "Which specialty, preferred date, and time window should I provide for an appointment request?",
+    "expected_relevant_sources": [
+      "appointment_booking"
+    ]
+  },
+  {
+    "query_id": "RAG-014",
+    "query": "When is an appointment slot considered confirmed?",
+    "expected_relevant_sources": [
+      "appointment_booking"
+    ]
+  },
+  {
+    "query_id": "RAG-015",
+    "query": "How far in advance should I ask to change my appointment?",
+    "expected_relevant_sources": [
+      "cancellation_rescheduling"
+    ]
+  },
+  {
+    "query_id": "RAG-016",
+    "query": "Can the clinic charge a cancellation fee without telling me?",
+    "expected_relevant_sources": [
+      "cancellation_rescheduling"
+    ]
+  },
+  {
+    "query_id": "RAG-017",
+    "query": "Should I confirm the consultation price before booking?",
+    "expected_relevant_sources": [
+      "fee_structure"
+    ]
+  },
+  {
+    "query_id": "RAG-018",
+    "query": "Can support promise that my insurer will reimburse the claim?",
+    "expected_relevant_sources": [
+      "insurance_claims"
+    ]
+  },
+  {
+    "query_id": "RAG-019",
+    "query": "Who decides whether a prescription refill is approved?",
+    "expected_relevant_sources": [
+      "prescription_refills"
+    ]
+  },
+  {
+    "query_id": "RAG-020",
+    "query": "What could cause a laboratory result to take longer?",
+    "expected_relevant_sources": [
+      "lab_turnaround"
+    ]
+  },
+  {
+    "query_id": "RAG-021",
+    "query": "What should I check to join a remote consultation?",
+    "expected_relevant_sources": [
+      "telemedicine"
+    ]
+  },
+  {
+    "query_id": "RAG-022",
+    "query": "Should I wait for a chatbot if my condition may be life-threatening?",
+    "expected_relevant_sources": [
+      "emergency_visits"
+    ]
+  },
+  {
+    "query_id": "RAG-023",
+    "query": "How does the support system protect information in application logs?",
+    "expected_relevant_sources": [
+      "privacy_policy"
+    ]
+  },
+  {
+    "query_id": "RAG-024",
+    "query": "Does the follow-up discount apply to tests and medicines too?",
+    "expected_relevant_sources": [
+      "follow_up_discounts"
+    ]
+  },
+  {
+    "query_id": "RAG-025",
+    "query": "Which details must the clinic confirm before a home visit?",
+    "expected_relevant_sources": [
+      "home_visits"
+    ]
   }
 ]

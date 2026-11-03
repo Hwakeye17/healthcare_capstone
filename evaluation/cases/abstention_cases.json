@@ -1,21 +1,153 @@
 [
   {
-    "query_id": "ABS-001",
-    "query": "How can I reschedule my existing doctor appointment?",
+    "query_id": "RAG-001",
+    "query": "How can a patient book a new appointment?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["appointment_booking"]
+  },
+  {
+    "query_id": "RAG-002",
+    "query": "What should a patient do if they want to cancel or reschedule an existing appointment?",
     "expected_in_scope": true,
     "expected_source_ids": ["cancellation_rescheduling"]
   },
   {
-    "query_id": "ABS-002",
-    "query": "What documents are required to submit an insurance claim?",
+    "query_id": "RAG-003",
+    "query": "How are consultation fees determined and what charges should patients expect?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["fee_structure"]
+  },
+  {
+    "query_id": "RAG-004",
+    "query": "How can a patient submit an insurance claim for a consultation?",
     "expected_in_scope": true,
     "expected_source_ids": ["insurance_claims"]
   },
   {
-    "query_id": "ABS-003",
-    "query": "How long does it usually take to receive lab test results?",
+    "query_id": "RAG-005",
+    "query": "What is the process for requesting a prescription refill?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["prescription_refills"]
+  },
+  {
+    "query_id": "RAG-006",
+    "query": "How long does it generally take for laboratory test results to become available?",
     "expected_in_scope": true,
     "expected_source_ids": ["lab_turnaround"]
+  },
+  {
+    "query_id": "RAG-007",
+    "query": "How can a patient attend a consultation through telemedicine?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["telemedicine"]
+  },
+  {
+    "query_id": "RAG-008",
+    "query": "What should someone do if they are experiencing a medical emergency?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["emergency_visits"]
+  },
+  {
+    "query_id": "RAG-009",
+    "query": "How is patient information collected, stored, and protected?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["privacy_policy"]
+  },
+  {
+    "query_id": "RAG-010",
+    "query": "Are there any discounts or benefits available for follow-up consultations?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["follow_up_discounts"]
+  },
+  {
+    "query_id": "RAG-011",
+    "query": "Can a patient obtain a second medical opinion, and how can they arrange one?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["second_opinions"]
+  },
+  {
+    "query_id": "RAG-012",
+    "query": "Is it possible to arrange a doctor's home visit, and what is the process?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["home_visits"]
+  },
+  {
+    "query_id": "RAG-013",
+    "query": "Which specialty, preferred date, and time window should I provide for an appointment request?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["appointment_booking"]
+  },
+  {
+    "query_id": "RAG-014",
+    "query": "When is an appointment slot considered confirmed?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["appointment_booking"]
+  },
+  {
+    "query_id": "RAG-015",
+    "query": "How far in advance should I ask to change my appointment?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["cancellation_rescheduling"]
+  },
+  {
+    "query_id": "RAG-016",
+    "query": "Can the clinic charge a cancellation fee without telling me?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["cancellation_rescheduling"]
+  },
+  {
+    "query_id": "RAG-017",
+    "query": "Should I confirm the consultation price before booking?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["fee_structure"]
+  },
+  {
+    "query_id": "RAG-018",
+    "query": "Can support promise that my insurer will reimburse the claim?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["insurance_claims"]
+  },
+  {
+    "query_id": "RAG-019",
+    "query": "Who decides whether a prescription refill is approved?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["prescription_refills"]
+  },
+  {
+    "query_id": "RAG-020",
+    "query": "What could cause a laboratory result to take longer?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["lab_turnaround"]
+  },
+  {
+    "query_id": "RAG-021",
+    "query": "What should I check to join a remote consultation?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["telemedicine"]
+  },
+  {
+    "query_id": "RAG-022",
+    "query": "Should I wait for a chatbot if my condition may be life-threatening?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["emergency_visits"]
+  },
+  {
+    "query_id": "RAG-023",
+    "query": "How does the support system protect information in application logs?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["privacy_policy"]
+  },
+  {
+    "query_id": "RAG-024",
+    "query": "Does the follow-up discount apply to tests and medicines too?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["follow_up_discounts"]
+  },
+  {
+    "query_id": "RAG-025",
+    "query": "Which details must the clinic confirm before a home visit?",
+    "expected_in_scope": true,
+    "expected_source_ids": ["home_visits"]
   },
   {
     "query_id": "ABS-004",

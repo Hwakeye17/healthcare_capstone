@@ -1,13 +1,13 @@
 {
-  "top_k": 3,
-  "query_count": 12,
+  "top_k": 2,
+  "query_count": 25,
   "strategies": {
     "fixed_size": {
       "strategy": "fixed_size",
-      "top_k": 3,
-      "query_count": 12,
-      "macro_precision": 0.625,
-      "macro_recall": 1.0,
+      "top_k": 2,
+      "query_count": 25,
+      "macro_precision": 0.74,
+      "macro_recall": 0.96,
       "queries": [
         {
           "query_id": "RAG-001",
@@ -16,39 +16,32 @@
             "appointment_booking"
           ],
           "retrieved_source_ids": [
-            "appointment_booking",
             "second_opinions",
-            "home_visits"
+            "appointment_booking"
           ],
           "retrieved_chunks": [
             {
-              "chunk_id": "appointment_booking::fixed::0001",
-              "source_id": "appointment_booking",
-              "distance": 0.375663697719574
-            },
-            {
               "chunk_id": "second_opinions::fixed::0001",
               "source_id": "second_opinions",
-              "distance": 0.3896409273147583
+              "distance": 0.37091201543807983
             },
             {
-              "chunk_id": "home_visits::fixed::0002",
-              "source_id": "home_visits",
-              "distance": 0.4205710291862488
+              "chunk_id": "appointment_booking::fixed::0001",
+              "source_id": "appointment_booking",
+              "distance": 0.38414299488067627
             }
           ],
           "true_positives": [
             "appointment_booking"
           ],
           "false_positives": [
-            "home_visits",
             "second_opinions"
           ],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 2,
+          "fp_count": 1,
           "fn_count": 0,
-          "precision": 0.3333333333333333,
+          "precision": 0.5,
           "recall": 1.0
         },
         {
@@ -58,19 +51,13 @@
             "cancellation_rescheduling"
           ],
           "retrieved_source_ids": [
-            "cancellation_rescheduling",
-            "appointment_booking"
+            "cancellation_rescheduling"
           ],
           "retrieved_chunks": [
             {
               "chunk_id": "cancellation_rescheduling::fixed::0001",
               "source_id": "cancellation_rescheduling",
-              "distance": 0.23320770263671875
-            },
-            {
-              "chunk_id": "appointment_booking::fixed::0001",
-              "source_id": "appointment_booking",
-              "distance": 0.36550384759902954
+              "distance": 0.23928189277648926
             },
             {
               "chunk_id": "cancellation_rescheduling::fixed::0000",
@@ -81,14 +68,12 @@
           "true_positives": [
             "cancellation_rescheduling"
           ],
-          "false_positives": [
-            "appointment_booking"
-          ],
+          "false_positives": [],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 1,
+          "fp_count": 0,
           "fn_count": 0,
-          "precision": 0.5,
+          "precision": 1.0,
           "recall": 1.0
         },
         {
@@ -105,17 +90,12 @@
             {
               "chunk_id": "second_opinions::fixed::0001",
               "source_id": "second_opinions",
-              "distance": 0.32519614696502686
+              "distance": 0.3586384057998657
             },
             {
               "chunk_id": "fee_structure::fixed::0000",
               "source_id": "fee_structure",
-              "distance": 0.34325748682022095
-            },
-            {
-              "chunk_id": "fee_structure::fixed::0001",
-              "source_id": "fee_structure",
-              "distance": 0.35135912895202637
+              "distance": 0.37370431423187256
             }
           ],
           "true_positives": [
@@ -145,17 +125,12 @@
             {
               "chunk_id": "insurance_claims::fixed::0001",
               "source_id": "insurance_claims",
-              "distance": 0.2875083088874817
+              "distance": 0.2739102244377136
             },
             {
               "chunk_id": "second_opinions::fixed::0001",
               "source_id": "second_opinions",
-              "distance": 0.40023118257522583
-            },
-            {
-              "chunk_id": "insurance_claims::fixed::0002",
-              "source_id": "insurance_claims",
-              "distance": 0.4316626191139221
+              "distance": 0.400820255279541
             }
           ],
           "true_positives": [
@@ -178,37 +153,29 @@
             "prescription_refills"
           ],
           "retrieved_source_ids": [
-            "prescription_refills",
-            "second_opinions"
+            "prescription_refills"
           ],
           "retrieved_chunks": [
             {
-              "chunk_id": "prescription_refills::fixed::0001",
-              "source_id": "prescription_refills",
-              "distance": 0.33368736505508423
-            },
-            {
               "chunk_id": "prescription_refills::fixed::0000",
               "source_id": "prescription_refills",
-              "distance": 0.35249871015548706
+              "distance": 0.33361613750457764
             },
             {
-              "chunk_id": "second_opinions::fixed::0001",
-              "source_id": "second_opinions",
-              "distance": 0.5134559869766235
+              "chunk_id": "prescription_refills::fixed::0001",
+              "source_id": "prescription_refills",
+              "distance": 0.4231719374656677
             }
           ],
           "true_positives": [
             "prescription_refills"
           ],
-          "false_positives": [
-            "second_opinions"
-          ],
+          "false_positives": [],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 1,
+          "fp_count": 0,
           "fn_count": 0,
-          "precision": 0.5,
+          "precision": 1.0,
           "recall": 1.0
         },
         {
@@ -224,17 +191,12 @@
             {
               "chunk_id": "lab_turnaround::fixed::0001",
               "source_id": "lab_turnaround",
-              "distance": 0.23880302906036377
+              "distance": 0.23496407270431519
             },
             {
               "chunk_id": "lab_turnaround::fixed::0000",
               "source_id": "lab_turnaround",
               "distance": 0.25946956872940063
-            },
-            {
-              "chunk_id": "lab_turnaround::fixed::0002",
-              "source_id": "lab_turnaround",
-              "distance": 0.5622360110282898
             }
           ],
           "true_positives": [
@@ -255,37 +217,29 @@
             "telemedicine"
           ],
           "retrieved_source_ids": [
-            "telemedicine",
-            "second_opinions"
+            "telemedicine"
           ],
           "retrieved_chunks": [
             {
               "chunk_id": "telemedicine::fixed::0001",
               "source_id": "telemedicine",
-              "distance": 0.2343422770500183
+              "distance": 0.21871888637542725
             },
             {
               "chunk_id": "telemedicine::fixed::0000",
               "source_id": "telemedicine",
-              "distance": 0.3601500988006592
-            },
-            {
-              "chunk_id": "second_opinions::fixed::0001",
-              "source_id": "second_opinions",
-              "distance": 0.43986231088638306
+              "distance": 0.3700868487358093
             }
           ],
           "true_positives": [
             "telemedicine"
           ],
-          "false_positives": [
-            "second_opinions"
-          ],
+          "false_positives": [],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 1,
+          "fp_count": 0,
           "fn_count": 0,
-          "precision": 0.5,
+          "precision": 1.0,
           "recall": 1.0
         },
         {
@@ -299,11 +253,6 @@
           ],
           "retrieved_chunks": [
             {
-              "chunk_id": "emergency_visits::fixed::0002",
-              "source_id": "emergency_visits",
-              "distance": 0.5041625499725342
-            },
-            {
               "chunk_id": "emergency_visits::fixed::0000",
               "source_id": "emergency_visits",
               "distance": 0.5134240388870239
@@ -311,7 +260,7 @@
             {
               "chunk_id": "emergency_visits::fixed::0001",
               "source_id": "emergency_visits",
-              "distance": 0.5239874124526978
+              "distance": 0.5346999764442444
             }
           ],
           "true_positives": [
@@ -332,39 +281,32 @@
             "privacy_policy"
           ],
           "retrieved_source_ids": [
-            "insurance_claims",
             "privacy_policy",
-            "second_opinions"
+            "insurance_claims"
           ],
           "retrieved_chunks": [
             {
-              "chunk_id": "insurance_claims::fixed::0001",
-              "source_id": "insurance_claims",
-              "distance": 0.5004429221153259
-            },
-            {
               "chunk_id": "privacy_policy::fixed::0000",
               "source_id": "privacy_policy",
-              "distance": 0.5416412353515625
+              "distance": 0.5430561900138855
             },
             {
-              "chunk_id": "second_opinions::fixed::0001",
-              "source_id": "second_opinions",
-              "distance": 0.6498202085494995
+              "chunk_id": "insurance_claims::fixed::0002",
+              "source_id": "insurance_claims",
+              "distance": 0.5736087560653687
             }
           ],
           "true_positives": [
             "privacy_policy"
           ],
           "false_positives": [
-            "insurance_claims",
-            "second_opinions"
+            "insurance_claims"
           ],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 2,
+          "fp_count": 1,
           "fn_count": 0,
-          "precision": 0.3333333333333333,
+          "precision": 0.5,
           "recall": 1.0
         },
         {
@@ -375,38 +317,31 @@
           ],
           "retrieved_source_ids": [
             "follow_up_discounts",
-            "second_opinions",
-            "telemedicine"
+            "second_opinions"
           ],
           "retrieved_chunks": [
             {
               "chunk_id": "follow_up_discounts::fixed::0000",
               "source_id": "follow_up_discounts",
-              "distance": 0.35355138778686523
+              "distance": 0.34731948375701904
             },
             {
               "chunk_id": "second_opinions::fixed::0001",
               "source_id": "second_opinions",
-              "distance": 0.41888517141342163
-            },
-            {
-              "chunk_id": "telemedicine::fixed::0001",
-              "source_id": "telemedicine",
-              "distance": 0.46467119455337524
+              "distance": 0.4216116666793823
             }
           ],
           "true_positives": [
             "follow_up_discounts"
           ],
           "false_positives": [
-            "second_opinions",
-            "telemedicine"
+            "second_opinions"
           ],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 2,
+          "fp_count": 1,
           "fn_count": 0,
-          "precision": 0.3333333333333333,
+          "precision": 0.5,
           "recall": 1.0
         },
         {
@@ -416,7 +351,8 @@
             "second_opinions"
           ],
           "retrieved_source_ids": [
-            "second_opinions"
+            "second_opinions",
+            "prescription_refills"
           ],
           "retrieved_chunks": [
             {
@@ -425,25 +361,22 @@
               "distance": 0.37662339210510254
             },
             {
-              "chunk_id": "second_opinions::fixed::0002",
-              "source_id": "second_opinions",
-              "distance": 0.45324772596359253
-            },
-            {
-              "chunk_id": "second_opinions::fixed::0001",
-              "source_id": "second_opinions",
-              "distance": 0.507023811340332
+              "chunk_id": "prescription_refills::fixed::0001",
+              "source_id": "prescription_refills",
+              "distance": 0.4926961660385132
             }
           ],
           "true_positives": [
             "second_opinions"
           ],
-          "false_positives": [],
+          "false_positives": [
+            "prescription_refills"
+          ],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 0,
+          "fp_count": 1,
           "fn_count": 0,
-          "precision": 1.0,
+          "precision": 0.5,
           "recall": 1.0
         },
         {
@@ -459,17 +392,12 @@
             {
               "chunk_id": "home_visits::fixed::0001",
               "source_id": "home_visits",
-              "distance": 0.4724379777908325
+              "distance": 0.3731493353843689
             },
             {
               "chunk_id": "home_visits::fixed::0000",
               "source_id": "home_visits",
-              "distance": 0.4760795831680298
-            },
-            {
-              "chunk_id": "home_visits::fixed::0002",
-              "source_id": "home_visits",
-              "distance": 0.5364611744880676
+              "distance": 0.47461169958114624
             }
           ],
           "true_positives": [
@@ -482,19 +410,10 @@
           "fn_count": 0,
           "precision": 1.0,
           "recall": 1.0
-        }
-      ]
-    },
-    "sentence": {
-      "strategy": "sentence",
-      "top_k": 3,
-      "query_count": 12,
-      "macro_precision": 0.6527777777777778,
-      "macro_recall": 1.0,
-      "queries": [
+        },
         {
-          "query_id": "RAG-001",
-          "query": "How can a patient book a new appointment?",
+          "query_id": "RAG-013",
+          "query": "Which specialty, preferred date, and time window should I provide for an appointment request?",
           "expected_relevant_sources": [
             "appointment_booking"
           ],
@@ -504,19 +423,458 @@
           ],
           "retrieved_chunks": [
             {
-              "chunk_id": "appointment_booking::sentence::0002",
+              "chunk_id": "appointment_booking::fixed::0001",
               "source_id": "appointment_booking",
-              "distance": 0.2949223518371582
+              "distance": 0.37218964099884033
             },
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.46013838052749634
+            }
+          ],
+          "true_positives": [
+            "appointment_booking"
+          ],
+          "false_positives": [
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-014",
+          "query": "When is an appointment slot considered confirmed?",
+          "expected_relevant_sources": [
+            "appointment_booking"
+          ],
+          "retrieved_source_ids": [
+            "appointment_booking",
+            "cancellation_rescheduling"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "appointment_booking::fixed::0001",
+              "source_id": "appointment_booking",
+              "distance": 0.24909019470214844
+            },
+            {
+              "chunk_id": "cancellation_rescheduling::fixed::0001",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.36221814155578613
+            }
+          ],
+          "true_positives": [
+            "appointment_booking"
+          ],
+          "false_positives": [
+            "cancellation_rescheduling"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-015",
+          "query": "How far in advance should I ask to change my appointment?",
+          "expected_relevant_sources": [
+            "cancellation_rescheduling"
+          ],
+          "retrieved_source_ids": [
+            "cancellation_rescheduling",
+            "appointment_booking"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "cancellation_rescheduling::fixed::0001",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.379491925239563
+            },
+            {
+              "chunk_id": "appointment_booking::fixed::0001",
+              "source_id": "appointment_booking",
+              "distance": 0.4528236985206604
+            }
+          ],
+          "true_positives": [
+            "cancellation_rescheduling"
+          ],
+          "false_positives": [
+            "appointment_booking"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-016",
+          "query": "Can the clinic charge a cancellation fee without telling me?",
+          "expected_relevant_sources": [
+            "cancellation_rescheduling"
+          ],
+          "retrieved_source_ids": [
+            "cancellation_rescheduling"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "cancellation_rescheduling::fixed::0002",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.18035733699798584
+            },
+            {
+              "chunk_id": "cancellation_rescheduling::fixed::0001",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.33918261528015137
+            }
+          ],
+          "true_positives": [
+            "cancellation_rescheduling"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-017",
+          "query": "Should I confirm the consultation price before booking?",
+          "expected_relevant_sources": [
+            "fee_structure"
+          ],
+          "retrieved_source_ids": [
+            "follow_up_discounts",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "follow_up_discounts::fixed::0002",
+              "source_id": "follow_up_discounts",
+              "distance": 0.38004791736602783
+            },
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.3892490863800049
+            }
+          ],
+          "true_positives": [],
+          "false_positives": [
+            "follow_up_discounts",
+            "second_opinions"
+          ],
+          "false_negatives": [
+            "fee_structure"
+          ],
+          "tp_count": 0,
+          "fp_count": 2,
+          "fn_count": 1,
+          "precision": 0.0,
+          "recall": 0.0
+        },
+        {
+          "query_id": "RAG-018",
+          "query": "Can support promise that my insurer will reimburse the claim?",
+          "expected_relevant_sources": [
+            "insurance_claims"
+          ],
+          "retrieved_source_ids": [
+            "insurance_claims"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "insurance_claims::fixed::0001",
+              "source_id": "insurance_claims",
+              "distance": 0.4367085099220276
+            },
+            {
+              "chunk_id": "insurance_claims::fixed::0000",
+              "source_id": "insurance_claims",
+              "distance": 0.5101360082626343
+            }
+          ],
+          "true_positives": [
+            "insurance_claims"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-019",
+          "query": "Who decides whether a prescription refill is approved?",
+          "expected_relevant_sources": [
+            "prescription_refills"
+          ],
+          "retrieved_source_ids": [
+            "prescription_refills"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "prescription_refills::fixed::0000",
+              "source_id": "prescription_refills",
+              "distance": 0.3396458625793457
+            },
+            {
+              "chunk_id": "prescription_refills::fixed::0001",
+              "source_id": "prescription_refills",
+              "distance": 0.356717586517334
+            }
+          ],
+          "true_positives": [
+            "prescription_refills"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-020",
+          "query": "What could cause a laboratory result to take longer?",
+          "expected_relevant_sources": [
+            "lab_turnaround"
+          ],
+          "retrieved_source_ids": [
+            "lab_turnaround"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "lab_turnaround::fixed::0001",
+              "source_id": "lab_turnaround",
+              "distance": 0.3387107849121094
+            },
+            {
+              "chunk_id": "lab_turnaround::fixed::0000",
+              "source_id": "lab_turnaround",
+              "distance": 0.4550600051879883
+            }
+          ],
+          "true_positives": [
+            "lab_turnaround"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-021",
+          "query": "What should I check to join a remote consultation?",
+          "expected_relevant_sources": [
+            "telemedicine"
+          ],
+          "retrieved_source_ids": [
+            "telemedicine"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "telemedicine::fixed::0001",
+              "source_id": "telemedicine",
+              "distance": 0.34902113676071167
+            },
+            {
+              "chunk_id": "telemedicine::fixed::0000",
+              "source_id": "telemedicine",
+              "distance": 0.45631664991378784
+            }
+          ],
+          "true_positives": [
+            "telemedicine"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-022",
+          "query": "Should I wait for a chatbot if my condition may be life-threatening?",
+          "expected_relevant_sources": [
+            "emergency_visits"
+          ],
+          "retrieved_source_ids": [
+            "emergency_visits",
+            "telemedicine"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "emergency_visits::fixed::0001",
+              "source_id": "emergency_visits",
+              "distance": 0.43703383207321167
+            },
+            {
+              "chunk_id": "telemedicine::fixed::0001",
+              "source_id": "telemedicine",
+              "distance": 0.624909520149231
+            }
+          ],
+          "true_positives": [
+            "emergency_visits"
+          ],
+          "false_positives": [
+            "telemedicine"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-023",
+          "query": "How does the support system protect information in application logs?",
+          "expected_relevant_sources": [
+            "privacy_policy"
+          ],
+          "retrieved_source_ids": [
+            "privacy_policy"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "privacy_policy::fixed::0001",
+              "source_id": "privacy_policy",
+              "distance": 0.6099960803985596
+            },
+            {
+              "chunk_id": "privacy_policy::fixed::0002",
+              "source_id": "privacy_policy",
+              "distance": 0.6275867819786072
+            }
+          ],
+          "true_positives": [
+            "privacy_policy"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-024",
+          "query": "Does the follow-up discount apply to tests and medicines too?",
+          "expected_relevant_sources": [
+            "follow_up_discounts"
+          ],
+          "retrieved_source_ids": [
+            "follow_up_discounts"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "follow_up_discounts::fixed::0000",
+              "source_id": "follow_up_discounts",
+              "distance": 0.2714877724647522
+            },
+            {
+              "chunk_id": "follow_up_discounts::fixed::0001",
+              "source_id": "follow_up_discounts",
+              "distance": 0.4967937469482422
+            }
+          ],
+          "true_positives": [
+            "follow_up_discounts"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-025",
+          "query": "Which details must the clinic confirm before a home visit?",
+          "expected_relevant_sources": [
+            "home_visits"
+          ],
+          "retrieved_source_ids": [
+            "home_visits",
+            "second_opinions"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "home_visits::fixed::0001",
+              "source_id": "home_visits",
+              "distance": 0.2926936149597168
+            },
+            {
+              "chunk_id": "second_opinions::fixed::0001",
+              "source_id": "second_opinions",
+              "distance": 0.3659595251083374
+            }
+          ],
+          "true_positives": [
+            "home_visits"
+          ],
+          "false_positives": [
+            "second_opinions"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        }
+      ]
+    },
+    "sentence": {
+      "strategy": "sentence",
+      "top_k": 2,
+      "query_count": 25,
+      "macro_precision": 0.82,
+      "macro_recall": 1.0,
+      "queries": [
+        {
+          "query_id": "RAG-001",
+          "query": "How can a patient book a new appointment?",
+          "expected_relevant_sources": [
+            "appointment_booking"
+          ],
+          "retrieved_source_ids": [
+            "second_opinions",
+            "appointment_booking"
+          ],
+          "retrieved_chunks": [
             {
               "chunk_id": "second_opinions::sentence::0001",
               "source_id": "second_opinions",
-              "distance": 0.3201169967651367
+              "distance": 0.3356146216392517
             },
             {
               "chunk_id": "appointment_booking::sentence::0001",
               "source_id": "appointment_booking",
-              "distance": 0.4038069248199463
+              "distance": 0.4125274419784546
             }
           ],
           "true_positives": [
@@ -539,19 +897,13 @@
             "cancellation_rescheduling"
           ],
           "retrieved_source_ids": [
-            "cancellation_rescheduling",
-            "appointment_booking"
+            "cancellation_rescheduling"
           ],
           "retrieved_chunks": [
             {
               "chunk_id": "cancellation_rescheduling::sentence::0001",
               "source_id": "cancellation_rescheduling",
-              "distance": 0.23783618211746216
-            },
-            {
-              "chunk_id": "appointment_booking::sentence::0002",
-              "source_id": "appointment_booking",
-              "distance": 0.3223270773887634
+              "distance": 0.2447255253791809
             },
             {
               "chunk_id": "cancellation_rescheduling::sentence::0000",
@@ -562,14 +914,12 @@
           "true_positives": [
             "cancellation_rescheduling"
           ],
-          "false_positives": [
-            "appointment_booking"
-          ],
+          "false_positives": [],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 1,
+          "fp_count": 0,
           "fn_count": 0,
-          "precision": 0.5,
+          "precision": 1.0,
           "recall": 1.0
         },
         {
@@ -580,30 +930,25 @@
           ],
           "retrieved_source_ids": [
             "fee_structure",
-            "second_opinions"
+            "follow_up_discounts"
           ],
           "retrieved_chunks": [
             {
-              "chunk_id": "fee_structure::sentence::0002",
+              "chunk_id": "fee_structure::sentence::0001",
               "source_id": "fee_structure",
-              "distance": 0.2273222804069519
+              "distance": 0.2537505626678467
             },
             {
-              "chunk_id": "fee_structure::sentence::0000",
-              "source_id": "fee_structure",
-              "distance": 0.358381450176239
-            },
-            {
-              "chunk_id": "second_opinions::sentence::0001",
-              "source_id": "second_opinions",
-              "distance": 0.368499755859375
+              "chunk_id": "follow_up_discounts::sentence::0001",
+              "source_id": "follow_up_discounts",
+              "distance": 0.3830029368400574
             }
           ],
           "true_positives": [
             "fee_structure"
           ],
           "false_positives": [
-            "second_opinions"
+            "follow_up_discounts"
           ],
           "false_negatives": [],
           "tp_count": 1,
@@ -629,14 +974,9 @@
               "distance": 0.2534952163696289
             },
             {
-              "chunk_id": "insurance_claims::sentence::0002",
-              "source_id": "insurance_claims",
-              "distance": 0.3656851649284363
-            },
-            {
               "chunk_id": "second_opinions::sentence::0001",
               "source_id": "second_opinions",
-              "distance": 0.386791467666626
+              "distance": 0.3835254907608032
             }
           ],
           "true_positives": [
@@ -659,37 +999,29 @@
             "prescription_refills"
           ],
           "retrieved_source_ids": [
-            "prescription_refills",
-            "second_opinions"
+            "prescription_refills"
           ],
           "retrieved_chunks": [
             {
               "chunk_id": "prescription_refills::sentence::0001",
               "source_id": "prescription_refills",
-              "distance": 0.24174416065216064
+              "distance": 0.2633102536201477
             },
             {
               "chunk_id": "prescription_refills::sentence::0000",
               "source_id": "prescription_refills",
-              "distance": 0.35764193534851074
-            },
-            {
-              "chunk_id": "second_opinions::sentence::0001",
-              "source_id": "second_opinions",
-              "distance": 0.5390840172767639
+              "distance": 0.3301503658294678
             }
           ],
           "true_positives": [
             "prescription_refills"
           ],
-          "false_positives": [
-            "second_opinions"
-          ],
+          "false_positives": [],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 1,
+          "fp_count": 0,
           "fn_count": 0,
-          "precision": 0.5,
+          "precision": 1.0,
           "recall": 1.0
         },
         {
@@ -705,17 +1037,12 @@
             {
               "chunk_id": "lab_turnaround::sentence::0001",
               "source_id": "lab_turnaround",
-              "distance": 0.1546984314918518
+              "distance": 0.14060062170028687
             },
             {
               "chunk_id": "lab_turnaround::sentence::0000",
               "source_id": "lab_turnaround",
               "distance": 0.28307557106018066
-            },
-            {
-              "chunk_id": "lab_turnaround::sentence::0002",
-              "source_id": "lab_turnaround",
-              "distance": 0.4036085605621338
             }
           ],
           "true_positives": [
@@ -740,19 +1067,14 @@
           ],
           "retrieved_chunks": [
             {
-              "chunk_id": "telemedicine::sentence::0002",
+              "chunk_id": "telemedicine::sentence::0001",
               "source_id": "telemedicine",
-              "distance": 0.2813941240310669
+              "distance": 0.22869008779525757
             },
             {
               "chunk_id": "telemedicine::sentence::0000",
               "source_id": "telemedicine",
-              "distance": 0.38302457332611084
-            },
-            {
-              "chunk_id": "telemedicine::sentence::0001",
-              "source_id": "telemedicine",
-              "distance": 0.39829492568969727
+              "distance": 0.33933424949645996
             }
           ],
           "true_positives": [
@@ -779,17 +1101,12 @@
             {
               "chunk_id": "emergency_visits::sentence::0001",
               "source_id": "emergency_visits",
-              "distance": 0.3603830933570862
-            },
-            {
-              "chunk_id": "emergency_visits::sentence::0002",
-              "source_id": "emergency_visits",
-              "distance": 0.445609450340271
+              "distance": 0.3896638751029968
             },
             {
               "chunk_id": "emergency_visits::sentence::0000",
               "source_id": "emergency_visits",
-              "distance": 0.48887765407562256
+              "distance": 0.47965729236602783
             }
           ],
           "true_positives": [
@@ -810,39 +1127,32 @@
             "privacy_policy"
           ],
           "retrieved_source_ids": [
-            "insurance_claims",
-            "privacy_policy",
-            "second_opinions"
+            "second_opinions",
+            "privacy_policy"
           ],
           "retrieved_chunks": [
             {
-              "chunk_id": "insurance_claims::sentence::0002",
-              "source_id": "insurance_claims",
-              "distance": 0.5046780109405518
+              "chunk_id": "second_opinions::sentence::0001",
+              "source_id": "second_opinions",
+              "distance": 0.5526867508888245
             },
             {
               "chunk_id": "privacy_policy::sentence::0000",
               "source_id": "privacy_policy",
-              "distance": 0.5539805889129639
-            },
-            {
-              "chunk_id": "second_opinions::sentence::0001",
-              "source_id": "second_opinions",
-              "distance": 0.5802652835845947
+              "distance": 0.5570958852767944
             }
           ],
           "true_positives": [
             "privacy_policy"
           ],
           "false_positives": [
-            "insurance_claims",
             "second_opinions"
           ],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 2,
+          "fp_count": 1,
           "fn_count": 0,
-          "precision": 0.3333333333333333,
+          "precision": 0.5,
           "recall": 1.0
         },
         {
@@ -852,37 +1162,29 @@
             "follow_up_discounts"
           ],
           "retrieved_source_ids": [
-            "follow_up_discounts",
-            "fee_structure"
+            "follow_up_discounts"
           ],
           "retrieved_chunks": [
             {
               "chunk_id": "follow_up_discounts::sentence::0001",
               "source_id": "follow_up_discounts",
-              "distance": 0.3935587406158447
+              "distance": 0.34818190336227417
             },
             {
               "chunk_id": "follow_up_discounts::sentence::0000",
               "source_id": "follow_up_discounts",
-              "distance": 0.41181206703186035
-            },
-            {
-              "chunk_id": "fee_structure::sentence::0002",
-              "source_id": "fee_structure",
-              "distance": 0.4370945692062378
+              "distance": 0.4054899215698242
             }
           ],
           "true_positives": [
             "follow_up_discounts"
           ],
-          "false_positives": [
-            "fee_structure"
-          ],
+          "false_positives": [],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 1,
+          "fp_count": 0,
           "fn_count": 0,
-          "precision": 0.5,
+          "precision": 1.0,
           "recall": 1.0
         },
         {
@@ -892,37 +1194,29 @@
             "second_opinions"
           ],
           "retrieved_source_ids": [
-            "second_opinions",
-            "prescription_refills"
+            "second_opinions"
           ],
           "retrieved_chunks": [
             {
               "chunk_id": "second_opinions::sentence::0000",
               "source_id": "second_opinions",
-              "distance": 0.41352325677871704
+              "distance": 0.40611088275909424
             },
             {
-              "chunk_id": "prescription_refills::sentence::0002",
-              "source_id": "prescription_refills",
-              "distance": 0.47675371170043945
-            },
-            {
-              "chunk_id": "second_opinions::sentence::0002",
+              "chunk_id": "second_opinions::sentence::0001",
               "source_id": "second_opinions",
-              "distance": 0.4831876754760742
+              "distance": 0.44520115852355957
             }
           ],
           "true_positives": [
             "second_opinions"
           ],
-          "false_positives": [
-            "prescription_refills"
-          ],
+          "false_positives": [],
           "false_negatives": [],
           "tp_count": 1,
-          "fp_count": 1,
+          "fp_count": 0,
           "fn_count": 0,
-          "precision": 0.5,
+          "precision": 1.0,
           "recall": 1.0
         },
         {
@@ -936,19 +1230,445 @@
           ],
           "retrieved_chunks": [
             {
-              "chunk_id": "home_visits::sentence::0002",
-              "source_id": "home_visits",
-              "distance": 0.35288870334625244
-            },
-            {
               "chunk_id": "home_visits::sentence::0001",
               "source_id": "home_visits",
-              "distance": 0.38562899827957153
+              "distance": 0.34934794902801514
             },
             {
               "chunk_id": "home_visits::sentence::0000",
               "source_id": "home_visits",
-              "distance": 0.49142563343048096
+              "distance": 0.47320497035980225
+            }
+          ],
+          "true_positives": [
+            "home_visits"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-013",
+          "query": "Which specialty, preferred date, and time window should I provide for an appointment request?",
+          "expected_relevant_sources": [
+            "appointment_booking"
+          ],
+          "retrieved_source_ids": [
+            "appointment_booking"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "appointment_booking::sentence::0001",
+              "source_id": "appointment_booking",
+              "distance": 0.3509232997894287
+            },
+            {
+              "chunk_id": "appointment_booking::sentence::0000",
+              "source_id": "appointment_booking",
+              "distance": 0.4801635146141052
+            }
+          ],
+          "true_positives": [
+            "appointment_booking"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-014",
+          "query": "When is an appointment slot considered confirmed?",
+          "expected_relevant_sources": [
+            "appointment_booking"
+          ],
+          "retrieved_source_ids": [
+            "appointment_booking",
+            "cancellation_rescheduling"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "appointment_booking::sentence::0001",
+              "source_id": "appointment_booking",
+              "distance": 0.23083317279815674
+            },
+            {
+              "chunk_id": "cancellation_rescheduling::sentence::0001",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.38678979873657227
+            }
+          ],
+          "true_positives": [
+            "appointment_booking"
+          ],
+          "false_positives": [
+            "cancellation_rescheduling"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-015",
+          "query": "How far in advance should I ask to change my appointment?",
+          "expected_relevant_sources": [
+            "cancellation_rescheduling"
+          ],
+          "retrieved_source_ids": [
+            "cancellation_rescheduling",
+            "appointment_booking"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "cancellation_rescheduling::sentence::0001",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.3876293897628784
+            },
+            {
+              "chunk_id": "appointment_booking::sentence::0001",
+              "source_id": "appointment_booking",
+              "distance": 0.43990302085876465
+            }
+          ],
+          "true_positives": [
+            "cancellation_rescheduling"
+          ],
+          "false_positives": [
+            "appointment_booking"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-016",
+          "query": "Can the clinic charge a cancellation fee without telling me?",
+          "expected_relevant_sources": [
+            "cancellation_rescheduling"
+          ],
+          "retrieved_source_ids": [
+            "cancellation_rescheduling",
+            "fee_structure"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "cancellation_rescheduling::sentence::0001",
+              "source_id": "cancellation_rescheduling",
+              "distance": 0.34920501708984375
+            },
+            {
+              "chunk_id": "fee_structure::sentence::0001",
+              "source_id": "fee_structure",
+              "distance": 0.392871618270874
+            }
+          ],
+          "true_positives": [
+            "cancellation_rescheduling"
+          ],
+          "false_positives": [
+            "fee_structure"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-017",
+          "query": "Should I confirm the consultation price before booking?",
+          "expected_relevant_sources": [
+            "fee_structure"
+          ],
+          "retrieved_source_ids": [
+            "fee_structure",
+            "follow_up_discounts"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "fee_structure::sentence::0001",
+              "source_id": "fee_structure",
+              "distance": 0.34309184551239014
+            },
+            {
+              "chunk_id": "follow_up_discounts::sentence::0001",
+              "source_id": "follow_up_discounts",
+              "distance": 0.3723399043083191
+            }
+          ],
+          "true_positives": [
+            "fee_structure"
+          ],
+          "false_positives": [
+            "follow_up_discounts"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-018",
+          "query": "Can support promise that my insurer will reimburse the claim?",
+          "expected_relevant_sources": [
+            "insurance_claims"
+          ],
+          "retrieved_source_ids": [
+            "insurance_claims"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "insurance_claims::sentence::0001",
+              "source_id": "insurance_claims",
+              "distance": 0.4115467667579651
+            },
+            {
+              "chunk_id": "insurance_claims::sentence::0000",
+              "source_id": "insurance_claims",
+              "distance": 0.48110800981521606
+            }
+          ],
+          "true_positives": [
+            "insurance_claims"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-019",
+          "query": "Who decides whether a prescription refill is approved?",
+          "expected_relevant_sources": [
+            "prescription_refills"
+          ],
+          "retrieved_source_ids": [
+            "prescription_refills"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "prescription_refills::sentence::0001",
+              "source_id": "prescription_refills",
+              "distance": 0.25118160247802734
+            },
+            {
+              "chunk_id": "prescription_refills::sentence::0000",
+              "source_id": "prescription_refills",
+              "distance": 0.3121524453163147
+            }
+          ],
+          "true_positives": [
+            "prescription_refills"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-020",
+          "query": "What could cause a laboratory result to take longer?",
+          "expected_relevant_sources": [
+            "lab_turnaround"
+          ],
+          "retrieved_source_ids": [
+            "lab_turnaround"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "lab_turnaround::sentence::0001",
+              "source_id": "lab_turnaround",
+              "distance": 0.31800490617752075
+            },
+            {
+              "chunk_id": "lab_turnaround::sentence::0000",
+              "source_id": "lab_turnaround",
+              "distance": 0.45853137969970703
+            }
+          ],
+          "true_positives": [
+            "lab_turnaround"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-021",
+          "query": "What should I check to join a remote consultation?",
+          "expected_relevant_sources": [
+            "telemedicine"
+          ],
+          "retrieved_source_ids": [
+            "telemedicine"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "telemedicine::sentence::0001",
+              "source_id": "telemedicine",
+              "distance": 0.39983808994293213
+            },
+            {
+              "chunk_id": "telemedicine::sentence::0000",
+              "source_id": "telemedicine",
+              "distance": 0.4598272442817688
+            }
+          ],
+          "true_positives": [
+            "telemedicine"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-022",
+          "query": "Should I wait for a chatbot if my condition may be life-threatening?",
+          "expected_relevant_sources": [
+            "emergency_visits"
+          ],
+          "retrieved_source_ids": [
+            "emergency_visits",
+            "telemedicine"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "emergency_visits::sentence::0001",
+              "source_id": "emergency_visits",
+              "distance": 0.2649875283241272
+            },
+            {
+              "chunk_id": "telemedicine::sentence::0001",
+              "source_id": "telemedicine",
+              "distance": 0.6075106859207153
+            }
+          ],
+          "true_positives": [
+            "emergency_visits"
+          ],
+          "false_positives": [
+            "telemedicine"
+          ],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 1,
+          "fn_count": 0,
+          "precision": 0.5,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-023",
+          "query": "How does the support system protect information in application logs?",
+          "expected_relevant_sources": [
+            "privacy_policy"
+          ],
+          "retrieved_source_ids": [
+            "privacy_policy"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "privacy_policy::sentence::0001",
+              "source_id": "privacy_policy",
+              "distance": 0.6452579498291016
+            },
+            {
+              "chunk_id": "privacy_policy::sentence::0000",
+              "source_id": "privacy_policy",
+              "distance": 0.7363101243972778
+            }
+          ],
+          "true_positives": [
+            "privacy_policy"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-024",
+          "query": "Does the follow-up discount apply to tests and medicines too?",
+          "expected_relevant_sources": [
+            "follow_up_discounts"
+          ],
+          "retrieved_source_ids": [
+            "follow_up_discounts"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "follow_up_discounts::sentence::0000",
+              "source_id": "follow_up_discounts",
+              "distance": 0.29520684480667114
+            },
+            {
+              "chunk_id": "follow_up_discounts::sentence::0001",
+              "source_id": "follow_up_discounts",
+              "distance": 0.3278573751449585
+            }
+          ],
+          "true_positives": [
+            "follow_up_discounts"
+          ],
+          "false_positives": [],
+          "false_negatives": [],
+          "tp_count": 1,
+          "fp_count": 0,
+          "fn_count": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        {
+          "query_id": "RAG-025",
+          "query": "Which details must the clinic confirm before a home visit?",
+          "expected_relevant_sources": [
+            "home_visits"
+          ],
+          "retrieved_source_ids": [
+            "home_visits"
+          ],
+          "retrieved_chunks": [
+            {
+              "chunk_id": "home_visits::sentence::0001",
+              "source_id": "home_visits",
+              "distance": 0.29893624782562256
+            },
+            {
+              "chunk_id": "home_visits::sentence::0000",
+              "source_id": "home_visits",
+              "distance": 0.38368386030197144
             }
           ],
           "true_positives": [
@@ -968,11 +1688,11 @@
   "configuration": {
     "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
     "similarity_metric": "cosine",
-    "top_k": 3,
+    "top_k": 2,
     "collections": {
       "fixed_size": "practo_fixed_size",
       "sentence": "practo_sentence"
     },
-    "evaluation_case_count": 12
+    "evaluation_case_count": 25
   }
 }

@@ -14,10 +14,10 @@ from dataset import (
 class TestAppointmentDataset(unittest.TestCase):
 
     def setUp(self):
-        self.appointments = generate_appointments(count=50, seed=42)
+        self.appointments = generate_appointments(seed=42)
 
-    def test_generates_at_least_40_records(self):
-        self.assertGreaterEqual(len(self.appointments), 40)
+    def test_default_generator_produces_240_records(self):
+        self.assertEqual(len(self.appointments), 240)
 
     def test_every_record_has_exact_required_fields(self):
         for appointment in self.appointments:
@@ -37,7 +37,7 @@ class TestAppointmentDataset(unittest.TestCase):
         )
 
         for category in CATEGORIES:
-            self.assertGreaterEqual(counts[category], 3)
+            self.assertEqual(counts[category], 48)
 
     def test_all_required_statuses_appear(self):
         counts = Counter(
@@ -46,7 +46,7 @@ class TestAppointmentDataset(unittest.TestCase):
         )
 
         for status in STATUSES:
-            self.assertGreaterEqual(counts[status], 1)
+            self.assertEqual(counts[status], 48)
 
     def test_days_since_created_is_an_integer_between_zero_and_30(self):
         for appointment in self.appointments:
@@ -73,14 +73,14 @@ class TestAppointmentDataset(unittest.TestCase):
         self.assertLessEqual(proportion, 0.30)
 
     def test_generation_is_reproducible(self):
-        first = generate_appointments(count=50, seed=123)
-        second = generate_appointments(count=50, seed=123)
+        first = generate_appointments(seed=123)
+        second = generate_appointments(seed=123)
 
         self.assertEqual(first, second)
 
     def test_different_seeds_can_generate_different_datasets(self):
-        first = generate_appointments(count=50, seed=123)
-        second = generate_appointments(count=50, seed=456)
+        first = generate_appointments(seed=123)
+        second = generate_appointments(seed=456)
 
         self.assertNotEqual(first, second)
 

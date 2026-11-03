@@ -48,14 +48,14 @@ def test_accepts_evidence_below_threshold():
 
     assert assessment.accepted is True
     assert assessment.best_distance == 0.25
-    assert assessment.threshold == 0.331998348236084
+    assert assessment.threshold == GroundingConfig().abstention_threshold
     assert len(assessment.evidence) == 2
 
 
 def test_accepts_evidence_exactly_at_threshold():
     store = FakeVectorStore({
         "How can I book?": [
-            make_chunk(0.331998),
+            make_chunk(GroundingConfig().abstention_threshold),
         ]
     })
 
@@ -110,13 +110,16 @@ def test_rejects_chunks_without_distances():
 
 
 def test_uses_configured_top_k():
-    store = FakeVectorStore({
-        "Question": [
-            make_chunk(0.2),
-            make_chunk(0.3),
-            make_chunk(0.4),
-        ]
-    })
+    store = FakeVectorStore(
+        {
+            "Question": [
+                make_chunk(0.2),
+                make_chunk(0.3),
+                make_chunk(0.4),
+            ]
+        },
+        strategy="sentence",
+    )
 
     config = RetrievalConfig(strategy="sentence", top_k=2)
 

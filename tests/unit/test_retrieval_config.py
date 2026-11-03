@@ -14,10 +14,10 @@ class TestRetrievalConfig(unittest.TestCase):
 
         self.assertEqual(config.strategy, "sentence")
 
-    def test_default_top_k_is_three(self):
+    def test_default_top_k_is_two(self):
         config = DEFAULT_RETRIEVAL_CONFIG
 
-        self.assertEqual(config.top_k, 3)
+        self.assertEqual(config.top_k, 2)
 
     def test_default_collection_is_sentence_collection(self):
         config = DEFAULT_RETRIEVAL_CONFIG

@@ -11,7 +11,7 @@ class RetrievalConfig:
     """Validated settings for selecting and querying a vector collection."""
 
     strategy: str = "sentence"
-    top_k: int = 3
+    top_k: int = 2
     similarity_metric: str = "cosine"
 
     def __post_init__(self) -> None:

@@ -12,6 +12,7 @@ from practo_agent.evaluation.abstention import (
     calibrate_abstention,
     load_abstention_cases,
 )
+from practo_agent.config import DEFAULT_RETRIEVAL_CONFIG
 from practo_agent.rag.embeddings import create_embedding_model
 from practo_agent.rag.vectorstore import ChromaVectorStore
 
@@ -27,8 +28,9 @@ def main():
     cases = load_abstention_cases(cases_path)
 
     embeddings = create_embedding_model(mock_mode=False)
+    strategy = DEFAULT_RETRIEVAL_CONFIG.strategy
     store = ChromaVectorStore(
-        strategy="sentence",
+        strategy=strategy,
         embeddings=embeddings,
     )
 
@@ -40,8 +42,14 @@ def main():
     report = calibrate_abstention(
         store=store,
         cases=cases,
-        top_k=3,
+        top_k=DEFAULT_RETRIEVAL_CONFIG.top_k,
     )
+    report["configuration"] = {
+        "strategy": strategy,
+        "collection": DEFAULT_RETRIEVAL_CONFIG.collection_name,
+        "top_k": DEFAULT_RETRIEVAL_CONFIG.top_k,
+        "similarity_metric": DEFAULT_RETRIEVAL_CONFIG.similarity_metric,
+    }
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(

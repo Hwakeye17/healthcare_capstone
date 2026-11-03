@@ -22,7 +22,7 @@ The appointment lookup capability requires structured records containing appoint
 
 ### Decision
 
-Generate a reproducible synthetic dataset using Python. The current generator produces 50 records and validates the required schema and distribution constraints.
+Generate a reproducible synthetic dataset using Python. The current generator produces 240 records and validates the required schema and distribution constraints.
 
 ### Alternatives considered
 
@@ -40,7 +40,7 @@ Synthetic data does not represent the full complexity or distribution of real he
 
 ### Evidence
 
-The dataset tests check the required fields, unique record identifiers, category and status coverage, integer creation-age values between 0 and 30, reproducibility, and a follow-up proportion between 10% and 30%.
+The dataset tests check the required fields, unique record identifiers, the 240-record size, 48 records in every category and status, integer creation-age values between 0 and 30, reproducibility, and a 20% follow-up proportion.
 
 ## 4. Decision: Use a Project-Authored Local Knowledge Base
 
@@ -74,7 +74,7 @@ The knowledge-base validator checks the required document set and minimum senten
 
 ## 5. Decision: Implement Two Explicit Chunking Strategies
 
-**Status:** Implemented; comparative effectiveness pending evaluation
+**Status:** Implemented; comparative evaluation completed on 25 labeled queries
 
 ### Context
 
@@ -101,15 +101,17 @@ Implementing both required strategies allows us to compare them under the same r
 
 ### Trade-offs
 
-Fixed-size chunks can split a sentence or concept across boundaries. Sentence-based chunks preserve sentence boundaries but can vary in character length and may separate information that belongs together. The current sentence splitter is a lightweight implementation, not a complete natural-language sentence parser.
+Fixed-size chunks can split a sentence or concept across boundaries. Sentence-based chunks preserve sentence boundaries but can vary in character length and may separate information that belongs together. The current sentence splitter is a lightweight implementation, not a complete natural-language sentence parser. Each required knowledge-base document contains 2–5 sentences, as specified by the assignment.
 
-### Evidence still required
+### Evaluation evidence
 
-Run both strategies against the same evaluation queries. Record retrieved documents, document-level precision and recall, per-query calculations, and aggregate results before recommending one strategy.
+Both strategies were run against the same 25 labeled queries. Retrieved
+documents, document-level precision and recall, per-query calculations, and
+aggregate results are recorded in the evaluation reports.
 
 ## 6. Decision: Use Sentence Transformers for Local Embeddings
 
-**Status:** Implemented; real retrieval quality pending evaluation
+**Status:** Implemented; real retrieval evaluated on the labeled query set
 
 ### Context
 
@@ -133,13 +135,15 @@ A local embedding model supports repeatable retrieval experiments and avoids per
 
 The model must be available in the local model cache. Initial model acquisition may require a separate download unless the model is already cached. Local execution still consumes memory and processing time. Model selection alone does not prove that retrieval quality is adequate.
 
-### Evidence still required
+### Evaluation evidence
 
-Evaluate retrieval against the project's labeled queries. Do not infer semantic quality from successful model loading or unit tests alone.
+Real retrieval was evaluated against the project's labeled query set. The
+reported results are specific to that set and do not establish held-out
+generalization.
 
 ## 7. Decision: Use ChromaDB with Separate Collections
 
-**Status:** Implemented; retrieval quality pending evaluation
+**Status:** Implemented; retrieval evaluated on 25 labeled queries
 
 ### Context
 
@@ -337,7 +341,7 @@ The import issue was corrected by changing the internal import from `src.practo_
 
 The ingestion script subsequently loaded the Sentence Transformers model and successfully populated both ChromaDB collections.
 
-The full unit-test suite was rerun after the correction, with all 54 tests passing.
+The current full test suite passes with 268 tests and 31 subtests.
 
 ## 12. Decision: Centralize RAG Retrieval Configuration
 
@@ -357,7 +361,7 @@ The default configuration uses:
 
 - Retrieval strategy: `sentence`
 - ChromaDB collection: `practo_sentence`
-- Top-k: `3`
+- Top-k: `2`
 - Similarity metric: `cosine`
 
 The collection name is derived from the existing `COLLECTION_NAMES` mapping rather than duplicated.
@@ -379,13 +383,15 @@ An explicit top-k override remains available for backward compatibility and cont
 
 A dataclass provides a typed, explicit, and testable configuration contract. Immutability prevents accidental changes during execution.
 
-The selected sentence-based strategy follows the completed comparative
-retrieval experiment.
+The selected sentence-based strategy follows the measured 25-query comparison
+at top-k 2: sentence-based achieved 0.8200 macro precision and 1.0000 macro
+recall, compared with fixed-size at 0.7400 and 0.9600.
 
 ### Trade-offs
 
 - The configuration currently supports only cosine distance because that is the metric used by the existing ChromaDB collections.
-- The default top-k value remains 3 based on the previous evaluation setup; it has not been independently optimized.
+- Top-k 2 was selected based on the current 25-query comparison; it has not
+  been independently validated on a held-out query set.
 - Explicit per-call top-k overrides remain possible, so callers must use them deliberately.
 - The configuration selects a strategy but does not determine whether retrieved evidence is relevant enough to answer a query.
 
@@ -418,8 +424,8 @@ Selecting an arbitrary threshold could cause two types of errors:
 
 ### Decision
 
-Use an empirically calibrated cosine-distance threshold of **0.331998**
-with the existing sentence-based retrieval configuration.
+Use an empirically calibrated cosine-distance threshold of
+**0.6976266205310822** with the selected sentence-based retrieval configuration.
 
 A query is accepted for answer generation when its best retrieved cosine
 distance is less than or equal to this threshold.
@@ -428,7 +434,10 @@ The threshold was selected using a safety-first rule:
 
 1. Require zero false acceptances on the calibration dataset.
 2. Maximize recall over in-scope queries.
-3. Resolve ties by selecting the lower threshold.
+3. If all in-scope distances are separated from out-of-scope distances,
+   select the midpoint between their nearest boundaries.
+4. Otherwise, select the lower threshold among candidates tied for maximum
+   recall.
 
 The threshold is configurable and must not be treated as a universal
 similarity boundary.
@@ -443,15 +452,15 @@ similarity boundary.
 
 ### Rationale
 
-The initial calibration experiment evaluated five queries: three in-scope
-administrative questions and two out-of-scope questions.
+The current calibration experiment evaluates 27 queries: the 25 labeled
+in-scope retrieval queries and two out-of-scope questions.
 
-At a threshold of 0.331998, all three in-scope queries were accepted and
-both out-of-scope queries were rejected.
+At a threshold of 0.6976266205310822, all 25 in-scope queries were accepted
+and both out-of-scope queries were rejected.
 
 This produced:
 
-- True positives: 3
+- True positives: 25
 - False positives: 0
 - True negatives: 2
 - False negatives: 0
@@ -459,7 +468,11 @@ This produced:
 - Recall: 1.0000
 - False acceptance rate: 0.0000
 
-Increasing the threshold to 0.761802 caused the medical diagnosis query
+The selected threshold is the midpoint between the maximum observed in-scope
+distance (0.6452579498) and the minimum observed out-of-scope distance
+(0.7499952912), so it lies between the measured clusters. Increasing the
+threshold to the next evaluated candidate above 0.7499952912 caused the
+medical diagnosis query
 to be accepted, demonstrating the risk of using a more permissive threshold.
 
 The selected threshold therefore provides the best observed result under
@@ -467,7 +480,7 @@ the defined selection rule.
 
 ### Trade-offs and Limitations
 
-- The calibration dataset contains only five queries and is not
+- The calibration dataset contains only 27 queries and is not
   statistically representative.
 - Only two out-of-scope examples were evaluated.
 - Cosine distance measures semantic similarity rather than factual support.
@@ -491,8 +504,10 @@ The experiment is executed using
 `scripts/calibrate_abstention.py`, with its detailed output saved to
 `evaluation/results/abstention_calibration.json`.
 
-The experiment produced zero false acceptances and zero false rejections
-across the five initial calibration queries.
+The current 27-query calibration produced zero false acceptances and zero
+false rejections. Its 25 in-scope queries overlap with the retrieval
+evaluation set, and only two out-of-scope examples were used, so the results
+remain provisional.
 
 Unit tests validate calibration-case loading, retrieval-distance
 collection, threshold evaluation, invalid inputs, and threshold selection.
@@ -647,8 +662,9 @@ the complete question.
 
 A separate groundedness check is still required after generation.
 
-The threshold is provisional because it was calibrated using only five
-queries.
+The threshold is provisional because it was calibrated using only 27 queries,
+including only two out-of-scope examples. The in-scope queries overlap with
+the retrieval evaluation set.
 
 ### Evidence
 
@@ -657,7 +673,7 @@ threshold boundaries, retrieval configuration, and invalid source metadata.
 
 ## 17. Decision: Validate Generated Claims Against Retrieved Evidence
 
-**Status:** Implemented
+**Status:** Standalone RAG validation is implemented; CrewAI workflow integration remains outstanding.
 
 ### Context
 
@@ -711,7 +727,7 @@ The Practo Support Agent needs to handle appointment-related queries using struc
 
 Appointment information should be retrieved deterministically rather than generated or inferred by an LLM. The tool must support appointment status lookup and provide an administrative prioritization signal based on the record's follow-up requirement and age.
 
-The project uses a synthetic dataset containing 50 appointment records.
+The project uses a synthetic dataset containing 240 appointment records.
 
 ### Decision
 
@@ -745,7 +761,7 @@ A deterministic lookup function provides predictable and testable results for st
 
 The follow-up flag receives 60% weight because it explicitly identifies records requiring follow-up consideration. Record age contributes the remaining 40%.
 
-The dataset contains 10 follow-up records out of 50 (20%). Follow-up flags occur across multiple appointment statuses, so the score must always be interpreted alongside the actual appointment status.
+The dataset contains 48 follow-up records out of 240 (20%). Follow-up flags occur across multiple appointment statuses, so the score must always be interpreted alongside the actual appointment status.
 
 The score is an administrative prioritization heuristic, not a clinically validated urgency or risk measure. The selected weights are design assumptions rather than statistically optimized values.
 
@@ -767,7 +783,7 @@ The prioritization score is specific to the project's synthetic data assumptions
 
 ## 19. Decision: Use Three Specialist Agents with Sequential CrewAI Orchestration
 
-**Status:** Implemented; execution behavior pending demonstration and evaluation
+**Status:** Implemented; the three live scenarios have been demonstrated, and offline workflow tests pass.
 
 ### Context
 

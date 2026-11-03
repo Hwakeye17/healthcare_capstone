@@ -187,7 +187,7 @@ def _calculate_metrics(
     )
 
     return {
-        "threshold": round(threshold, 6),
+        "threshold": threshold,
         "true_positive": true_positive,
         "false_positive": false_positive,
         "true_negative": true_negative,
@@ -213,13 +213,17 @@ def evaluate_thresholds(results: list[dict]) -> dict:
     if not observed_distances:
         raise ValueError("No valid retrieval distances were recorded.")
 
-    # Test the observed distance values. A query is accepted when
-    # its best distance is less than or equal to the threshold.
-    candidate_thresholds = sorted({0.0, *observed_distances})
+    # Include observed boundaries and gap midpoints so the selected threshold
+    # can sit between the nearest in-scope and out-of-scope clusters.
+    candidate_thresholds = {0.0, *observed_distances}
+    candidate_thresholds.update(
+        (left + right) / 2
+        for left, right in zip(observed_distances, observed_distances[1:])
+    )
 
     threshold_results = [
         _calculate_metrics(results, threshold)
-        for threshold in candidate_thresholds
+        for threshold in sorted(candidate_thresholds)
     ]
 
     # Safety-first policy:
@@ -232,15 +236,47 @@ def evaluate_thresholds(results: list[dict]) -> dict:
     ]
 
     recommended = None
+    separating_midpoint = None
+    in_scope_distances = [
+        result["best_distance"]
+        for result in results
+        if result["expected_in_scope"]
+        and result["best_distance"] is not None
+    ]
+    out_of_scope_distances = [
+        result["best_distance"]
+        for result in results
+        if not result["expected_in_scope"]
+        and result["best_distance"] is not None
+    ]
 
     if safe_candidates:
-        recommended = max(
-            safe_candidates,
-            key=lambda item: (
-                item["recall"],
-                -item["threshold"],
-            ),
-        )
+        best_recall = max(item["recall"] for item in safe_candidates)
+        best_candidates = [
+            item for item in safe_candidates
+            if item["recall"] == best_recall
+        ]
+
+        if (
+            in_scope_distances
+            and out_of_scope_distances
+            and max(in_scope_distances) < min(out_of_scope_distances)
+            and best_recall == 1.0
+        ):
+            separating_midpoint = (
+                max(in_scope_distances) + min(out_of_scope_distances)
+            ) / 2
+            recommended = min(
+                best_candidates,
+                key=lambda item: abs(
+                    item["threshold"] - separating_midpoint
+                ),
+            )
+        else:
+            recommended = min(
+                best_candidates,
+                key=lambda item: item["threshold"],
+            )
 
     return {
         "threshold_results": threshold_results,
@@ -250,8 +286,11 @@ def evaluate_thresholds(results: list[dict]) -> dict:
         "recommended_metrics": recommended,
         "selection_rule": (
             "Zero false acceptances, then maximum in-scope recall; "
-            "ties are resolved using the lower threshold."
+            "when the observed classes are fully separable, select the "
+            "midpoint between their nearest boundaries; otherwise select "
+            "the lower threshold among tied candidates."
         ),
+        "separating_midpoint": separating_midpoint,
         "calibration_case_count": len(results),
         "in_scope_count": sum(
             result["expected_in_scope"] for result in results

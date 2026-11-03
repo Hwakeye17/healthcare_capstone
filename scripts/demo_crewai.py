@@ -36,7 +36,7 @@ SCENARIOS = [
         ),
         "retrieval_enabled": False,
         "lookup_enabled": True,
-        "expected_answer_fragments": ("cancelled", "500"),
+        "expected_answer_fragments": ("no-show", "500"),
     },
     {
         "name": "COMBINED QUERY",
@@ -46,7 +46,7 @@ SCENARIOS = [
         ),
         "retrieval_enabled": True,
         "lookup_enabled": True,
-        "expected_answer_fragments": ("24 hours", "cancelled", "500"),
+        "expected_answer_fragments": ("24 hours", "no-show", "500"),
     },
 ]
 

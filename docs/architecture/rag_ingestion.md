@@ -25,7 +25,7 @@ The pipeline is executed independently for each chunking strategy.
 
 ## 3. Decision: Reuse the Same Embedding Model
 
-**Status:** Implemented in the embedding abstraction; ingestion integration pending.
+**Status:** Implemented and used to build both persistent collections.
 
 ### Decision
 
@@ -191,8 +191,8 @@ The model weights loaded successfully during ingestion.
 
 | Collection | Strategy | Stored chunks |
 |---|---|---:|
-| practo_fixed_size | Fixed-size with overlap | 34 |
-| practo_sentence | Sentence-based with overlap | 36 |
+| practo_fixed_size | Fixed-size with overlap | 33 |
+| practo_sentence | Sentence-based with overlap | 24 |
 
 ### Observations
 

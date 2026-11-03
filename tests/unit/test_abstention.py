@@ -179,8 +179,28 @@ def test_evaluate_thresholds_selects_zero_false_acceptance_threshold():
 
     report = evaluate_thresholds(results)
 
-    assert report["recommended_threshold"] == 0.3
+    assert report["recommended_threshold"] == 0.5
     assert report["recommended_metrics"]["false_positive"] == 0
+    assert report["recommended_metrics"]["recall"] == 1.0
+
+
+def test_evaluate_thresholds_preserves_full_observed_distance_precision():
+    observed_distance = 0.35277605056762695
+    results = [
+        {
+            "expected_in_scope": True,
+            "best_distance": observed_distance,
+        },
+        {
+            "expected_in_scope": False,
+            "best_distance": 0.75,
+        },
+    ]
+
+    report = evaluate_thresholds(results)
+
+    expected_midpoint = (observed_distance + 0.75) / 2
+    assert report["recommended_threshold"] == expected_midpoint
     assert report["recommended_metrics"]["recall"] == 1.0
 
 
@@ -261,4 +281,18 @@ def test_calibrate_abstention_combines_retrieval_and_evaluation(
     assert report["in_scope_count"] == 3
     assert report["out_of_scope_count"] == 2
     assert len(report["query_results"]) == 5
-    assert report["recommended_threshold"] == 0.4
+    assert report["recommended_threshold"] == pytest.approx(0.6)
+
+
+def test_evaluate_thresholds_uses_midpoint_between_separated_classes():
+    results = [
+        {"expected_in_scope": True, "best_distance": 0.1},
+        {"expected_in_scope": True, "best_distance": 0.4},
+        {"expected_in_scope": False, "best_distance": 0.8},
+        {"expected_in_scope": False, "best_distance": 0.9},
+    ]
+
+    report = evaluate_thresholds(results)
+
+    assert report["separating_midpoint"] == pytest.approx(0.6)
+    assert report["recommended_threshold"] == report["separating_midpoint"]

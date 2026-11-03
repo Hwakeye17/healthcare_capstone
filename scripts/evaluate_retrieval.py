@@ -17,19 +17,118 @@ os.environ["MOCK_LLM"] = "false"
 
 from practo_agent.evaluation.cases import load_evaluation_cases
 from practo_agent.evaluation.retrieval import compare_strategies
+from practo_agent.config import DEFAULT_RETRIEVAL_CONFIG
 from practo_agent.rag.embeddings import create_embedding_model
 from practo_agent.rag.vectorstore import ChromaVectorStore
 
 
 RESULTS_DIR = PROJECT_ROOT / "evaluation" / "results"
 RESULTS_PATH = RESULTS_DIR / "retrieval_results.json"
+REPORT_PATH = RESULTS_DIR / "retrieval_comparison.md"
 
-TOP_K = 3
+TOP_K = DEFAULT_RETRIEVAL_CONFIG.top_k
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 def format_metric(value):
     """Format a metric while preserving undefined values."""
     return f"{value:.4f}" if value is not None else "N/A"
+
+
+def _per_query_calculation(result, metric):
+    """Render the arithmetic behind one per-query metric."""
+    true_positives = result["tp_count"]
+
+    if metric == "precision":
+        denominator = true_positives + result["fp_count"]
+    else:
+        denominator = true_positives + result["fn_count"]
+
+    value = result[metric]
+    if value is None:
+        return "undefined (no retrieved documents)"
+
+    return f"{true_positives}/{denominator} = {value:.4f}"
+
+
+def write_markdown_report(results):
+    """Write the assignment's per-query arithmetic and comparison report."""
+    strategies = results["strategies"]
+    selected_strategy = max(
+        strategies,
+        key=lambda strategy: (
+            strategies[strategy]["macro_recall"],
+            strategies[strategy]["macro_precision"],
+        ),
+    )
+
+    lines = [
+        "# Retrieval Strategy Comparison Report",
+        "",
+        "Both chunking strategies were evaluated against the same "
+        f"{results['query_count']} in-scope queries, using document-level "
+        "relevance labels and deduplicated source documents.",
+        "",
+        f"- Embedding model: {results['configuration']['embedding_model']}",
+        f"- Similarity metric: {results['configuration']['similarity_metric']}",
+        f"- Top-k: {results['top_k']}",
+        "",
+    ]
+
+    for strategy, label in (
+        ("fixed_size", "Fixed-size-with-overlap"),
+        ("sentence", "Sentence-based"),
+    ):
+        strategy_results = strategies[strategy]
+        lines.extend([
+            f"## {label}",
+            "",
+            "| Query | Expected source(s) | Retrieved source(s) | TP | FP | FN | Precision arithmetic | Recall arithmetic |",
+            "|---|---|---|---:|---:|---:|---|---|",
+        ])
+
+        for result in strategy_results["queries"]:
+            expected = ", ".join(result["expected_relevant_sources"])
+            retrieved = ", ".join(result["retrieved_source_ids"]) or "None"
+            lines.append(
+                f"| {result['query_id']} | {expected} | {retrieved} | "
+                f"{result['tp_count']} | {result['fp_count']} | "
+                f"{result['fn_count']} | "
+                f"{_per_query_calculation(result, 'precision')} | "
+                f"{_per_query_calculation(result, 'recall')} |"
+            )
+
+        lines.extend([
+            "",
+            f"Macro precision: **{strategy_results['macro_precision']:.4f}** "
+            f"(mean over {strategy_results['query_count']} queries).",
+            f"Macro recall: **{strategy_results['macro_recall']:.4f}** "
+            f"(mean over {strategy_results['query_count']} queries).",
+            "",
+        ])
+
+    fixed = strategies["fixed_size"]
+    sentence = strategies["sentence"]
+    selected = strategies[selected_strategy]
+    difference = (
+        sentence["macro_precision"] - fixed["macro_precision"]
+    )
+    lines.extend([
+        "## Recommendation",
+        "",
+        (
+            f"Select **{selected_strategy.replace('_', ' ')}** chunking: "
+            f"recall is prioritized to reduce missed policy sources; it has "
+            f"macro recall {selected['macro_recall']:.4f} and macro precision "
+            f"{selected['macro_precision']:.4f}. "
+            f"The sentence-based minus fixed-size precision difference is "
+            f"{difference:+.4f}; this recommendation is limited to this "
+            f"{results['query_count']}-query labeled evaluation."
+        ),
+        "",
+    ])
+
+    REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")
+
 
 def run_evaluation():
     """Load existing collections and evaluate both retrieval strategies."""
@@ -103,6 +202,8 @@ def run_evaluation():
     with RESULTS_PATH.open("w", encoding="utf-8") as file:
         json.dump(results, file, indent=2, ensure_ascii=False)
 
+    write_markdown_report(results)
+
     print("\n" + "=" * 65)
     print("RETRIEVAL EVALUATION SUMMARY")
     print("=" * 65)
@@ -130,6 +231,8 @@ def run_evaluation():
 
     print("\nFull results saved to:")
     print(RESULTS_PATH)
+    print("Readable report saved to:")
+    print(REPORT_PATH)
 
     return results
 

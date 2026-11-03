@@ -4,6 +4,8 @@ import unittest
 from pathlib import Path
 
 from scripts.validate_knowledge_base import (
+    MAX_SENTENCES,
+    MIN_SENTENCES,
     REQUIRED_DOCUMENTS,
     count_sentences,
     validate_knowledge_base,
@@ -20,7 +22,8 @@ class TestKnowledgeBase(unittest.TestCase):
 
         for filename, sentence_count in counts.items():
             with self.subTest(filename=filename):
-                self.assertGreaterEqual(sentence_count, 2)
+                self.assertGreaterEqual(sentence_count, MIN_SENTENCES)
+                self.assertLessEqual(sentence_count, MAX_SENTENCES)
 
     def test_sentence_counter_ignores_markdown_headings(self):
         text = """# Example Policy
@@ -51,7 +54,30 @@ This is the first sentence. This is the second sentence.
 
             with self.assertRaisesRegex(
                 ValueError,
-                "expected at least 2 sentences",
+                "expected 2 to 5 sentences",
+            ):
+                validate_knowledge_base(kb_dir)
+
+    def test_validator_rejects_a_document_with_too_many_sentences(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            kb_dir = Path(temp_dir)
+            overlong_document = (
+                "# Sample Policy\n"
+                + " ".join(
+                    f"Sentence {index}."
+                    for index in range(MAX_SENTENCES + 1)
+                )
+            )
+
+            for filename in REQUIRED_DOCUMENTS:
+                (kb_dir / filename).write_text(
+                    overlong_document,
+                    encoding="utf-8",
+                )
+
+            with self.assertRaisesRegex(
+                ValueError,
+                "expected 2 to 5 sentences",
             ):
                 validate_knowledge_base(kb_dir)
 

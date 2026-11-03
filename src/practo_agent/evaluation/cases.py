@@ -15,7 +15,7 @@ DEFAULT_CASES_PATH = (
 
 DEFAULT_KB_DIR = PROJECT_ROOT / "data" / "knowledge_base"
 
-MINIMUM_CASE_COUNT = 5
+MINIMUM_CASE_COUNT = 25
 
 REQUIRED_FIELDS = {
     "query_id",

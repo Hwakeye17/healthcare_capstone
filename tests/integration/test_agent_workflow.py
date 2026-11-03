@@ -85,9 +85,9 @@ def test_offline_workflow_uses_real_local_tools(monkeypatch):
         assert llm.tool_actions == list(expected_tools)
         if "APT-0001" in query:
             assert "General Medicine" in response.answer
-            assert "5 days old" in response.answer
-            assert "follow-up-required flag is False" in response.answer
-            assert "escalation score is 0.0667" in response.answer
+            assert "24 days old" in response.answer
+            assert "follow-up-required flag is True" in response.answer
+            assert "escalation score is 0.9200" in response.answer
         if "APT-9999" in query:
             assert "couldn't find appointment record APT-9999" in response.answer
 

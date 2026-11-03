@@ -20,7 +20,7 @@ class TestRetriever(unittest.TestCase):
 
         self.store.search.assert_called_once_with(
             "appointment booking",
-            top_k=3,
+            top_k=2,
         )
         self.assertEqual(len(results), 1)
 
