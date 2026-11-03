@@ -1,9 +1,20 @@
+import json
+
+import pytest
 from fastapi.testclient import TestClient
 from starlette.websockets import WebSocketDisconnect
 
 from practo_agent.api.app import create_app
 from practo_agent.memory import ConversationMemory
 from practo_agent.schemas import AgentResponse, ResponseStatus
+
+
+@pytest.fixture(autouse=True)
+def isolate_api_log_file(tmp_path, monkeypatch):
+    monkeypatch.setenv(
+        "PRACTO_LOG_PATH",
+        str(tmp_path / "api.jsonl"),
+    )
 
 
 def _abstained_response(answer="I could not find a supported answer."):
@@ -63,10 +74,39 @@ def test_http_query_returns_structured_response_and_uses_session(
     ).model_dump(mode="json")
     assert calls[0]["query"] == "How do I reschedule?"
     assert calls[0]["history"] == []
+    assert response.headers["X-Trace-ID"]
+
+
+def test_http_logs_trace_timing_and_outcome_without_request_content(
+    monkeypatch,
+    tmp_path,
+):
+    conversations, _ = _memory_with_recorded_workflow(monkeypatch)
+    client = TestClient(create_app(conversations))
+    query = "Call 9876543210 about appointment APT-0001"
+
+    response = client.post(
+        "/query",
+        json={"query": query, "session_id": "private-session"},
+    )
+
+    log_path = tmp_path / "api.jsonl"
+    lines = log_path.read_text(encoding="utf-8").splitlines()
+    records = [json.loads(line) for line in lines]
+    assert len(records) == 1
+    assert records[0]["event"] == "request_completed"
+    assert records[0]["trace_id"] == response.headers["X-Trace-ID"]
+    assert records[0]["outcome"] == "abstained"
+    assert records[0]["duration_ms"] >= 0
+    assert query not in "\n".join(lines)
+    assert "9876543210" not in "\n".join(lines)
+    assert "APT-0001" not in "\n".join(lines)
+    assert "private-session" not in "\n".join(lines)
 
 
 def test_http_query_rejects_invalid_payload_without_running_workflow(
     monkeypatch,
+    tmp_path,
 ):
     conversations, calls = _memory_with_recorded_workflow(monkeypatch)
     client = TestClient(create_app(conversations))
@@ -92,6 +132,15 @@ def test_http_query_rejects_invalid_payload_without_running_workflow(
     assert extra_field.status_code == 422
     assert empty_session.status_code == 422
     assert calls == []
+    records = [
+        json.loads(line)
+        for line in (tmp_path / "api.jsonl").read_text(
+            encoding="utf-8"
+        ).splitlines()
+    ]
+    assert len(records) == 3
+    assert all(record["outcome"] == "client_error" for record in records)
+    assert all(record["status_code"] == 422 for record in records)
 
 
 def test_websocket_carries_session_context_and_isolates_sessions(

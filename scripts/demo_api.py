@@ -13,6 +13,12 @@ RESULT_PATH = (
     / "results"
     / "api_demo.json"
 )
+LOG_PATH = (
+    PROJECT_ROOT
+    / "evaluation"
+    / "results"
+    / "api_demo.jsonl"
+)
 
 
 def main() -> None:
@@ -21,6 +27,9 @@ def main() -> None:
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
     os.environ["GROQ_API_KEY"] = ""
+    os.environ["PRACTO_LOG_PATH"] = str(LOG_PATH)
+    LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    LOG_PATH.write_text("", encoding="utf-8")
 
     source_directory = PROJECT_ROOT / "src"
     if str(source_directory) not in sys.path:
@@ -82,6 +91,32 @@ def main() -> None:
         raise RuntimeError(
             f"Expected two turns in shared history, got {len(history)} messages."
         )
+    log_lines = LOG_PATH.read_text(encoding="utf-8").splitlines()
+    log_events = [json.loads(line) for line in log_lines]
+    request_events = [
+        item
+        for item in log_events
+        if item["event"] == "request_completed"
+    ]
+    tool_events = [
+        item
+        for item in log_events
+        if item["event"] == "tool_completed"
+    ]
+    if not request_events or not tool_events:
+        raise RuntimeError(
+            "Expected request and tool activity in the JSONL log."
+        )
+    if any("trace_id" not in item for item in log_events):
+        raise RuntimeError("An API activity log has no trace ID.")
+    sensitive_values = (
+        first_query,
+        follow_up_query,
+        session_id,
+        "APT-0001",
+    )
+    if any(value in line for value in sensitive_values for line in log_lines):
+        raise RuntimeError("The API log contains request or session data.")
 
     report = {
         "demo": "offline_fastapi_and_websocket",
@@ -99,6 +134,10 @@ def main() -> None:
         "session_message_count": len(history),
         "follow_up_retained_appointment_context": True,
         "websocket_closed_gracefully": True,
+        "request_log_entries": len(request_events),
+        "tool_activity_log_entries": len(tool_events),
+        "all_requests_have_trace_ids": True,
+        "logs_contain_no_query_or_appointment_data": True,
         "passed": True,
     }
 

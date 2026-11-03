@@ -1,0 +1,9 @@
+{"timestamp":"2026-11-03T22:13:14.067116+00:00","event":"request_completed","trace_id":"823138ab1a7d4e33a302542b0c3bd4d4","transport":"http","operation":"health","outcome":"success","duration_ms":1.184,"status_code":200}
+{"timestamp":"2026-11-03T22:13:14.077263+00:00","event":"workflow_routed","trace_id":"43d7c4ef3a9f4f6dac4eb69d82b434e8","retrieval_enabled":false,"lookup_enabled":true,"clarification_required":false}
+{"timestamp":"2026-11-03T22:13:14.143126+00:00","event":"tool_completed","trace_id":"43d7c4ef3a9f4f6dac4eb69d82b434e8","tool_name":"check_appointment_status","tool_status":"success"}
+{"timestamp":"2026-11-03T22:13:14.193705+00:00","event":"request_completed","trace_id":"43d7c4ef3a9f4f6dac4eb69d82b434e8","transport":"http","operation":"query","outcome":"answered","duration_ms":125.569,"status_code":200}
+{"timestamp":"2026-11-03T22:13:14.196681+00:00","event":"workflow_routed","trace_id":"f6b10de1319c49f7ae73c2a2899f5c85","retrieval_enabled":true,"lookup_enabled":true,"clarification_required":false}
+{"timestamp":"2026-11-03T22:13:20.383997+00:00","event":"tool_completed","trace_id":"f6b10de1319c49f7ae73c2a2899f5c85","tool_name":"search_practo_knowledge_base","tool_status":"success"}
+{"timestamp":"2026-11-03T22:13:20.417669+00:00","event":"tool_completed","trace_id":"f6b10de1319c49f7ae73c2a2899f5c85","tool_name":"check_appointment_status","tool_status":"success"}
+{"timestamp":"2026-11-03T22:13:20.461705+00:00","event":"request_completed","trace_id":"f6b10de1319c49f7ae73c2a2899f5c85","transport":"websocket","operation":"websocket_query","outcome":"answered","duration_ms":6266.518}
+{"timestamp":"2026-11-03T22:13:20.462311+00:00","event":"request_completed","trace_id":"d762a3b65cc74d9f8dc22948e9ddbdb4","transport":"websocket","operation":"websocket_connection","outcome":"disconnected","duration_ms":0.002}

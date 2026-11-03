@@ -12,6 +12,7 @@ from practo_agent.config.runtime_budget import (
     RuntimeBudget,
     RuntimeBudgetExceeded,
 )
+from practo_agent.observability import log_event
 from practo_agent.rag.groundedness import (
     GroundednessValidator,
     create_groundedness_validator,
@@ -99,6 +100,12 @@ def run_practo_query(
         return _budget_abstention(str(exc))
 
     route = route_query(contextual_query)
+    log_event(
+        "workflow_routed",
+        retrieval_enabled=route.retrieval_enabled,
+        lookup_enabled=route.lookup_enabled,
+        clarification_required=route.clarification_required,
+    )
 
     if route.clarification_required:
         return AgentResponse(

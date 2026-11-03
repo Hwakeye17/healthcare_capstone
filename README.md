@@ -156,6 +156,12 @@ python scripts\demo_api.py
 See [`docs/architecture/api.md`](docs/architecture/api.md) for request
 schemas, validation behavior, session limitations, and expected demo results.
 
+The API writes trace-correlated JSON Lines request and workflow events to
+`logs/practo_agent.jsonl` by default. Override the destination with
+`PRACTO_LOG_PATH`. Request bodies, responses, session IDs, appointment IDs,
+and contact numbers are excluded; see
+[`docs/architecture/observability.md`](docs/architecture/observability.md).
+
 Demonstrate the output-side groundedness check by injecting an unsupported
 claim into a controlled offline Crew result. The application workflow must
 reject it and save a transcript:
@@ -193,8 +199,9 @@ Fixed-format contact-number masking, phrase-based prompt-injection detection,
 CrewAI response groundedness validation, and session-based conversation
 memory, and context-aware response caching are implemented and demonstrated.
 Runtime token/cost controls and the FastAPI HTTP/WebSocket interface are
-implemented with offline demonstrations. Remaining work includes
-privacy-safe structured logging, the 15-query four-dimension evaluation, the
-AutoGen review stage, governance controls, and final acceptance demonstrations.
+implemented with offline demonstrations. Privacy-safe structured logging is
+implemented and demonstrated. Remaining work includes the 15-query
+four-dimension evaluation, the AutoGen review stage, governance controls, and
+final acceptance demonstrations.
 Track remaining requirements in the internal handoff; do not mark a feature
 complete until its behavior is demonstrated and tested.

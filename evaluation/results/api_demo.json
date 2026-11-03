@@ -43,5 +43,9 @@
   "session_message_count": 4,
   "follow_up_retained_appointment_context": true,
   "websocket_closed_gracefully": true,
+  "request_log_entries": 4,
+  "tool_activity_log_entries": 3,
+  "all_requests_have_trace_ids": true,
+  "logs_contain_no_query_or_appointment_data": true,
   "passed": true
 }

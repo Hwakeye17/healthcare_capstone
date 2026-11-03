@@ -154,18 +154,18 @@ These are distinct data paths:
 
 Retrieval results should retain their source information so answers and evaluation results can be traced to the relevant documents.
 
-## 6. Planned Integration
+## 6. Current Integration
 
 The current implementation includes LangChain session memory, input and
 output guardrails, a FastAPI HTTP/WebSocket interface, runtime token/cost
-budgets, and session-aware response caching. The API details and process-local
-session limitations are documented in
+budgets, session-aware response caching, and privacy-safe JSONL request
+observability. The API details and process-local session limitations are
+documented in
 [`docs/architecture/api.md`](api.md).
 
-Remaining system work includes request tracing and JSONL audit logging with
-PII masking, the final evaluation workflow, the AutoGen review stage, and
-governance enforcement. Update this architecture as those components are
-implemented and tested.
+Remaining system work includes the final evaluation workflow, the AutoGen
+review stage, and governance enforcement. Update this architecture as those
+components are implemented and tested.
 
 ## 7. Quality and Safety Principles
 
@@ -187,7 +187,7 @@ knowledge-base validation, retrieval, routing, specialist tools, structured
 response validation, runtime budgets, HTTP validation, WebSocket session
 context, and the offline CrewAI workflow.
 
-The latest verified full test run contains 334 passing tests and 31 passing
+The latest verified full test run contains 337 passing tests and 31 passing
 subtests. The API demonstration exercises a real local retrieval/appointment
 workflow through HTTP and a context-dependent WebSocket follow-up. The offline
 CrewAI integration test rejects external network connections. Dependency

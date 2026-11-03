@@ -6,6 +6,7 @@ import json
 from crewai.tools import tool
 
 from practo_agent.config import DEFAULT_RETRIEVAL_CONFIG
+from practo_agent.observability import log_event
 from practo_agent.rag.embeddings import create_embedding_model
 from practo_agent.rag.evidence import assess_evidence
 from practo_agent.rag.vectorstore import ChromaVectorStore
@@ -87,6 +88,11 @@ def search_practo_knowledge_base(query: str) -> str:
             reason="Knowledge-base search failed.",
         )
 
+    log_event(
+        "tool_completed",
+        tool_name="search_practo_knowledge_base",
+        tool_status=output.status.value,
+    )
     return json.dumps(output.model_dump(mode="json"), ensure_ascii=False)
 
 
@@ -136,4 +142,9 @@ def lookup_appointment(record_id: str) -> str:
             reason="Appointment lookup failed.",
         )
 
+    log_event(
+        "tool_completed",
+        tool_name="check_appointment_status",
+        tool_status=output.status.value,
+    )
     return json.dumps(output.model_dump(mode="json"), ensure_ascii=False)

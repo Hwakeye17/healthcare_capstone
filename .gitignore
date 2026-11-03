@@ -16,3 +16,6 @@ venv/
 
 # Generated ChromaDB vector stores
 /data/vectorstores/
+
+# Runtime JSON Lines logs
+/logs/*.jsonl

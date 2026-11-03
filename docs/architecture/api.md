@@ -81,6 +81,11 @@ Synchronous workflow execution is dispatched to Starlette's worker thread
 pool for both HTTP and WebSocket handling, avoiding blocking the event loop
 during retrieval and Crew execution.
 
+HTTP responses include an `X-Trace-ID` header. WebSocket request trace IDs
+are recorded in the JSON Lines logs. See
+[`observability.md`](observability.md) for the event schema and privacy
+boundary.
+
 ## Offline demonstration
 
 Run:
