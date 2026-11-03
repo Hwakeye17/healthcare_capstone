@@ -42,9 +42,35 @@ executes, and saves a safe transcript to
 `evaluation/results/input_guardrail_demo.json`. The transcript marks the
 fabricated number without persisting its digits.
 
+## Prompt-injection detection
+
+The request workflow checks the contact-number-masked query for clear,
+common attempts to override system/developer/safety instructions, adopt an
+unrestricted role, or obtain hidden instructions, credentials, or other
+patients' records. A detected request is rejected with a fixed abstention
+response before deterministic routing, Crew construction, or LLM execution.
+
+This is a deterministic phrase-based input filter, not a semantic classifier
+or a complete security boundary. It can miss novel or obfuscated attacks and
+may flag wording that resembles a known pattern. Agent prompts, least-
+privilege tool assignments, output validation, and other controls remain
+necessary. Ordinary appointment and policy questions should continue through
+the normal workflow.
+
+Run the offline rejection demonstration from the repository root:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python .\scripts\demo_prompt_injection.py
+```
+
+The demo exercises `run_practo_query` with a deliberate override attempt and
+fails if routing or Crew construction is reached. Its safe transcript,
+`evaluation/results/prompt_injection_demo.json`, omits the attack text while
+recording the detected category and rejection result.
+
 ## Remaining guardrail work
 
-Prompt-injection detection and its rejection behavior are not implemented by
-this change. The separate output-side groundedness validator exists for the
-standalone RAG flow, but integrating it into the CrewAI response lifecycle
-remains outstanding.
+The separate output-side groundedness validator exists for the standalone RAG
+flow, but integrating it into the CrewAI response lifecycle remains
+outstanding.

@@ -4,7 +4,10 @@ from practo_agent.agents.crew import create_practo_crew
 from practo_agent.agents.mock_llm import MockCrewAILLM
 from practo_agent.agents.routing import route_query
 from practo_agent.config.llm import create_crewai_llm
-from practo_agent.guardrails import mask_contact_numbers
+from practo_agent.guardrails import (
+    detect_prompt_injection,
+    mask_contact_numbers,
+)
 from practo_agent.schemas import (
     AgentResponse,
     LookupAgentOutput,
@@ -31,6 +34,17 @@ def run_practo_query(
         raise ValueError("query must be a non-empty string.")
 
     normalized_query = mask_contact_numbers(query.strip())
+    if detect_prompt_injection(normalized_query) is not None:
+        return AgentResponse(
+            status=ResponseStatus.ABSTAINED,
+            answer=(
+                "I can help with Practo administrative questions, but cannot "
+                "follow requests to override instructions or disclose "
+                "restricted information."
+            ),
+            reason="The request was rejected by the prompt-injection input guardrail.",
+        )
+
     route = route_query(normalized_query)
 
     if route.clarification_required:

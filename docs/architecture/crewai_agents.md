@@ -65,14 +65,17 @@ This follows the principle of least privilege: an agent receives only the capabi
 ## 5. Task Dependencies and Execution
 
 The CrewAI workflow uses a sequential process. The application entry point
-`run_practo_query` masks fixed-format contact numbers before deterministic
+`run_practo_query` masks fixed-format contact numbers and rejects recognized
+prompt-injection or restricted-information requests before deterministic
 routing and crew construction:
 
 1. Contact numbers are redacted from the query before it is provided to any
    CrewAI LLM, including the offline mock.
-2. Policy questions use the Retrieval Agent.
-3. Requests containing one appointment record ID use the Lookup Agent.
-4. Mixed policy and record questions use both specialists.
+2. Recognized prompt-injection attempts are rejected before routing, Crew
+   construction, or LLM execution.
+3. Policy questions use the Retrieval Agent.
+4. Requests containing one appointment record ID use the Lookup Agent.
+5. Mixed policy and record questions use both specialists.
 5. The Response Composer receives outputs only from enabled specialist tasks.
 
 Questions outside the supported scope are sent through calibrated retrieval so
