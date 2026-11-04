@@ -2,6 +2,7 @@
 import pytest
 
 from practo_agent.rag.groundedness import (
+    GroqGroundednessValidator,
     GroundednessValidationError,
     MockGroundednessValidator,
     create_groundedness_validator,
@@ -108,3 +109,29 @@ def test_factory_does_not_require_groq_key(monkeypatch):
     validator = create_groundedness_validator()
 
     assert isinstance(validator, MockGroundednessValidator)
+
+
+def test_groq_groundedness_uses_json_schema_and_bounded_retries(monkeypatch):
+    import langchain_groq
+
+    captured = {}
+
+    class FakeChatGroq:
+        def __init__(self, **kwargs):
+            captured["client_options"] = kwargs
+
+        def with_structured_output(self, schema, **kwargs):
+            captured["schema"] = schema
+            captured["structured_options"] = kwargs
+            return object()
+
+    monkeypatch.setattr(langchain_groq, "ChatGroq", FakeChatGroq)
+    monkeypatch.setenv("GROQ_API_KEY", "test-key")
+
+    GroqGroundednessValidator(model="test-model")
+
+    assert captured["structured_options"] == {
+        "method": "json_schema",
+        "strict": False,
+    }
+    assert captured["client_options"]["max_retries"] == 3

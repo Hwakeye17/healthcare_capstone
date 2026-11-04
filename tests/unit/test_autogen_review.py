@@ -2,7 +2,9 @@ import pytest
 from autogen_core.models import ModelFamily
 from autogen_ext.models.replay import ReplayChatCompletionClient
 
+from practo_agent.config.llm import GROQ_BASE_URL
 from practo_agent.review import review_response
+from practo_agent.review.workflow import _GroqJSONModeClient
 from practo_agent.review.schemas import FinalEditorOutput, ReviewFeedback
 from practo_agent.config.runtime_budget import RuntimeBudget
 from practo_agent.schemas import (
@@ -159,3 +161,22 @@ def test_review_requires_evidence():
             _response(_EVIDENCE.text),
             [],
         )
+
+
+def test_groq_review_client_uses_json_mode_for_typed_output():
+    client = _GroqJSONModeClient(
+        model="qwen/qwen3.8-27b",
+        api_key="test-key",
+        base_url=GROQ_BASE_URL,
+        model_info=_MODEL_INFO,
+    )
+    params = client._process_create_args(
+        messages=[],
+        tools=[],
+        tool_choice="auto",
+        json_output=ReviewFeedback,
+        extra_create_args={},
+    )
+
+    assert params.create_args["response_format"] == {"type": "json_object"}
+    assert params.response_format is None

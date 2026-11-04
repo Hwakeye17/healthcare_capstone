@@ -68,6 +68,8 @@ def test_composition_task_uses_composer_and_manual_schema_validation():
     assert task.output_pydantic is None
     assert "AgentResponse" in task.expected_output
     assert "properties" in task.expected_output
+    assert "sources and appointments to empty arrays" in task.description
+    assert "must never include any source or appointment references" in task.description
 
 
 def test_composition_task_depends_on_both_enabled_specialists():

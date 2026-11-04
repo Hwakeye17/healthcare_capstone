@@ -53,6 +53,7 @@ def _run_with_crew_output(
     specialist_role,
     specialist_output,
     validator=None,
+    raw_response=None,
 ):
     specialist_task = SimpleNamespace(
         agent=SimpleNamespace(role=specialist_role),
@@ -69,7 +70,11 @@ def _run_with_crew_output(
                     SimpleNamespace(raw=specialist_output.model_dump_json()),
                     SimpleNamespace(raw=response.model_dump_json()),
                 ],
-                raw=response.model_dump_json(),
+                raw=(
+                    response.model_dump_json()
+                    if raw_response is None
+                    else raw_response
+                ),
             )
 
     monkeypatch.setattr(
@@ -140,6 +145,44 @@ def test_unsupported_claim_is_rejected_and_references_are_removed(monkeypatch):
     assert result.appointments == []
     assert "unsupported claims" in result.reason
     assert result.answer != response.answer
+
+
+def test_invalid_abstention_references_fail_closed_without_crashing(monkeypatch):
+    response = AgentResponse(
+        status=ResponseStatus.ANSWERED,
+        answer=_BOOKING_EVIDENCE.text,
+        sources=[
+            SourceReference(
+                source_id="appointment_booking",
+                title="Appointment Booking",
+            )
+        ],
+    )
+    invalid_abstention = (
+        '{"status":"abstained",'
+        '"answer":"I cannot verify this request.",'
+        '"reason":"The available evidence is insufficient.",'
+        '"sources":[{"source_id":"appointment_booking",'
+        '"title":"Appointment Booking"}],'
+        '"appointments":[]}'
+    )
+
+    result = _run_with_crew_output(
+        monkeypatch,
+        query="When is an appointment confirmed?",
+        response=response,
+        specialist_role="Practo Knowledge Retrieval Specialist",
+        specialist_output=_retrieval_output(),
+        raw_response=invalid_abstention,
+    )
+
+    assert result.status == ResponseStatus.ABSTAINED
+    assert result.sources == []
+    assert result.appointments == []
+    assert result.reason == (
+        "The generated response did not conform to the required "
+        "response contract."
+    )
 
 
 def test_validated_lookup_fields_are_used_as_grounding_evidence(monkeypatch):

@@ -3,6 +3,7 @@
 from collections.abc import Sequence
 
 from langchain_core.messages import BaseMessage
+from pydantic import ValidationError
 
 from practo_agent.agents.crew import create_practo_crew
 from practo_agent.agents.mock_llm import MockCrewAILLM
@@ -191,7 +192,13 @@ def run_practo_query(
             evidence.append(_appointment_as_evidence(appointment))
             appointment_record_ids.add(appointment.record_id)
 
-    response = AgentResponse.model_validate_json(result.raw)
+    try:
+        response = AgentResponse.model_validate_json(result.raw)
+    except ValidationError:
+        return _groundedness_abstention(
+            "The generated response did not conform to the required "
+            "response contract."
+        )
     if response.status == ResponseStatus.ABSTAINED:
         return response
 

@@ -73,7 +73,7 @@ def test_invalid_specialist_output_is_rejected(monkeypatch):
         workflow.run_practo_query("How do I reschedule an appointment?")
 
 
-def test_invalid_final_response_is_rejected(monkeypatch):
+def test_invalid_final_response_fails_closed_with_abstention(monkeypatch):
     composition_task = SimpleNamespace(
         agent=SimpleNamespace(
             role="Practo Support Response Composer",
@@ -95,8 +95,14 @@ def test_invalid_final_response_is_rejected(monkeypatch):
         lambda **kwargs: InvalidFinalCrew(),
     )
 
-    with pytest.raises(ValidationError):
-        workflow.run_practo_query("Who won the latest cricket world cup?")
+    response = workflow.run_practo_query(
+        "Who won the latest cricket world cup?"
+    )
+
+    assert response.status == ResponseStatus.ABSTAINED
+    assert "did not conform" in response.reason
+    assert not response.sources
+    assert not response.appointments
 
 
 def test_contact_number_is_masked_before_mock_llm_and_crew(monkeypatch):

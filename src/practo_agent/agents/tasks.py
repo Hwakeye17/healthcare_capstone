@@ -142,7 +142,9 @@ def create_specialist_tasks(
             "Return only one JSON object matching the required schema. "
             "Use ANSWERED only when the response contains supported "
             "information and the required source or appointment references. "
-            "Otherwise use ABSTAINED with a clear reason."
+            "Otherwise use ABSTAINED with a clear reason, and set both "
+            "sources and appointments to empty arrays. An abstained response "
+            "must never include any source or appointment references."
             + skipped_note
         ),
         expected_output=_json_contract(AgentResponse),

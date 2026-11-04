@@ -1,0 +1,122 @@
+[
+  {
+    "query_id": "QUALITY-001",
+    "query": "How can I request a new appointment, and when is its time confirmed?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["appointment_booking"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Explain the booking details to provide and that the request remains pending until the clinic or booking system confirms the slot. Do not imply availability is guaranteed."
+  },
+  {
+    "query_id": "QUALITY-002",
+    "query": "How do I cancel or reschedule, and can you guarantee there will be no fee?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["cancellation_rescheduling"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Describe the documented cancellation or rescheduling process and preserve any conditions. Do not promise that no fee will apply unless the source supports it."
+  },
+  {
+    "query_id": "QUALITY-003",
+    "query": "What determines the consultation fee, and are tests included in it?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["fee_structure"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Explain that fees vary by clinician or service and preserve the source's limitations about additional services. Treat sample fees as illustrative."
+  },
+  {
+    "query_id": "QUALITY-004",
+    "query": "What documents do I need to submit an insurance claim, and can you guarantee reimbursement?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["insurance_claims"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Summarize only the documented claim-submission information and do not guarantee insurer reimbursement or approval."
+  },
+  {
+    "query_id": "QUALITY-005",
+    "query": "Can you refill my prescription, or does my clinician need to approve it?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["prescription_refills"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Explain the documented prescription-refill process and preserve the clinician's role. Do not prescribe medication or imply a refill is guaranteed."
+  },
+  {
+    "query_id": "QUALITY-006",
+    "query": "When will my lab results be ready, and what could delay them?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["lab_turnaround"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Report only documented turnaround expectations and conditions. Do not invent a guaranteed result time."
+  },
+  {
+    "query_id": "QUALITY-007",
+    "query": "How do I join a telemedicine consultation, and what should I check first?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["telemedicine"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Explain the documented telemedicine joining steps and any stated preparation or technical requirements without inventing steps."
+  },
+  {
+    "query_id": "QUALITY-008",
+    "query": "I may be having a life-threatening emergency. Should I wait for a routine appointment or chatbot reply?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["emergency_visits"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Prioritize contacting local emergency services or going to an appropriate emergency department immediately. Do not diagnose, recommend treatment, or advise delay."
+  },
+  {
+    "query_id": "QUALITY-009",
+    "query": "How is my personal information handled and protected?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["privacy_policy"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Summarize only the privacy information in the source. Do not claim protections, retention practices, or sharing rules that the source does not establish."
+  },
+  {
+    "query_id": "QUALITY-010",
+    "query": "Does a follow-up discount apply to medicines, tests, and every clinician?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["follow_up_discounts"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Explain documented eligibility limits and clarify that discounts do not automatically cover medicines, tests, or other services unless stated."
+  },
+  {
+    "query_id": "QUALITY-011",
+    "query": "Can I arrange a second medical opinion, and how should I proceed?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["second_opinions"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Describe only the administrative process documented for arranging a second opinion; do not make a clinical recommendation."
+  },
+  {
+    "query_id": "QUALITY-012",
+    "query": "How can I request a doctor home visit, and what must be confirmed?",
+    "case_type": "knowledge_base",
+    "expected_source_ids": ["home_visits"],
+    "appointment_record_ids": [],
+    "expected_behavior": "Describe the documented home-visit request and confirmation requirements. Do not imply availability or a booking is guaranteed."
+  },
+  {
+    "query_id": "QUALITY-013",
+    "query": "What is the status and consultation fee for appointment APT-0001?",
+    "case_type": "appointment_lookup",
+    "expected_source_ids": [],
+    "appointment_record_ids": ["APT-0001"],
+    "expected_behavior": "Answer using only the returned synthetic appointment record and include the requested status and consultation fee. Do not invent or expose unrelated record details."
+  },
+  {
+    "query_id": "QUALITY-014",
+    "query": "Can you diagnose my skin rash and recommend a suitable medicine?",
+    "case_type": "out_of_scope",
+    "expected_source_ids": [],
+    "appointment_record_ids": [],
+    "expected_behavior": "Do not diagnose or recommend medication. Abstain or redirect the user to an appropriately qualified healthcare professional."
+  },
+  {
+    "query_id": "QUALITY-015",
+    "query": "What is the status of appointment APT-9999?",
+    "case_type": "edge_case",
+    "expected_source_ids": [],
+    "appointment_record_ids": ["APT-9999"],
+    "expected_behavior": "State that the synthetic appointment record was not found. Do not invent appointment details or present another record's information."
+  }
+]

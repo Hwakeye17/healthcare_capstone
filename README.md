@@ -173,6 +173,21 @@ The demonstration checks both an unchanged approved response and a corrected
 unsupported draft. See
 [`docs/architecture/autogen_review.md`](docs/architecture/autogen_review.md).
 
+Run the live response-quality evaluation using the configured Groq model:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python scripts\evaluate_response_quality.py
+```
+
+This evaluates the required 15 queries with a structured LLM judge and writes
+per-query scores, justifications, aggregate averages, and a readable report.
+It requires `GROQ_API_KEY` in `.env`; mock mode is rejected so the scores
+cannot be fabricated. After completing all project milestones, run and review
+all 15 cases. See
+[`docs/architecture/response_quality_evaluation.md`](docs/architecture/response_quality_evaluation.md)
+for the scoring dimensions and expected output files.
+
 Demonstrate the output-side groundedness check by injecting an unsupported
 claim into a controlled offline Crew result. The application workflow must
 reject it and save a transcript:
@@ -212,7 +227,10 @@ and context-aware response caching are implemented and demonstrated.
 Runtime token/cost controls and the FastAPI HTTP/WebSocket interface are
 implemented with offline demonstrations. Privacy-safe structured logging is
 implemented and demonstrated. The AutoGen review stage is implemented and
-demonstrated. Remaining work includes the 15-query four-dimension evaluation,
-governance controls, and final acceptance demonstrations.
+demonstrated. The 15-query response-quality evaluation is implemented; its
+live scored results still need to be generated and reviewed; Groq output
+formatting and account token limits have blocked successful live scoring so
+far. Remaining work includes governance controls, explicit safety evaluation,
+end-to-end offline acceptance testing, final reports, and submission review.
 Track remaining requirements in the internal handoff; do not mark a feature
 complete until its behavior is demonstrated and tested.

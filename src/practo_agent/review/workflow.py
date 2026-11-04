@@ -2,12 +2,21 @@
 
 import asyncio
 import json
+from collections.abc import Mapping, Sequence
+from typing import Any, Literal
 
+from pydantic import BaseModel
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.base import TaskResult
 from autogen_agentchat.messages import StructuredMessage
 from autogen_agentchat.teams import RoundRobinGroupChat
-from autogen_core.models import ChatCompletionClient, ModelFamily
+from autogen_core.models import (
+    ChatCompletionClient,
+    LLMMessage,
+    ModelFamily,
+)
+from autogen_core.tools import Tool, ToolSchema
+from autogen_ext.models.openai import OpenAIChatCompletionClient
 
 from practo_agent.config.llm import GROQ_BASE_URL, get_llm_config
 from practo_agent.config.runtime_budget import RuntimeBudget
@@ -31,7 +40,9 @@ query and evidence. Check each factual claim for support, correctness, and
 important omissions. You have no tools and must not infer missing facts.
 Approve only if the answer is already accurate and adequately complete.
 Otherwise list each unsupported claim or missing material information as a
-specific issue. Return only the required structured review feedback.
+specific issue. Return only valid JSON matching the required review-feedback
+schema, with exactly these keys: "approved" (a boolean) and "issues" (an
+array of strings). Do not include any other keys.
 """
 _EDITOR_SYSTEM_MESSAGE = """\
 Produce the final administrative support response using only the supplied
@@ -41,6 +52,10 @@ the identified unsupported claims and do not add unsupported facts. If no
 safe, supported answer can be produced, abstain with a concise reason.
 Preserve the provided response references; you have no tools or additional
 appointment-system permissions. Return only the required structured output.
+Return valid JSON with exactly these keys: "status" (either "answered" or
+"abstained"), "answer" (a non-empty string), and "reason" (a string or null).
+Do not include references or any other keys. Use a non-empty reason when
+status is "abstained"; use null when status is "answered".
 """
 _MODEL_INFO = {
     "vision": False,
@@ -49,6 +64,28 @@ _MODEL_INFO = {
     "family": ModelFamily.UNKNOWN,
     "structured_output": True,
 }
+
+
+class _GroqJSONModeClient(OpenAIChatCompletionClient):
+    """Use JSON mode while keeping AutoGen's local Pydantic validation."""
+
+    def _process_create_args(
+        self,
+        messages: Sequence[LLMMessage],
+        tools: Sequence[Tool | ToolSchema],
+        tool_choice: Tool | Literal["auto", "required", "none"],
+        json_output: bool | type[BaseModel] | None,
+        extra_create_args: Mapping[str, Any],
+    ):
+        if isinstance(json_output, type) and issubclass(json_output, BaseModel):
+            json_output = True
+        return super()._process_create_args(
+            messages,
+            tools,
+            tool_choice,
+            json_output,
+            extra_create_args,
+        )
 
 
 def review_response(
@@ -197,16 +234,14 @@ def _create_model_client(
     if not api_key:
         raise ValueError("GROQ_API_KEY is required when MOCK_LLM=false.")
 
-    from autogen_ext.models.openai import OpenAIChatCompletionClient
-
-    return OpenAIChatCompletionClient(
+    return _GroqJSONModeClient(
         model=config["model"],
         api_key=api_key,
         base_url=GROQ_BASE_URL,
         model_info=_MODEL_INFO,
         temperature=config["temperature"],
         max_tokens=budget.config.max_completion_tokens_per_call,
-        max_retries=0,
+        max_retries=3,
     )
 
 

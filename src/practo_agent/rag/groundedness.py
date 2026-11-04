@@ -157,6 +157,7 @@ class GroqGroundednessValidator:
             model=model,
             temperature=temperature,
             api_key=api_key,
+            max_retries=3,
             max_tokens=(
                 runtime_budget.config.max_completion_tokens_per_call
                 if runtime_budget is not None
@@ -166,7 +167,9 @@ class GroqGroundednessValidator:
         self.runtime_budget = runtime_budget
 
         self.structured_llm = llm.with_structured_output(
-            GroundednessAssessment
+            GroundednessAssessment,
+            method="json_schema",
+            strict=False,
         )
 
         self.prompt = ChatPromptTemplate.from_messages(
