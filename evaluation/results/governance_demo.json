@@ -1,0 +1,85 @@
+{
+  "policy": {
+    "search_practo_knowledge_base": [
+      "Practo Knowledge Retrieval Specialist"
+    ],
+    "check_appointment_status": [
+      "Practo Appointment Lookup Specialist"
+    ]
+  },
+  "risk_classification": {
+    "system": {
+      "subject": "Practo healthcare support agent",
+      "level": "high",
+      "justification": "Under the Low/Medium/High scheme (Low: summarization or transcription; Medium: code generation or customer-support tickets; High: medical data, hiring, or financial decisions), the system is High risk. Although most traffic is customer-support policy questions, it looks up patient appointment records tied to a medical specialty and answers questions near clinical topics such as prescriptions, lab results, and emergencies, where an unsupported answer could cause harm. The highest-risk capability sets the system level, which is why it is governed by least-autonomy tool permissions, input guardrails, grounded abstention, independent review, per-request budgets, and privacy-safe logging; it must not diagnose or recommend treatment."
+    },
+    "components": [
+      {
+        "subject": "Knowledge-base retrieval (search_practo_knowledge_base)",
+        "level": "medium",
+        "justification": "Answers patient-facing customer-support questions from project-authored policy documents. It reads no personal or appointment data, but an unsupported or wrong policy answer about fees, cancellations, or emergencies could mislead a patient, so it is guarded by calibrated abstention and an output groundedness check."
+      },
+      {
+        "subject": "Appointment lookup (check_appointment_status)",
+        "level": "high",
+        "justification": "Reads individual healthcare appointment records (medical specialty, status, fee, follow-up flag). Even though the dataset is synthetic, the tool models access to medical data, so it is read-only, restricted to the Lookup Agent, and its identifiers are excluded from logs."
+      }
+    ]
+  },
+  "permitted_lookup_agent_call": {
+    "query": "What is the status of APT-0001?",
+    "status": "answered",
+    "tool_actions": [
+      "check_appointment_status"
+    ],
+    "appointments": [
+      "APT-0001"
+    ],
+    "log_events": [
+      {
+        "event": "workflow_routed",
+        "retrieval_enabled": false,
+        "lookup_enabled": true,
+        "clarification_required": false
+      },
+      {
+        "event": "tool_completed",
+        "tool_name": "check_appointment_status",
+        "tool_status": "success"
+      }
+    ]
+  },
+  "prohibited_wiring": {
+    "authorize_agent_tools": [
+      {
+        "agent_role": "Practo Knowledge Retrieval Specialist",
+        "rejected": true,
+        "error": "Governance policy denies tool(s) ['check_appointment_status'] for agent role 'Practo Knowledge Retrieval Specialist'."
+      },
+      {
+        "agent_role": "Practo Support Response Composer",
+        "rejected": true,
+        "error": "Governance policy denies tool(s) ['check_appointment_status'] for agent role 'Practo Support Response Composer'."
+      }
+    ],
+    "enforce_crew_tool_permissions": {
+      "rejected": true,
+      "error": "Governance policy denies tool(s) ['check_appointment_status'] for agent role 'Practo Support Response Composer'."
+    }
+  },
+  "prohibited_runtime_call": {
+    "agent_role": "Practo Support Response Composer",
+    "requested_tool": "check_appointment_status",
+    "tool_observation": "Tool execution blocked by hook. Tool: check_appointment_status",
+    "final_answer": "lookup refused",
+    "lookup_tool_executed": false,
+    "log_events": [
+      {
+        "event": "tool_call_blocked",
+        "agent_role": "Practo Support Response Composer",
+        "tool_name": "check_appointment_status"
+      }
+    ]
+  },
+  "result_matches_expectation": true
+}

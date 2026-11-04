@@ -46,7 +46,11 @@ calibration set.
   not a clinical or official Practo policy.
 - A deterministic router selects the Retrieval Agent, Lookup Agent, or both
   for mixed requests. The Response Composer receives only enabled specialist
-  outputs.
+  outputs. Application-layer governance enforces that only the Lookup Agent
+  may receive or call `check_appointment_status` at both wiring time and
+  tool-call time, and classifies component and system risk under the
+  Low/Medium/High scheme; see
+  [`docs/architecture/governance.md`](docs/architecture/governance.md).
 - Every specialist handoff and final response is validated against its
   Pydantic contract. Invalid JSON or invalid fields are rejected.
 - The CrewAI request workflow masks fixed-format Indian mobile numbers before
@@ -173,6 +177,18 @@ The demonstration checks both an unchanged approved response and a corrected
 unsupported draft. See
 [`docs/architecture/autogen_review.md`](docs/architecture/autogen_review.md).
 
+Demonstrate least-autonomy tool governance (permitted Lookup Agent call,
+rejected unauthorized wiring, and blocked runtime tool call) and risk
+classification offline:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python scripts\demo_governance.py
+```
+
+The demonstration writes `evaluation/results/governance_demo.json`. See
+[`docs/architecture/governance.md`](docs/architecture/governance.md).
+
 Run the live response-quality evaluation using the configured Groq model:
 
 ```powershell
@@ -230,7 +246,8 @@ implemented and demonstrated. The AutoGen review stage is implemented and
 demonstrated. The 15-query response-quality evaluation is implemented; its
 live scored results still need to be generated and reviewed; Groq output
 formatting and account token limits have blocked successful live scoring so
-far. Remaining work includes governance controls, explicit safety evaluation,
+far. Application-layer governance and risk classification are implemented and
+demonstrated. Remaining work includes explicit safety evaluation,
 end-to-end offline acceptance testing, final reports, and submission review.
 Track remaining requirements in the internal handoff; do not mark a feature
 complete until its behavior is demonstrated and tested.

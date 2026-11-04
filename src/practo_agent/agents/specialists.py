@@ -2,6 +2,7 @@
 
 from crewai import Agent
 
+from practo_agent.governance import authorize_agent_tools
 from practo_agent.tools.crewai_tools import (
     lookup_appointment,
     search_practo_knowledge_base,
@@ -17,8 +18,10 @@ def create_specialist_agents(
 ) -> dict[str, Agent]:
     """Create the Retrieval, Lookup and Response Composer agents.
 
-    Tool access is assigned explicitly here. Agents cannot delegate work
-    to other agents; coordination is handled by the sequential Crew tasks.
+    Tool access is assigned explicitly here and checked against the
+    governance policy, so wiring a tool to an unauthorized agent fails.
+    Agents cannot delegate work to other agents; coordination is handled
+    by the sequential Crew tasks.
     """
 
     retrieval_agent = Agent(
@@ -87,8 +90,12 @@ def create_specialist_agents(
         allow_delegation=False,
     )
 
-    return {
+    agents = {
         "retrieval": retrieval_agent,
         "lookup": lookup_agent,
         "composer": response_composer,
     }
+    for agent in agents.values():
+        authorize_agent_tools(agent.role, agent.tools)
+
+    return agents

@@ -5,6 +5,10 @@ from crewai import Crew, Process
 
 from practo_agent.agents.specialists import create_specialist_agents
 from practo_agent.agents.tasks import create_specialist_tasks
+from practo_agent.governance import (
+    enforce_crew_tool_permissions,
+    install_tool_call_guard,
+)
 
 
 def create_practo_crew(
@@ -21,7 +25,9 @@ def create_practo_crew(
         2. Appointment lookup, when enabled
         3. Response composition, always
 
-    Each specialist receives only its explicitly assigned tools.
+    Each specialist receives only its explicitly assigned tools. The
+    governance policy is checked for every agent and task before the crew
+    is returned, and a call-time guard blocks unauthorized tool calls.
     Crew memory is disabled; session memory is handled separately.
     """
 
@@ -53,10 +59,14 @@ def create_practo_crew(
     crew_agents.append(agents["composer"])
     crew_tasks.append(tasks["composition"])
 
-    return Crew(
+    crew = Crew(
         agents=crew_agents,
         tasks=crew_tasks,
         process=Process.sequential,
         verbose=verbose,
         memory=False,
     )
+
+    install_tool_call_guard()
+    enforce_crew_tool_permissions(crew)
+    return crew

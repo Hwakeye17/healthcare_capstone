@@ -33,8 +33,9 @@ Example request completion event:
 
 Workflow events record only whether retrieval, appointment lookup, or
 clarification was selected. Tool events record the fixed tool name and its
-status. The logger validates event names and values and rejects fields outside
-the allowlist.
+status, or a `tool_call_blocked` event with the allowlisted agent role and
+tool name when the governance hook blocks an unauthorized call. The logger
+validates event names and values and rejects fields outside the allowlist.
 
 ## Privacy boundary
 

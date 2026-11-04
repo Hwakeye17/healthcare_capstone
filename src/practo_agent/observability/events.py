@@ -35,6 +35,7 @@ _EVENT_FIELDS: dict[str, frozenset[str]] = {
         }
     ),
     "tool_completed": frozenset({"tool_name", "tool_status"}),
+    "tool_call_blocked": frozenset({"agent_role", "tool_name"}),
 }
 _REQUIRED_EVENT_FIELDS = {
     "request_completed": frozenset(
@@ -48,8 +49,17 @@ _REQUIRED_EVENT_FIELDS = {
         }
     ),
     "tool_completed": frozenset({"tool_name", "tool_status"}),
+    "tool_call_blocked": frozenset({"agent_role"}),
 }
 _SAFE_STRING_VALUES = {
+    "agent_role": frozenset(
+        {
+            "Practo Knowledge Retrieval Specialist",
+            "Practo Appointment Lookup Specialist",
+            "Practo Support Response Composer",
+            "unknown",
+        }
+    ),
     "transport": frozenset({"http", "websocket"}),
     "operation": frozenset(
         {
