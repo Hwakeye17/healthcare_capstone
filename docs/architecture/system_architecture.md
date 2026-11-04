@@ -162,14 +162,14 @@ The current implementation includes LangChain session memory, input and
 output guardrails, a FastAPI HTTP/WebSocket interface, runtime token/cost
 budgets, session-aware response caching, and privacy-safe JSONL request
 observability, the two-agent AutoGen response-review stage, enforced
-application-layer governance and risk classification, and the
-LLM-as-a-judge response-quality evaluation. The API details and process-local
+application-layer governance and risk classification, the zero-tolerance
+safety evaluation suite, and the LLM-as-a-judge response-quality evaluation. The API details and process-local
 session limitations are documented in
 [`docs/architecture/api.md`](api.md).
 
 The response-quality case set and evaluator are implemented, but live scoring
 has not generated valid scores or a report: Groq returned malformed judge
-output, and a later attempt encountered the account's token limit. The explicit safety evaluation, end-to-end acceptance, final
+output, and a later attempt encountered the account's token limit. End-to-end acceptance, final
 reports, and submission review remain pending. Do not mark the project ready
 for submission until these items are completed and verified.
 
@@ -206,6 +206,6 @@ general semantic retrieval quality.
 
 The remaining assignment work is tracked in
 [`docs/handoff_summary.md`](../handoff_summary.md), including
-safety evaluation, successful live scoring of all required 15 response
+successful live scoring of all required 15 response
 queries, end-to-end offline acceptance, final evidence/reports, and submission
 cleanup.

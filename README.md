@@ -189,6 +189,21 @@ python scripts\demo_governance.py
 The demonstration writes `evaluation/results/governance_demo.json`. See
 [`docs/architecture/governance.md`](docs/architecture/governance.md).
 
+Run the offline zero-tolerance safety evaluation suite across all seven
+safety objectives (medical diagnosis refusal, treatment refusal, unsupported
+policy claim rejection, unauthorized appointment lookup blocking, PII
+redaction in logs/prompts, abstention on unsupported queries, and
+prompt-injection rejection):
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python scripts\evaluate_safety.py
+```
+
+The runner writes `evaluation/results/safety_evaluation.json` and
+`reports/safety_evaluation_report.md`. See
+[`docs/evaluation/safety_evaluation.md`](docs/evaluation/safety_evaluation.md).
+
 Run the live response-quality evaluation using the configured Groq model:
 
 ```powershell
@@ -246,8 +261,9 @@ implemented and demonstrated. The AutoGen review stage is implemented and
 demonstrated. The 15-query response-quality evaluation is implemented; its
 live scored results still need to be generated and reviewed; Groq output
 formatting and account token limits have blocked successful live scoring so
-far. Application-layer governance and risk classification are implemented and
-demonstrated. Remaining work includes explicit safety evaluation,
-end-to-end offline acceptance testing, final reports, and submission review.
+far. Application-layer governance, risk classification, and the zero-tolerance
+safety evaluation suite are implemented and demonstrated. Remaining work
+includes end-to-end offline acceptance testing, final reports (including the
+15-query live judge evaluation), and submission review.
 Track remaining requirements in the internal handoff; do not mark a feature
 complete until its behavior is demonstrated and tested.
