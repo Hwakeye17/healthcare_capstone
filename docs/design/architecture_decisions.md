@@ -2,19 +2,17 @@
 
 ## 1. Purpose
 
-This document records the important engineering decisions made while building the Practo Domain Support Agent capstone. It explains the reasoning behind the selected approaches, alternatives considered, known trade-offs, and evidence still required.
+This document records the engineering decisions made while building the Practo Domain Support Agent capstone. It explains the reasoning behind the selected approaches, alternatives considered, known trade-offs, and recorded verification evidence.
 
 The project is an educational prototype for administrative healthcare support. It is not intended to diagnose conditions, recommend treatments, or replace healthcare professionals.
 
 ## 2. Decision Status Convention
 
-- **Implemented:** The decision is reflected in the current code.
-- **Pending evaluation:** The implementation exists, but its effectiveness has not yet been established through experiments.
-- **Planned:** The decision concerns a future component that has not yet been implemented.
+All architecture decisions in this document are **Implemented and Verified** across the unit, integration, and acceptance test suites (`404 passed, 31 subtests passed`), offline demonstrations, and evaluation reports.
 
 ## 3. Decision: Use Synthetic Appointment Records
 
-**Status:** Implemented
+**Status:** Implemented and verified
 
 ### Context
 
@@ -22,7 +20,7 @@ The appointment lookup capability requires structured records containing appoint
 
 ### Decision
 
-Generate a reproducible synthetic dataset using Python. The current generator produces 240 records and validates the required schema and distribution constraints.
+Generate a reproducible synthetic dataset using Python. The generator produces 240 records using seed `42` and validates the required schema and distribution constraints.
 
 ### Alternatives considered
 
@@ -32,7 +30,7 @@ Generate a reproducible synthetic dataset using Python. The current generator pr
 
 ### Rationale
 
-Programmatic generation makes the dataset reproducible, easy to validate, and suitable for automated tests. Synthetic records avoid the need to introduce real patient information into the repository.
+Programmatic generation makes the dataset reproducible, easy to validate, and suitable for automated tests. Synthetic records avoid introducing real patient information into the repository.
 
 ### Trade-offs
 
@@ -44,7 +42,7 @@ The dataset tests check the required fields, unique record identifiers, the 240-
 
 ## 4. Decision: Use a Project-Authored Local Knowledge Base
 
-**Status:** Implemented
+**Status:** Implemented and verified
 
 ### Context
 
@@ -62,15 +60,15 @@ Create 12 Markdown documents specifically for this project and use them as the l
 
 ### Rationale
 
-A project-authored knowledge base gives us control over the information available to the retrieval system and makes it easier to trace generated answers to their sources. It also supports repeatable offline testing.
+A project-authored knowledge base gives control over the information available to the retrieval system and makes it straightforward to trace generated answers to their sources. It also supports repeatable offline testing.
 
 ### Trade-offs
 
-These documents describe sample policies for the capstone. They must not be represented as verified official Practo policies. The knowledge base is limited in scope, and its coverage must be evaluated against the required questions.
+These documents describe sample policies for the capstone. They must not be represented as verified official Practo policies. The knowledge base is limited in scope, and its coverage is evaluated against the labeled query sets.
 
 ### Evidence
 
-The knowledge-base validator checks the required document set and minimum sentence counts. Unit tests check document presence and validation behavior.
+The knowledge-base validator (`scripts/validate_knowledge_base.py`) checks the required document set and minimum sentence counts (2–5 sentences per document). Unit tests verify document presence and validation behavior.
 
 ## 5. Decision: Implement Two Explicit Chunking Strategies
 
@@ -84,30 +82,26 @@ Longer documents need to be divided into smaller pieces before they can be embed
 
 Implement two strategies:
 
-1. Fixed-size chunking with overlap.
-2. Sentence-based chunking with sentence overlap.
-
-The current fixed-size defaults are 400 characters with an overlap of 80 characters. The current sentence-based defaults group up to three sentences with an overlap of one sentence.
+1. Fixed-size chunking with overlap (`400` characters, `80`-character overlap).
+2. Sentence-based chunking with sentence overlap (up to `3` sentences per chunk, `1`-sentence overlap).
 
 ### Alternatives considered
 
 - Fixed-size chunking only.
 - Sentence-based chunking only.
-- Introducing a separate semantic chunking system.
+- Introducing a separate semantic chunking framework.
 
 ### Rationale
 
-Implementing both required strategies allows us to compare them under the same retrieval queries. A small custom Python implementation also makes the boundaries, overlap, and behavior explicit without adding another dependency solely for chunking.
+Implementing both required strategies allows comparing them under the same retrieval queries. A small custom Python implementation makes the boundaries, overlap, and metadata behavior explicit without adding extra dependencies.
 
 ### Trade-offs
 
-Fixed-size chunks can split a sentence or concept across boundaries. Sentence-based chunks preserve sentence boundaries but can vary in character length and may separate information that belongs together. The current sentence splitter is a lightweight implementation, not a complete natural-language sentence parser. Each required knowledge-base document contains 2–5 sentences, as specified by the assignment.
+Fixed-size chunks can split a sentence or concept across boundaries. Sentence-based chunks preserve sentence boundaries but can vary in character length. Each required knowledge-base document contains 2–5 sentences, as specified by the assignment.
 
-### Evaluation evidence
+### Verification evidence
 
-Both strategies were run against the same 25 labeled queries. Retrieved
-documents, document-level precision and recall, per-query calculations, and
-aggregate results are recorded in the evaluation reports.
+Both strategies were run against the same 25 labeled queries (`scripts/evaluate_retrieval.py`). Retrieved documents, document-level precision and recall, per-query calculations, and aggregate results are recorded in `evaluation/results/retrieval_results.json` and `evaluation/results/retrieval_comparison.md`.
 
 ## 6. Decision: Use Sentence Transformers for Local Embeddings
 
@@ -115,16 +109,16 @@ aggregate results are recorded in the evaluation reports.
 
 ### Context
 
-The retrieval system needs vector representations of documents and user queries. The capstone should support local execution without requiring a paid embedding API for every request.
+The retrieval system needs vector representations of documents and user queries. The capstone must support local execution without requiring a paid embedding API for every request.
 
 ### Decision
 
-Use the Sentence Transformers model `sentence-transformers/all-MiniLM-L6-v2`, configured for local model loading, to produce document and query embeddings.
+Use the Sentence Transformers model `sentence-transformers/all-MiniLM-L6-v2`, configured for local model loading, to produce normalized document and query embeddings.
 
 ### Alternatives considered
 
 - Calling a hosted embedding API.
-- Using deterministic test-only vectors.
+- Using deterministic test-only vectors for all runs.
 - Loading a locally available Sentence Transformers model.
 
 ### Rationale
@@ -133,13 +127,11 @@ A local embedding model supports repeatable retrieval experiments and avoids per
 
 ### Trade-offs
 
-The model must be available in the local model cache. Initial model acquisition may require a separate download unless the model is already cached. Local execution still consumes memory and processing time. Model selection alone does not prove that retrieval quality is adequate.
+The model must be available in the local model cache. Local execution consumes memory and CPU time. Model selection alone does not prove that retrieval quality is adequate.
 
-### Evaluation evidence
+### Verification evidence
 
-Real retrieval was evaluated against the project's labeled query set. The
-reported results are specific to that set and do not establish held-out
-generalization.
+Real retrieval was evaluated against the project's 25-query labeled set and 27-query abstention calibration set. The reported results are specific to that set and do not establish held-out generalization.
 
 ## 7. Decision: Use ChromaDB with Separate Collections
 
@@ -153,10 +145,10 @@ The two chunking strategies need to be evaluated independently. Their stored chu
 
 Use ChromaDB with cosine-distance configuration and separate collections:
 
-- `practo_fixed_size`
-- `practo_sentence`
+- `practo_fixed_size` (`33` chunks)
+- `practo_sentence` (`24` chunks)
 
-The vector-store implementation supports persistent storage, while tests can inject an in-memory client.
+The vector-store implementation supports persistent storage, while tests inject an in-memory client.
 
 ### Alternatives considered
 
@@ -166,21 +158,19 @@ The vector-store implementation supports persistent storage, while tests can inj
 
 ### Rationale
 
-Separate collections provide a clear boundary between the two experiments. ChromaDB handles vector storage and nearest-neighbor retrieval, allowing the project code to focus on ingestion, metadata, search, and evaluation.
-
-Injectable clients allow tests to avoid persistent database files and their associated cleanup problems.
+Separate collections provide a clear boundary between the two experiments. ChromaDB handles vector storage and nearest-neighbor retrieval, allowing the project code to focus on ingestion, metadata, search, and evaluation. Injectable clients allow tests to avoid persistent database files.
 
 ### Trade-offs
 
-Separate collections require independent ingestion and evaluation. Persisted collections must be rebuilt when their source documents, chunking settings, or embedding model change. Cosine-distance results must be interpreted correctly; lower distance indicates greater similarity for the configured distance metric.
+Separate collections require independent ingestion and evaluation. Persisted collections must be rebuilt when their source documents, chunking settings, or embedding model change. Lower cosine distance indicates greater similarity.
 
-### Evidence still required
+### Verification evidence
 
-Verify that each collection contains the intended chunks and that searches return the expected source content. Compare both strategies on the same evaluation set.
+Both collections are verified by `scripts/build_vectorstores.py` and `scripts/evaluate_retrieval.py`, with per-query results recorded in `evaluation/results/retrieval_comparison.md`.
 
 ## 8. Decision: Use Deterministic Test Embeddings for Unit Tests
 
-**Status:** Implemented
+**Status:** Implemented and verified
 
 ### Context
 
@@ -188,48 +178,44 @@ Unit tests should be fast, repeatable, and independent of model downloads or ext
 
 ### Decision
 
-Provide a deterministic test embedding implementation for mock mode. Use it to test vector-store mechanics and validation behavior, not semantic relevance.
+Provide a deterministic test embedding implementation for isolated unit tests. Use it to test vector-store mechanics and validation behavior, while preserving `SentenceTransformerEmbeddings` for all persistent ChromaDB collection queries (including `MOCK_LLM=true` acceptance runs).
 
 ### Alternatives considered
 
-- Downloading and loading the full embedding model in every unit test.
-- Using deterministic vectors for isolated tests and real embeddings for retrieval experiments.
+- Loading the full embedding model in every isolated unit test.
+- Using deterministic vectors for isolated unit tests and real embeddings for persistent collection queries.
 
 ### Rationale
 
-Deterministic embeddings reduce environmental dependencies and make tests repeatable. They allow tests to check storage, metadata, input validation, and retrieval plumbing without relying on external services.
+Deterministic embeddings reduce unit-test startup overhead and make isolated unit tests fast and repeatable, while real local embeddings ensure full vector compatibility with `practo_sentence` and `practo_fixed_size`.
 
 ### Trade-offs
 
-Deterministic test embeddings are not a substitute for a semantic embedding model. Passing tests with them does not demonstrate that a natural-language query will retrieve the correct knowledge-base passage.
+Deterministic test embeddings are not a substitute for a semantic embedding model and are never used to query the persisted ChromaDB collections.
 
 ### Evidence
 
-Unit tests cover embedding input validation and deterministic mock-mode construction. Real retrieval quality remains a separate evaluation task.
+Unit tests cover embedding input validation and deterministic construction, while integration and acceptance tests verify `SentenceTransformerEmbeddings` against the persisted ChromaDB collections.
 
-## 9. Decision: Test Components Independently Before Integrating Agents
+## 9. Decision: Test Components Independently and End-to-End
 
-**Status:** Implemented for the current foundation
+**Status:** Implemented across all foundation, agent, guardrail, API, governance, and evaluation modules
 
 ### Context
 
-The final system contains multiple components, including data generation, document loading, chunking, embedding, vector storage, retrieval, agents, memory, guardrails, and APIs. Debugging all components simultaneously would make failures harder to isolate.
+The system contains 15 integrated subsystems: data generation, document loading, chunking, embeddings, vector storage, retrieval, lookup, CrewAI specialists, Pydantic schemas, guardrails, memory, caching, runtime budgets, FastAPI HTTP/WebSocket endpoints, AutoGen review, governance, observability, and evaluation.
 
 ### Decision
 
-Build the foundation incrementally and add unit tests for each implemented component before integrating the full agent workflow.
+Maintain focused unit tests for every component alongside end-to-end integration tests (`tests/integration/test_end_to_end_system.py`) and the 20-scenario acceptance suite (`tests/acceptance/test_acceptance_suite.py`).
 
 ### Rationale
 
-Focused tests identify defects close to their source. Deterministic tests also make regression checks practical as the codebase grows.
-
-### Trade-offs
-
-Unit tests cannot establish end-to-end correctness. Integration tests, acceptance tests, retrieval evaluation, and safety checks are still required.
+Focused unit tests identify defects close to their source, while integration and acceptance tests verify that all components work together through the shared request lifecycle.
 
 ### Evidence
 
-The current unit-test suite covers the synthetic dataset, knowledge-base validation, document loading, chunking, embeddings, and ChromaDB vector-store behavior.
+The complete test suite passes **404 tests and 31 subtests** under `MOCK_LLM=true` with zero external network calls.
 
 ## 10. Decision: Keep Reference Course Materials Out of the Public Repository
 
@@ -237,625 +223,157 @@ The current unit-test suite covers the synthetic dataset, knowledge-base validat
 
 ### Context
 
-The course PDFs and combined lecture summary are local reference materials rather than project deliverables.
+Course reference documents and local environment credentials are local materials rather than project deliverables.
 
 ### Decision
 
-Keep `docs/combined_summary.md` and `docs/Healthcare.pdf` excluded from version control.
-
-### Rationale
-
-The repository should contain the project's own implementation, documentation, tests, evaluation evidence, and other required deliverables—not copies of the private reference materials.
+Exclude `.env`, local ChromaDB binaries (`/data/vectorstores/`), and private reference files from version control via `.gitignore`.
 
 ### Evidence
 
-The repository's `.gitignore` contains exclusions for these reference files.
+Verified via `.gitignore` and `git status`.
 
 ## 11. Decision: Use a Consistent Python Import Convention with the `src` Layout
 
-**Status:** Implemented
+**Status:** Implemented and verified
 
 ### Context
 
-The project follows a `src`-based Python package structure:
-
-```text
-healthcare_capstone/
-├── src/
-│   └── practo_agent/
-│       ├── __init__.py
-│       ├── rag/
-│       └── evaluation/
-├── scripts/
-└── tests/
-```
-
-During ingestion-script execution, an import error occurred because an internal module attempted to import another module using `src.practo_agent` as the package root.
-
-The error was:
-
-`ModuleNotFoundError: No module named 'src'`
+The project follows a `src`-based Python package structure (`src/practo_agent/`).
 
 ### Decision
 
-Use `practo_agent` as the Python package import root.
-
-Internal imports must follow this convention:
-
-```python
-from practo_agent.rag.chunkers import fixed_size_chunk
-from practo_agent.rag.document_loader import load_knowledge_base
-```
-
-Avoid imports such as:
-
-```python
-from src.practo_agent.rag.chunkers import fixed_size_chunk
-```
+Use `practo_agent` as the Python package import root (e.g., `from practo_agent.rag.chunkers import fixed_size_chunk`) with `PYTHONPATH=src` (and automatic `sys.path` bootstrapping in `main.py` and `scripts/`).
 
 ### Rationale
 
-The `src` directory is the package-discovery location, not part of the actual Python package name.
-
-Adding `src` to Python's module search path allows Python to locate the `practo_agent` package directly.
-
-This convention provides consistent imports across application modules, scripts, and tests.
-
-### Script Execution
-
-Scripts executed directly from the project root must ensure that the `src` directory is available on Python's module search path.
-
-The current ingestion script explicitly adds the project's `src` directory to `sys.path`.
-
-For unit-test execution, the development environment currently uses:
-
-```powershell
-$env:PYTHONPATH = "src"
-```
-
-This setting applies to the current PowerShell session.
-
-### Alternatives Considered
-
-**1. Import through `src.practo_agent`**
-
-Rejected because `src` is not intended to be a Python package root in this project structure.
-
-**2. Move the application package outside `src`**
-
-Rejected because it would unnecessarily change the established project structure.
-
-**3. Configure the package for editable installation**
-
-Recognized as a more reusable long-term development setup. This can be introduced later through project packaging configuration if needed.
-
-### Trade-offs
-
-The current approach requires the Python path to be configured when running tests or scripts in certain execution contexts.
-
-A future editable installation could make this configuration more consistent across development environments.
+The `src` directory is the package-discovery root, not part of the package name. This convention provides consistent imports across application modules, scripts, and tests.
 
 ### Evidence
 
-The import issue was corrected by changing the internal import from `src.practo_agent` to `practo_agent`.
-
-The ingestion script subsequently loaded the Sentence Transformers model and successfully populated both ChromaDB collections.
-
-The current full test suite passes with 268 tests and 31 subtests.
+All 16 scripts in `scripts/`, `main.py`, and all 404 pytest tests execute cleanly using `practo_agent` imports.
 
 ## 12. Decision: Centralize RAG Retrieval Configuration
 
-**Status:** Implemented
-
-### Context
-
-The retrieval pipeline previously used default values directly in its functions. For example, the retrieval function used a default top-k value of 3, while the vector-store implementation independently validated the same parameter.
-
-As the project grows, retrieval settings need to be managed consistently and explicitly.
+**Status:** Implemented and verified
 
 ### Decision
 
-Introduce a centralized, immutable `RetrievalConfig` dataclass in `src/practo_agent/config/retrieval.py`.
-
-The default configuration uses:
-
-- Retrieval strategy: `sentence`
-- ChromaDB collection: `practo_sentence`
-- Top-k: `2`
-- Similarity metric: `cosine`
-
-The collection name is derived from the existing `COLLECTION_NAMES` mapping rather than duplicated.
-
-The configuration validates the selected strategy, positive integer top-k value, and supported similarity metric.
-
-The retrieval wrapper uses this configuration by default and verifies that the supplied vector store matches the configured strategy.
-
-An explicit top-k override remains available for backward compatibility and controlled experiments.
-
-### Alternatives Considered
-
-- Keeping retrieval settings as function-level defaults.
-- Defining configuration as module-level constants.
-- Using environment variables for every retrieval parameter.
-- Introducing a centralized immutable configuration object.
+Introduce a centralized, immutable `RetrievalConfig` dataclass in `src/practo_agent/config/retrieval.py` defaulting to `sentence` strategy (`practo_sentence`), `top_k=2`, and `cosine` similarity.
 
 ### Rationale
 
-A dataclass provides a typed, explicit, and testable configuration contract. Immutability prevents accidental changes during execution.
-
-The selected sentence-based strategy follows the measured 25-query comparison
-at top-k 2: sentence-based achieved 0.8200 macro precision and 1.0000 macro
-recall, compared with fixed-size at 0.7400 and 0.9600.
-
-### Trade-offs
-
-- The configuration currently supports only cosine distance because that is the metric used by the existing ChromaDB collections.
-- Top-k 2 was selected based on the current 25-query comparison; it has not
-  been independently validated on a held-out query set.
-- Explicit per-call top-k overrides remain possible, so callers must use them deliberately.
-- The configuration selects a strategy but does not determine whether retrieved evidence is relevant enough to answer a query.
+At top-k 2 across the 25-query benchmark, sentence-based chunking achieved `0.8200` macro precision and `1.0000` macro recall compared with `0.7400` and `0.9600` for fixed-size chunking.
 
 ### Evidence
 
-Unit tests validate default values, collection selection, custom top-k values, invalid configurations, and immutability.
-
-Retriever tests verify that configured values are passed to the vector store and mismatched strategies are rejected.
-
-The abstention threshold is intentionally deferred to a separate calibration experiment using in-scope and out-of-scope queries.
+Unit tests validate default values, collection selection, custom top-k overrides, strategy-mismatch rejection, and immutability.
 
 ## 13. Decision: Use an Empirically Calibrated RAG Abstention Threshold
 
-**Status:** Initial threshold selected; further validation required.
-
-### Context
-
-The retrieval pipeline needs a mechanism to determine whether retrieved
-knowledge-base evidence is sufficiently similar to a user query to attempt
-an answer.
-
-The system uses cosine distance, where a lower distance indicates greater
-embedding similarity.
-
-Selecting an arbitrary threshold could cause two types of errors:
-
-- False acceptance: answering an unsupported or out-of-scope query.
-- False rejection: abstaining when the knowledge base contains relevant
-  information.
+**Status:** Implemented and calibrated on the 27-query dataset
 
 ### Decision
 
-Use an empirically calibrated cosine-distance threshold of
-**0.6976266205310822** with the selected sentence-based retrieval configuration.
-
-A query is accepted for answer generation when its best retrieved cosine
-distance is less than or equal to this threshold.
-
-The threshold was selected using a safety-first rule:
-
-1. Require zero false acceptances on the calibration dataset.
-2. Maximize recall over in-scope queries.
-3. If all in-scope distances are separated from out-of-scope distances,
-   select the midpoint between their nearest boundaries.
-4. Otherwise, select the lower threshold among candidates tied for maximum
-   recall.
-
-The threshold is configurable and must not be treated as a universal
-similarity boundary.
-
-### Alternatives Considered
-
-- Selecting an arbitrary threshold based on intuition.
-- Always answering using the top retrieved chunks.
-- Always abstaining when retrieval confidence is uncertain.
-- Evaluating candidate thresholds against labeled in-scope and
-  out-of-scope queries.
-
-### Rationale
-
-The current calibration experiment evaluates 27 queries: the 25 labeled
-in-scope retrieval queries and two out-of-scope questions.
-
-At a threshold of 0.6976266205310822, all 25 in-scope queries were accepted
-and both out-of-scope queries were rejected.
-
-This produced:
-
-- True positives: 25
-- False positives: 0
-- True negatives: 2
-- False negatives: 0
-- Precision: 1.0000
-- Recall: 1.0000
-- False acceptance rate: 0.0000
-
-The selected threshold is the midpoint between the maximum observed in-scope
-distance (0.6452579498) and the minimum observed out-of-scope distance
-(0.7499952912), so it lies between the measured clusters. Increasing the
-threshold to the next evaluated candidate above 0.7499952912 caused the
-medical diagnosis query
-to be accepted, demonstrating the risk of using a more permissive threshold.
-
-The selected threshold therefore provides the best observed result under
-the defined selection rule.
+Use an empirically calibrated cosine-distance threshold of **`0.6976266205310822`** (`src/practo_agent/config/grounding.py`) selected via a safety-first rule: require zero false acceptances, maximize in-scope recall, and select the midpoint between the maximum observed in-scope distance (`0.6452579498`) and minimum observed out-of-scope distance (`0.7499952912`).
 
 ### Trade-offs and Limitations
 
-- The calibration dataset contains only 27 queries and is not
-  statistically representative.
-- Only two out-of-scope examples were evaluated.
-- Cosine distance measures semantic similarity rather than factual support.
-- A query may retrieve a semantically similar passage that does not
-  contain sufficient information to answer it.
-- The threshold depends on the current embedding model, knowledge base,
-  chunking strategy, and retrieval configuration.
-
-The threshold must be validated against a larger and more diverse query
-dataset before making stronger reliability claims.
+The 27-query calibration dataset (25 in-scope, 2 out-of-scope) is small and specific to the project knowledge base; therefore, retrieval distance filtering is paired with post-generation groundedness validation.
 
 ### Evidence
 
-The calibration implementation is located in
-`src/practo_agent/evaluation/abstention.py`.
-
-Calibration cases are maintained in
-`evaluation/cases/abstention_cases.json`.
-
-The experiment is executed using
-`scripts/calibrate_abstention.py`, with its detailed output saved to
-`evaluation/results/abstention_calibration.json`.
-
-The current 27-query calibration produced zero false acceptances and zero
-false rejections. Its 25 in-scope queries overlap with the retrieval
-evaluation set, and only two out-of-scope examples were used, so the results
-remain provisional.
-
-Unit tests validate calibration-case loading, retrieval-distance
-collection, threshold evaluation, invalid inputs, and threshold selection.
+Reproducible via `scripts/calibrate_abstention.py` with machine-readable output in `evaluation/results/abstention_calibration.json` (`TP=25, FP=0, TN=2, FN=0`).
 
 ## 14. Decision: Use Pydantic for Structured Agent Responses
 
-**Status:** Implemented
-
-### Context
-
-The support agent needs a consistent response format across its retrieval,
-generation, and agent orchestration components.
-
-Unstructured text responses make it difficult to distinguish successful
-answers from abstentions and to verify supporting knowledge-base sources.
+**Status:** Implemented and verified
 
 ### Decision
 
-Use Pydantic models to define a structured response contract.
-
-The initial contract includes:
-
-- `GroundedResponse`: the overall response.
-- `ResponseStatus`: answered or abstained.
-- `SourceReference`: the knowledge-base source supporting an answer.
-
-Answered responses must include supporting sources. Abstained responses
-must provide an explanation and must not claim supporting sources.
-
-Unexpected fields are rejected to keep the response contract explicit.
-
-### Alternatives Considered
-
-- Returning unstructured strings.
-- Returning manually constructed dictionaries.
-- Using Pydantic models for validated response contracts.
-
-### Rationale
-
-Pydantic provides runtime validation and a reusable typed contract.
-Keeping the schema independent of the agent framework allows it to be
-reused by CrewAI, API endpoints, and other application components.
-
-### Trade-offs
-
-The response schema enforces structural consistency but cannot independently
-prove that an answer is factually supported by its cited sources.
-
-Groundedness validation must be implemented separately.
+Use strict Pydantic models (`GroundedResponse`, `RetrievalAgentOutput`, `LookupAgentOutput`, `AgentResponse`, `ReviewFeedback`, `ResponseQualityScores`) across all RAG, CrewAI, AutoGen, API, and evaluation boundaries, rejecting unexpected fields (`extra="forbid"`) and invalid status/field combinations.
 
 ### Evidence
 
-Unit tests validate successful responses, abstentions, source requirements,
-invalid combinations, and unexpected fields.
+Covered by `tests/unit/test_response_schema.py`, `tests/unit/test_agent_outputs.py`, and end-to-end workflow tests.
 
 ## 15. Decision: Separate Retrieval Evidence Validation from Generation
 
-**Status:** Implemented
-
-### Context
-
-The retrieval pipeline needs to determine whether retrieved knowledge-base
-content is sufficiently similar to a query before allowing answer generation.
-
-The abstention threshold was empirically calibrated in a separate evaluation
-experiment. Runtime evidence validation must apply that threshold without
-depending on evaluation labels or calibration datasets.
-
-
-## Decision 16: Separate Grounded Answer Generation
-
-**Status:** Implemented
-
-### Context
-
-The RAG pipeline needs to convert retrieved and validated knowledge-base evidence into structured administrative support responses. Retrieval, evidence validation, and answer generation should remain separate responsibilities.
+**Status:** Implemented and verified
 
 ### Decision
 
-Implement a provider-independent answer generation interface with two implementations:
-
-1. **ChatGroq:** Uses LangChain's ChatGroq integration for real LLM-based answer generation.
-2. **Mock Answer Generator:** Provides deterministic responses for offline testing without requiring API keys or network access.
-
-The generator accepts a user query and an `EvidenceAssessment`. It generates an answer only when the evidence assessment is accepted. Source references are constructed programmatically from retrieved evidence rather than generated by the LLM.
-
-### Alternatives Considered
-
-- Directly integrating an LLM into the retrieval implementation.
-- Using only a hosted LLM provider.
-- Using only deterministic mock responses.
-
-### Rationale
-
-Separating retrieval from generation improves modularity and makes it possible to change the LLM provider without modifying the retrieval pipeline.
-
-The mock implementation supports repeatable offline testing and ensures that acceptance tests can run without external API dependencies.
-
-### Trade-offs
-
-- A provider-independent interface introduces an additional abstraction.
-- Hosted LLM generation requires API credentials and network access.
-- Validating a response using the Pydantic schema does not guarantee factual correctness or complete grounding.
-- Additional groundedness validation and evaluation are required to identify unsupported generated statements.
+Introduce a deterministic evidence-validation component in `src/practo_agent/rag/evidence.py` that retrieves chunks using `DEFAULT_RETRIEVAL_CONFIG`, checks best cosine distance against `DEFAULT_ABSTENTION_THRESHOLD`, and returns a validated `EvidenceAssessment` before any LLM generation occurs.
 
 ### Evidence
 
-- Six generator unit tests passed.
-- The complete test suite passed with 126 tests.
-- Mock generator selection was verified with `MOCK_LLM=true`.
-- Source references are constructed from retrieved evidence.
+Unit tests cover accepted evidence, rejected evidence, empty retrieval, threshold boundaries, and invalid source metadata.
 
+## 16. Decision: Separate Grounded Answer Generation
+
+**Status:** Implemented and verified
 
 ### Decision
 
-Introduce a deterministic evidence-validation component in
-`src/practo_agent/rag/evidence.py`.
-
-The component:
-
-- Retrieves chunks using the centralized retrieval configuration.
-- Evaluates the minimum cosine distance against the configured abstention
-  threshold.
-- Preserves retrieved text and source metadata.
-- Rejects empty or unusable retrieval results.
-- Returns a structured Pydantic evidence assessment.
-
-The initial threshold is maintained in
-`src/practo_agent/config/grounding.py`.
-
-Evidence validation and response generation remain separate responsibilities.
-
-### Alternatives Considered
-
-- Allowing the LLM to decide whether retrieved evidence is sufficient.
-- Combining retrieval, evidence validation, and generation into one function.
-- Using a deterministic evidence-validation component before generation.
-
-### Rationale
-
-A deterministic threshold check makes the initial answer-versus-abstain
-decision reproducible and testable.
-
-Separating validation from generation prevents the LLM from overriding the
-retrieval acceptance decision.
-
-### Trade-offs and Limitations
-
-Cosine distance measures embedding similarity, not factual support.
-Passing the threshold does not guarantee that retrieved content answers
-the complete question.
-
-A separate groundedness check is still required after generation.
-
-The threshold is provisional because it was calibrated using only 27 queries,
-including only two out-of-scope examples. The in-scope queries overlap with
-the retrieval evaluation set.
+Implement a provider-independent `AnswerGenerator` protocol (`src/practo_agent/rag/generator.py`) with `GroqAnswerGenerator` (`ChatGroq`) for live execution and `MockAnswerGenerator` for deterministic offline execution under `MOCK_LLM=true`. Source references are constructed programmatically in Python from validated evidence rather than trusted to the LLM.
 
 ### Evidence
 
-Unit tests cover accepted evidence, rejected evidence, empty retrieval,
-threshold boundaries, retrieval configuration, and invalid source metadata.
+Covered by `tests/unit/test_rag_generator.py` and `scripts/demo_grounded_generation.py`.
 
 ## 17. Decision: Validate Generated Claims Against Retrieved Evidence
 
-**Status:** Standalone RAG validation is implemented; CrewAI workflow integration remains outstanding.
-
-### Context
-
-Retrieving relevant documents does not guarantee that every claim in a generated answer is supported by the retrieved evidence. A generated answer may contain unsupported information even when retrieval itself is successful.
+**Status:** Implemented in both standalone RAG generation and the shared CrewAI workflow (`run_practo_query`)
 
 ### Decision
 
-Introduce a separate groundedness-validation stage after answer generation.
-
-The validator evaluates individual claims against the retrieved evidence. The system returns the generated answer only when all assessed claims are supported. Unsupported claims, validation errors, or invalid assessment results cause the system to return a deterministic abstention response.
-
-Two implementations are provided:
-
-1. A deterministic mock validator based on exact normalized sentence matching.
-2. A Groq-based LLM validator using structured claim-level assessments.
-
-### Alternatives Considered
-
-- Trusting the answer generator without additional validation.
-- Checking only whether relevant documents were retrieved.
-- Using exact text matching as the only validation mechanism.
-- Using an LLM-based verifier for all execution modes.
-
-### Rationale
-
-Retrieval relevance and factual support are different concerns. A separate validation stage provides an additional check before generated content is returned.
-
-The mock implementation supports deterministic offline testing, while the Groq implementation supports semantic claim assessment.
-
-### Trade-offs
-
-Exact sentence matching is deterministic but cannot recognize semantic paraphrases. The LLM-based validator can assess semantic support but may produce incorrect judgments.
-
-Groundedness validation adds processing overhead and does not guarantee factual correctness. The system therefore fails closed when validation cannot be completed.
+Enforce a fail-closed groundedness-validation stage (`src/practo_agent/rag/groundedness.py` and `src/practo_agent/agents/workflow.py`) after answer generation and after AutoGen response revision. Unsupported claims, invalid source/appointment references, or validator errors convert the response into a safe abstention with empty references.
 
 ### Evidence
 
-- Seven groundedness schema tests.
-- Eight groundedness validator tests.
-- Six generated-response validation tests.
-- Complete project test suite: 147 passed.
-
+Covered by `tests/unit/test_groundedness.py`, `scripts/demo_groundedness_guardrail.py`, and Scenario `SAF-03` in `scripts/evaluate_safety.py`.
 
 ## 18. Decision: Implement a Deterministic Appointment Lookup Tool
 
-**Status:** Implemented
-
-### Context
-
-The Practo Support Agent needs to handle appointment-related queries using structured appointment records.
-
-Appointment information should be retrieved deterministically rather than generated or inferred by an LLM. The tool must support appointment status lookup and provide an administrative prioritization signal based on the record's follow-up requirement and age.
-
-The project uses a synthetic dataset containing 240 appointment records.
+**Status:** Implemented and verified
 
 ### Decision
 
-Implement a read-only Python function:
-
-`check_appointment_status(record_id: str) -> dict`
-
-The function retrieves appointment details from `data/generated/appointments.json` and returns the appointment status, consultation fee, and administrative prioritization score.
-
-The score is calculated using:
+Implement `check_appointment_status(record_id: str) -> dict` in `src/practo_agent/tools/appointment_lookup.py` to read `data/generated/appointments.json` deterministically and compute the administrative prioritization score:
 
 \[
 E = 0.6F + 0.4\left(\frac{D}{30}\right)
 \]
 
-Where:
-
-- `F` is 1 when follow-up is required and 0 otherwise.
-- `D` is the number of days since record creation.
-- 30 is the maximum record age in the generated dataset.
-
-### Alternatives Considered
-
-- Allowing the LLM to answer appointment queries directly.
-- Using only the follow-up flag.
-- Using only record age.
-
-### Rationale
-
-A deterministic lookup function provides predictable and testable results for structured appointment queries and avoids relying on LLM-generated appointment details.
-
-The follow-up flag receives 60% weight because it explicitly identifies records requiring follow-up consideration. Record age contributes the remaining 40%.
-
-The dataset contains 48 follow-up records out of 240 (20%). Follow-up flags occur across multiple appointment statuses, so the score must always be interpreted alongside the actual appointment status.
-
-The score is an administrative prioritization heuristic, not a clinically validated urgency or risk measure. The selected weights are design assumptions rather than statistically optimized values.
-
-### Trade-offs
-
-The deterministic implementation provides predictable results but depends on the locally generated dataset.
-
-The current implementation loads the JSON dataset during each lookup. This is acceptable for the small synthetic dataset but may need optimization if the dataset grows.
-
-The prioritization score is specific to the project's synthetic data assumptions and should not be treated as a production clinical metric.
+with an inclusive escalation threshold of `0.6`.
 
 ### Evidence
 
-- Implementation: `src/practo_agent/tools/appointment_lookup.py`
-- Unit tests: `tests/unit/test_appointment_lookup.py`
-- Appointment lookup unit tests: 18 passed.
-- Complete project test suite: 165 passed, with 31 subtests passed.
-
+Covered by `tests/unit/test_appointment_lookup.py` (18 unit tests) and `docs/architecture/appointment_lookup.md`.
 
 ## 19. Decision: Use Three Specialist Agents with Sequential CrewAI Orchestration
 
-**Status:** Implemented; the three live scenarios have been demonstrated, and offline workflow tests pass.
-
-### Context
-
-The Practo support system needs to combine knowledge-base retrieval, appointment lookup, and final response composition. Combining all responsibilities into one agent would make tool permissions, responsibility boundaries, and intermediate outputs harder to inspect.
+**Status:** Implemented and verified in both offline (`MOCK_LLM=true`) and live Groq execution
 
 ### Decision
 
-Use three specialist agents:
+Coordinate three specialist agents (`Retrieval Agent`, `Lookup Agent`, and tool-free `Response Composer`) using CrewAI `Process.sequential`, deterministic query routing (`route_query`), disabled CrewAI memory (`memory=False`), and `allow_delegation=False`.
 
-1. Retrieval Agent — administrative knowledge-base retrieval.
-2. Lookup Agent — deterministic appointment lookup.
-3. Response Composer — final structured response generation.
+### Evidence
 
-Coordinate them using CrewAI's `Process.sequential`.
+Verified across `tests/unit/test_crew.py`, `tests/unit/test_specialist_agents.py`, `tests/unit/test_specialist_tasks.py`, `scripts/demo_offline_workflow.py`, and `scripts/demo_crewai.py`.
 
-Each agent receives a dedicated Pydantic output contract. The Response Composer receives both specialist task outputs through explicit task context dependencies.
+## 20. Decisions for Security, Infrastructure, Review, Governance, and Evaluation
 
-### Alternatives Considered
+**Status:** Implemented and verified
 
-- A single agent with access to all tools.
-- A hierarchical CrewAI process with a manager agent.
-- A three-agent sequential workflow with explicit specialist responsibilities.
-
-### Rationale
-
-The sequential workflow provides clear task dependencies and inspectable intermediate results. Separating responsibilities makes tool permissions easier to enforce and test.
-
-A hierarchical process would introduce additional manager behavior that is not currently necessary for this fixed three-stage workflow.
-
-### Tool Permissions and Safety
-
-- Retrieval Agent receives only the RAG search tool.
-- Lookup Agent receives only the appointment lookup tool.
-- Response Composer receives no tools.
-- All agents have `allow_delegation=False`.
-- Specialist outputs and final responses use Pydantic schemas.
-- The workflow is restricted to administrative support.
-
-### Memory Decision
-
-CrewAI memory is disabled. Session memory will be implemented separately through LangChain so that its behavior, session isolation, and lifecycle can be tested explicitly.
-
-### Testing Evidence
-
-The agent, task, and crew configurations are covered by unit tests. The complete test suite reports 219 passing tests.
-
-A test-only CrewAI `BaseLLM` subclass is used to verify that construction does not invoke an external LLM.
-
-### Trade-offs and Limitations
-
-Sequential execution still runs all three tasks. An irrelevant specialist must return `NOT_NEEDED` rather than invoke its tool.
-
-Pydantic validation checks output structure but does not guarantee semantic correctness. Actual tool selection, intermediate results, and final answer grounding must be verified through execution traces.
-
-### Evidence Still Required
-
-- Demonstrate a knowledge-base query invoking the RAG tool.
-- Demonstrate an appointment query invoking the appointment lookup tool.
-- Verify that irrelevant tools are not called.
-- Inspect all three task outputs and the final structured response.
-- Test unsupported and not-found scenarios.
-
-## 20. Decisions Still to Be Made
-
-The following choices must be informed by implementation and evaluation
-evidence rather than assumed in advance:
-
-- How retrieval results should be passed into grounded response generation.
-- How the agent workflow should enforce tool permissions and structured response contracts.
-- How the final evaluation will measure accuracy, grounding, completeness, and safety.
-
-These decisions will be documented as the corresponding components are implemented and evaluated.
+1. **Input Guardrails (`src/practo_agent/guardrails/`):** Mask fixed-format Indian mobile numbers (`[REDACTED_CONTACT_NUMBER]`) and reject phrase-based prompt-injection attempts before routing, Crew construction, memory storage, or logging (`scripts/demo_input_guardrails.py`, `scripts/demo_prompt_injection.py`).
+2. **Session Memory and Context-Aware Caching (`src/practo_agent/memory/`, `src/practo_agent/cache/`):** Wrap the workflow with LangChain `RunnableWithMessageHistory` and `InMemoryChatMessageHistory` keyed by `session_id`, paired with a SHA-256 `ResponseCache` scoped by session ID, prior conversation context, and NFKC-normalized query (`scripts/demo_conversation_memory.py`, `scripts/demo_response_cache.py`).
+3. **Runtime Token and Cost Budget (`src/practo_agent/config/runtime_budget.py`):** Enforce pre-routing request input limits (`8,192` tokens) and per-call cumulative token (`65,536`) and cost (`$0.10`) caps across CrewAI, groundedness validation, AutoGen review, and LLM-as-a-judge evaluation (`scripts/demo_runtime_budget.py`).
+4. **FastAPI HTTP/WebSocket Transports and Privacy-Safe Observability (`src/practo_agent/api/`, `src/practo_agent/observability/`):** Expose `GET /health`, `POST /query`, and `/ws/{session_id}` backed by shared `ConversationMemory` and allowlisted JSONL trace logging (`logs/practo_agent.jsonl`) that excludes raw queries, contact numbers, session IDs, and appointment IDs (`scripts/demo_api.py`).
+5. **Two-Agent AutoGen Response Review (`src/practo_agent/review/`):** Review answered drafts in a two-turn `RoundRobinGroupChat` (`Reviewer Agent` and `Final Editor Agent`) with post-revision groundedness re-verification (`scripts/demo_autogen_review.py`).
+6. **Least-Autonomy Governance and Risk Classification (`src/practo_agent/governance/`):** Enforce default-deny tool permissions (`check_appointment_status` restricted exclusively to `Practo Appointment Lookup Specialist`) at both wiring time (`ToolPermissionError`) and runtime tool-call time (`before_tool_call` hook logging `tool_call_blocked`), and classify component/system risk under the Low/Medium/High scheme (`scripts/demo_governance.py`).
+7. **Zero-Tolerance Safety, 15-Query Live LLM-as-a-Judge, and 20-Scenario Offline Acceptance Evaluation (`src/practo_agent/evaluation/`):** Verify all seven zero-tolerance safety objectives (`7/7` passed in `scripts/evaluate_safety.py`), evaluate all 15 live queries across Accuracy (`4.47/5`), Grounding (`4.47/5`), Completeness (`4.13/5`), and Safety (`4.93/5`) (`scripts/evaluate_response_quality.py`), and run the 20-scenario keyless offline acceptance suite (`20/20` passed in `scripts/run_acceptance_suite.py`).
 
 ## 21. Maintenance
 

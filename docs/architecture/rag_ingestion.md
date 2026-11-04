@@ -171,39 +171,33 @@ The current pipeline performs full collection rebuilds rather than incremental u
 
 The knowledge base is small and project-authored. The pipeline is designed for reproducible experimentation and is not intended to claim production-scale ingestion performance.
 
-## 13. Future Work
+## 13. Retrieval Evaluation Integration
 
-The retrieval evaluation will compare both collections using the same labeled query set and top-k configuration.
+The retrieval evaluation (`scripts/evaluate_retrieval.py`) compares both collections using the same 25-query labeled dataset and top-k configuration (`top_k=2`), recording retrieved source identifiers, distances, precision, recall, and per-query observations in `evaluation/results/retrieval_results.json` and `evaluation/results/retrieval_comparison.md`.
 
-Results will be recorded separately, including retrieved source identifiers, distances, precision, recall, and per-query observations.
+## 14. Ingestion Results
 
-## 14. Initial Ingestion Results
-
-**Status:** Successfully executed using the real Sentence Transformers model.
+**Status:** Executed and verified using the real Sentence Transformers model.
 
 ### Model
 
 `sentence-transformers/all-MiniLM-L6-v2`
 
-The model weights loaded successfully during ingestion.
+The model weights loaded from the local cache during ingestion.
 
 ### Collection Results
 
 | Collection | Strategy | Stored chunks |
 |---|---|---:|
-| practo_fixed_size | Fixed-size with overlap | 33 |
-| practo_sentence | Sentence-based with overlap | 24 |
+| `practo_fixed_size` | Fixed-size with overlap | 33 |
+| `practo_sentence` | Sentence-based with overlap | 24 |
 
 ### Observations
 
-Both collections were created successfully in the configured persistent ChromaDB directory.
+Both collections were created in the configured persistent ChromaDB directory.
 
 The difference in chunk counts reflects the different boundary and grouping behavior of the two chunking strategies.
 
-The higher chunk count for sentence-based chunking does not establish better retrieval quality.
-
 ### Limitations
 
-These results establish successful ingestion and storage only. They do not establish semantic retrieval accuracy, precision, recall, or superiority of either chunking strategy.
-
-Those properties will be evaluated separately using the labeled retrieval evaluation dataset.
+These results establish ingestion and storage only. Semantic retrieval precision, recall, and strategy selection are evaluated separately using the labeled retrieval evaluation dataset (see [`docs/evaluation/retrieval_evaluation.md`](../evaluation/retrieval_evaluation.md) and [`evaluation/results/retrieval_comparison.md`](../../evaluation/results/retrieval_comparison.md)).

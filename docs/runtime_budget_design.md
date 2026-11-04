@@ -104,14 +104,14 @@ oversized request and asserts all of the following:
 The checked-in transcript is
 `evaluation/results/runtime_budget_demo.json`. During validation, the demo
 estimated 10,000 tokens for the 30,000-character input and recorded zero LLM
-calls, matching the expected result. The full unit and integration test run
-passed with 327 tests and 31 subtests.
+calls, matching the expected result. The complete project test suite passes
+with 404 tests and 31 subtests.
 
 Run the check from PowerShell:
 
 ```powershell
 $env:PYTHONPATH = "src"
-python -m pytest tests\unit tests\integration -q
+python -m pytest -q
 python scripts\demo_runtime_budget.py
 ```
 

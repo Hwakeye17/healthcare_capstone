@@ -4,10 +4,6 @@
 
 The Practo Domain Support Agent is an educational prototype intended to answer administrative healthcare questions using a controlled knowledge base and retrieve appointment information from a synthetic dataset.
 
-The project is being built incrementally. The current implementation includes
-the retrieval foundation and deterministic agent workflow. Additional
-components remain planned work.
-
 The system must not diagnose medical conditions or recommend treatments. Emergency-related questions must follow the project's emergency guidance rather than treating the agent as a substitute for emergency services.
 
 ## 2. Current Architecture
@@ -125,12 +121,7 @@ ChromaDB collection for real retrieval.
 5. Embed a user query with the same embedding model.
 6. Retrieve the nearest matching chunks from the selected collection.
 7. Assess retrieved evidence and cite source metadata in the specialist
-   output. Retrieval quality evaluation against labeled query expectations
-   remains a separate evaluation task.
-
-The local retrieval tool and response workflow are implemented. The current
-evaluation set still needs to be reconciled with the brief's required query
-count and full comparison criteria.
+   output.
 
 ### Appointment Lookup
 
@@ -168,14 +159,15 @@ application-layer governance and risk classification, privacy-safe JSONL
 request observability, zero-tolerance safety evaluation, the 20-scenario
 offline acceptance harness (`src/practo_agent/evaluation/acceptance.py` and
 `scripts/run_acceptance_suite.py`), and the LLM-as-a-judge response-quality
-evaluator. The API details and process-local session limitations are
-documented in [`docs/architecture/api.md`](api.md).
+evaluator (`src/practo_agent/evaluation/llm_judge.py` and
+`scripts/evaluate_response_quality.py`). The API details and process-local
+session limitations are documented in [`docs/architecture/api.md`](api.md).
 
-The response-quality case set and evaluator are implemented with explicit JSON
-key instructions and per-query checkpointing, and verified live on dual-tool
-queries, but full 15-query live scoring is currently paused by Groq's 200,000
-tokens-per-day (TPD) account quota. Do not mark Task 4.2 or final submission
-ready until all 15 queries are scored and reviewed.
+The 15-query live response-quality evaluation (`qwen/qwen3.8-27b`) has been
+executed end-to-end and reviewed, writing
+`evaluation/results/response_quality_results.json` and
+`reports/response_quality_report.md` with aggregate averages of Accuracy
+`4.47/5`, Grounding `4.47/5`, Completeness `4.13/5`, and Safety `4.93/5`.
 
 ## 7. Quality and Safety Principles
 
@@ -201,17 +193,8 @@ offline acceptance scenarios (`tests/integration/test_end_to_end_system.py`
 and `tests/acceptance/test_acceptance_suite.py`).
 
 The full test suite passes **404 tests and 31 subtests** under `MOCK_LLM=true`
-with `CREWAI_DISABLE_TELEMETRY=true` and `OTEL_SDK_DISABLED=true`, and
-`scripts/run_acceptance_suite.py` passes all `20/20` acceptance scenarios with
-zero external network connections and zero API keys, writing
-`evaluation/results/acceptance_results.json`,
-`evaluation/traces/acceptance_traces.jsonl`, and
-`reports/acceptance_report.md`. Dependency deprecation warnings remain. These
-results are evidence of tested behavior, not proof of general semantic
-retrieval quality.
-
-The remaining assignment work is tracked in
-[`docs/handoff_summary.md`](../handoff_summary.md): completing the live
-15-query response-quality run (`scripts/evaluate_response_quality.py`) once
-the Groq daily token quota replenishes (or with a new API key) and performing
-final public-repository verification.
+with `CREWAI_DISABLE_TELEMETRY=true` and `OTEL_SDK_DISABLED=true`, all 16
+offline evaluation and demo scripts in `scripts/` pass, the live 15-query
+LLM-as-a-judge evaluation is complete (`15/15` queries scored and reviewed),
+and `scripts/run_acceptance_suite.py` passes all `20/20` acceptance scenarios
+with zero external network connections and zero API keys.

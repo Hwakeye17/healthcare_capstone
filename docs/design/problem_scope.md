@@ -1,8 +1,7 @@
-
 # Practo Domain Support Agent — Design Contract
 
-**Status:** Initial design baseline  
-**Project type:** Healthcare administrative support capstone  
+**Status:** Implemented and verified
+**Project type:** Healthcare administrative support capstone
 **Implementation constraint:** `MOCK_LLM=true` must work without API keys or network access.
 
 ## 1. Problem and Scope
@@ -64,7 +63,7 @@ The system must provide grounded, structured responses, recognize unsupported qu
 
 ### Review stage
 
-A separate AutoGen review stage will review the CrewAI draft. It must use the required two-agent Round Robin Group Chat, bounded to two turns, and return structured output.
+A separate AutoGen review stage reviews the CrewAI draft. It uses the required two-agent Round Robin Group Chat, bounded to two turns, and returns structured output.
 
 The reviewer and final editor do not receive additional appointment-system permissions.
 

@@ -1,4 +1,3 @@
-
 # RAG Answer Generation
 
 ## 1. Purpose
@@ -9,18 +8,18 @@ It is separate from retrieval and evidence assessment.
 
 ## 2. Generation Flow
 
-1. Receive the user query and EvidenceAssessment.
+1. Receive the user query and `EvidenceAssessment`.
 2. Check whether the evidence assessment was accepted.
 3. If rejected, return an abstention without calling an LLM.
 4. If accepted, provide the query and retrieved excerpts to the configured generator.
 5. Construct source references from retrieved evidence in Python.
-6. Validate the final response using the GroundedResponse Pydantic schema.
+6. Validate the final response using the `GroundedResponse` Pydantic schema.
 
 ## 3. Model Provider
 
 The implementation supports:
 
-- ChatGroq using LangChain's ChatGroq integration.
+- `ChatGroq` using LangChain's `ChatGroq` integration.
 - A deterministic mock generator for offline testing.
 
 The generator interface is provider-independent so that another model provider can be introduced without changing the retrieval layer.
@@ -36,9 +35,9 @@ The generator interface is provider-independent so that another model provider c
 ## 5. Configuration and Security
 
 - Model configuration is read from environment variables.
-- GROQ_API_KEY is never hardcoded or returned by the configuration helper.
-- The actual .env file must not be committed.
-- MOCK_LLM=true selects the mock implementation and requires no API key or network access.
+- `GROQ_API_KEY` is never hardcoded or returned by the configuration helper.
+- The actual `.env` file must not be committed.
+- `MOCK_LLM=true` selects the mock implementation and requires no API key or network access.
 
 ## 6. Testing
 
@@ -53,9 +52,7 @@ Unit tests cover:
 
 ## 7. Limitations
 
-Passing the retrieval distance threshold does not prove that every generated statement is supported by the retrieved excerpts.
-
-Further groundedness validation and LLM-as-judge evaluation are required.
+Passing the retrieval distance threshold does not by itself prove that every generated statement is supported by the retrieved excerpts. Claim-level groundedness validation (Section 8) and the 15-query LLM-as-a-judge evaluation ([`response_quality_evaluation.md`](response_quality_evaluation.md)) therefore complement retrieval distance filtering.
 
 The project is an educational administrative support prototype, not a clinically validated healthcare system.
 
@@ -131,7 +128,7 @@ The implementation is covered by unit tests for:
 - Abstention when validation raises an exception.
 - Skipping validation when the generator already abstains.
 
-The complete project test suite passes with 147 tests.
+The complete project test suite passes with 404 tests and 31 subtests.
 
 ### 8.6 Limitations
 

@@ -67,9 +67,8 @@ python -m pytest tests/unit/test_safety_evaluation.py -v
 - Fixed-format contact-number masking covers ten-digit Indian mobile numbers
   (with optional `+91` or `0` prefixes and space/hyphen separators) as required
   by the assignment brief; free-text names, diagnoses, and insurance IDs have
-  no universal regex format under a keyless `MOCK_LLM` masker and are
-  explicitly out of scope per `docs/Healthcare.txt`.
+  no universal regex format under a keyless `MOCK_LLM` masker and are out of
+  scope for fixed-format contact-number masking per the capstone specification.
 - Phrase-based prompt-injection detection and exact-text offline groundedness
   checks are deterministic layers; in live mode, the Groq groundedness
   validator and AutoGen review team provide additional semantic verification.
-
