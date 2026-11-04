@@ -33,6 +33,7 @@ class MockCrewAILLM(BaseLLM):
     _runtime_budget: RuntimeBudget | None = PrivateAttr(default=None)
 
     def __init__(self, query: str | None = None) -> None:
+        os.environ["CREWAI_DISABLE_TELEMETRY"] = "true"
         os.environ["OTEL_SDK_DISABLED"] = "true"
         super().__init__(
             model="mock-practo-llm",

@@ -1,9 +1,8 @@
 # Practo Healthcare Domain Support Agent
 
-This repository is for the Practo Healthcare track. It provides administrative
-support using a project-authored knowledge base and a synthetic appointment
-dataset. It is not a clinical system and does not provide diagnosis or
-treatment recommendations.
+**Completed Track:** Practo (Healthcare) — Administrative Patient-Support & Appointment-Status Agent.
+
+This repository implements the **Practo (Healthcare)** capstone track. It provides administrative policy support using a project-authored 12-document knowledge base and deterministic appointment lookups against a 240-record synthetic dataset, orchestrated with CrewAI, reviewed by a two-agent AutoGen Round Robin team, governed by application-layer tool-permission and runtime budget controls, and deployed behind FastAPI (HTTP + WebSocket) with privacy-safe JSONL observability. Everything runs deterministically offline under `MOCK_LLM=true` with **zero API keys** and **zero external network calls** (`CREWAI_DISABLE_TELEMETRY=true` and `OTEL_SDK_DISABLED=true` are set before Crew execution). It is an administrative support system and does not provide clinical diagnosis or treatment recommendations.
 
 ## Dataset design
 
@@ -76,11 +75,31 @@ calibration set.
 - `MOCK_LLM=true` selects a deterministic CrewAI `BaseLLM` implementation.
   The mock workflow uses actual local embeddings, the persisted ChromaDB
   collection, and the synthetic appointment dataset; it does not require a
-  Groq API key. CrewAI OpenTelemetry and Hugging Face model downloads are
-  disabled for the offline acceptance run.
-- Tests exercise five in-scope questions through `Crew.kickoff()`, a mixed
-  question, an out-of-scope abstention, and rejection of external network
-  connections.
+  Groq API key. `CREWAI_DISABLE_TELEMETRY=true`, `OTEL_SDK_DISABLED=true`,
+  `HF_HUB_OFFLINE=1`, and `TRANSFORMERS_OFFLINE=1` are set so CrewAI
+  telemetry and Hugging Face hub calls are disabled for zero-network offline
+  execution.
+- A root entry point (`main.py`) exposes both the FastAPI application
+  (`main:app` and `create_app`) and a keyless offline CLI check (`python main.py`).
+- End-to-end integration tests (`tests/integration/test_end_to_end_system.py`)
+  and the 20-scenario acceptance suite (`scripts/run_acceptance_suite.py` and
+  `tests/acceptance/test_acceptance_suite.py`) verify all 15 subsystems
+  working together offline with zero external network connections.
+
+Run the keyless root entry point in PowerShell:
+
+```powershell
+python .\main.py
+```
+
+Run the 20-scenario offline acceptance suite and generate
+`evaluation/results/acceptance_results.json`,
+`evaluation/traces/acceptance_traces.jsonl`, and
+`reports/acceptance_report.md`:
+
+```powershell
+python .\scripts\run_acceptance_suite.py
+```
 
 Run the end-to-end offline examples in PowerShell:
 
@@ -139,12 +158,14 @@ python scripts\demo_response_cache.py
 The cache is process-local, stores answered responses only, and reports
 cache-hit, miss, and workflow invocation counts.
 
-Run the local HTTP and WebSocket API in offline mock mode:
+Run the local HTTP and WebSocket API in offline mock mode (via `main:app` or `practo_agent.api.app:app`):
 
 ```powershell
 $env:PYTHONPATH = Join-Path (Get-Location) 'src'
 $env:MOCK_LLM = 'true'
-python -m uvicorn practo_agent.api.app:app --host 127.0.0.1 --port 8000
+$env:CREWAI_DISABLE_TELEMETRY = 'true'
+$env:OTEL_SDK_DISABLED = 'true'
+python -m uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
 The API provides `GET /health`, `POST /query`, and a session-based
@@ -251,19 +272,23 @@ python -m pytest -q
 
 ## Remaining assignment reconciliation
 
-The RAG and core CrewAI workflow are implemented and covered by tests.
-Fixed-format contact-number masking, phrase-based prompt-injection detection,
-CrewAI response groundedness validation, session-based conversation memory,
-and context-aware response caching are implemented and demonstrated.
-Runtime token/cost controls and the FastAPI HTTP/WebSocket interface are
-implemented with offline demonstrations. Privacy-safe structured logging is
-implemented and demonstrated. The AutoGen review stage is implemented and
-demonstrated. The 15-query response-quality evaluation is implemented; its
-live scored results still need to be generated and reviewed; Groq output
-formatting and account token limits have blocked successful live scoring so
-far. Application-layer governance, risk classification, and the zero-tolerance
-safety evaluation suite are implemented and demonstrated. Remaining work
-includes end-to-end offline acceptance testing, final reports (including the
-15-query live judge evaluation), and submission review.
+All 15 subsystems—knowledge-base retrieval, deterministic appointment lookup,
+sequential CrewAI specialists, Pydantic output contracts, input/output
+guardrails (contact-number PII masking, phrase-based prompt-injection
+rejection, and output groundedness validation), LangChain session memory,
+context-aware response caching, runtime token/cost budgets, FastAPI
+HTTP/WebSocket endpoints, two-agent AutoGen Round Robin review,
+application-layer tool-permission governance and risk classification,
+privacy-safe JSONL observability, zero-tolerance safety evaluation (`7/7`
+passed), and the 20-scenario offline acceptance suite (`20/20` passed)—are
+integrated, tested (`404 passed, 31 subtests passed`), and demonstrated under
+`MOCK_LLM=true` with zero API keys and zero external network calls.
+
+The 15-query live LLM-as-a-judge response-quality evaluator
+(`scripts/evaluate_response_quality.py`) is implemented with explicit JSON
+schema contracts and per-query checkpointing; completing the remaining live
+queries and generating `evaluation/results/response_quality_results.json` and
+`reports/response_quality_report.md` awaits Groq daily token-quota (200k TPD)
+replenishment or a fresh Groq API key.
 Track remaining requirements in the internal handoff; do not mark a feature
 complete until its behavior is demonstrated and tested.

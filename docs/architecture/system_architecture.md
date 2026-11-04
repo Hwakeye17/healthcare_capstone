@@ -158,20 +158,24 @@ Retrieval results should retain their source information so answers and evaluati
 
 ## 6. Current Integration
 
-The current implementation includes LangChain session memory, input and
-output guardrails, a FastAPI HTTP/WebSocket interface, runtime token/cost
-budgets, session-aware response caching, and privacy-safe JSONL request
-observability, the two-agent AutoGen response-review stage, enforced
-application-layer governance and risk classification, the zero-tolerance
-safety evaluation suite, and the LLM-as-a-judge response-quality evaluation. The API details and process-local
-session limitations are documented in
-[`docs/architecture/api.md`](api.md).
+The current implementation integrates all 15 subsystems through the shared
+request lifecycle and root entry point (`main.py`): knowledge-base retrieval,
+deterministic appointment lookup, CrewAI specialist orchestration, Pydantic
+output contracts, input/output guardrails, LangChain session memory,
+session-aware response caching, runtime token/cost budgets, FastAPI HTTP and
+WebSocket endpoints, the two-agent AutoGen response-review stage, enforced
+application-layer governance and risk classification, privacy-safe JSONL
+request observability, zero-tolerance safety evaluation, the 20-scenario
+offline acceptance harness (`src/practo_agent/evaluation/acceptance.py` and
+`scripts/run_acceptance_suite.py`), and the LLM-as-a-judge response-quality
+evaluator. The API details and process-local session limitations are
+documented in [`docs/architecture/api.md`](api.md).
 
-The response-quality case set and evaluator are implemented, but live scoring
-has not generated valid scores or a report: Groq returned malformed judge
-output, and a later attempt encountered the account's token limit. End-to-end acceptance, final
-reports, and submission review remain pending. Do not mark the project ready
-for submission until these items are completed and verified.
+The response-quality case set and evaluator are implemented with explicit JSON
+key instructions and per-query checkpointing, and verified live on dual-tool
+queries, but full 15-query live scoring is currently paused by Groq's 200,000
+tokens-per-day (TPD) account quota. Do not mark Task 4.2 or final submission
+ready until all 15 queries are scored and reviewed.
 
 ## 7. Quality and Safety Principles
 
@@ -188,24 +192,26 @@ The implementation should follow these principles:
 
 ## 8. Current Verification Status
 
-The project has unit and integration tests for dataset generation,
-knowledge-base validation, retrieval, routing, specialist tools, structured
-response validation, runtime budgets, HTTP validation, WebSocket session
-context, the offline CrewAI workflow, and the two-agent AutoGen review.
+The project has unit, integration, and acceptance tests for dataset
+generation, knowledge-base validation, retrieval, routing, specialist tools,
+structured response validation, runtime budgets, HTTP validation, WebSocket
+session context, the offline CrewAI workflow, the two-agent AutoGen review,
+least-autonomy tool governance, zero-tolerance safety evaluation, and all 20
+offline acceptance scenarios (`tests/integration/test_end_to_end_system.py`
+and `tests/acceptance/test_acceptance_suite.py`).
 
-An earlier full test run contained 351 passing tests and 31 passing subtests;
-this is historical and has not been rerun after all subsequent changes. The
-latest focused regression run passed 56 tests. The AutoGen demonstration
-verifies an approved response remains
-unchanged and an unsupported draft is corrected in exactly two agent turns.
-The API demonstration exercises a real local retrieval/appointment workflow
-through HTTP and a context-dependent WebSocket follow-up. The offline CrewAI
-integration test rejects external network connections. Dependency deprecation
-warnings remain. These results are evidence of tested behavior, not proof of
-general semantic retrieval quality.
+The full test suite passes **404 tests and 31 subtests** under `MOCK_LLM=true`
+with `CREWAI_DISABLE_TELEMETRY=true` and `OTEL_SDK_DISABLED=true`, and
+`scripts/run_acceptance_suite.py` passes all `20/20` acceptance scenarios with
+zero external network connections and zero API keys, writing
+`evaluation/results/acceptance_results.json`,
+`evaluation/traces/acceptance_traces.jsonl`, and
+`reports/acceptance_report.md`. Dependency deprecation warnings remain. These
+results are evidence of tested behavior, not proof of general semantic
+retrieval quality.
 
 The remaining assignment work is tracked in
-[`docs/handoff_summary.md`](../handoff_summary.md), including
-successful live scoring of all required 15 response
-queries, end-to-end offline acceptance, final evidence/reports, and submission
-cleanup.
+[`docs/handoff_summary.md`](../handoff_summary.md): completing the live
+15-query response-quality run (`scripts/evaluate_response_quality.py`) once
+the Groq daily token quota replenishes (or with a new API key) and performing
+final public-repository verification.

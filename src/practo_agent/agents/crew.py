@@ -1,5 +1,9 @@
-
 """CrewAI orchestration for the Practo support agent."""
+
+import os
+
+os.environ.setdefault("CREWAI_DISABLE_TELEMETRY", "true")
+os.environ.setdefault("OTEL_SDK_DISABLED", "true")
 
 from crewai import Crew, Process
 

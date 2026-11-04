@@ -1,0 +1,42 @@
+{"timestamp": "2026-11-04T19:41:04.976063+00:00", "event": "workflow_routed", "retrieval_enabled": true, "lookup_enabled": false, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:12.362862+00:00", "event": "tool_completed", "tool_name": "search_practo_knowledge_base", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:12.447790+00:00", "event": "workflow_routed", "retrieval_enabled": true, "lookup_enabled": false, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:12.535349+00:00", "event": "tool_completed", "tool_name": "search_practo_knowledge_base", "tool_status": "no_evidence"}
+{"timestamp": "2026-11-04T19:41:12.601994+00:00", "event": "workflow_routed", "retrieval_enabled": false, "lookup_enabled": true, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:12.664610+00:00", "event": "tool_completed", "tool_name": "check_appointment_status", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:12.736216+00:00", "event": "workflow_routed", "retrieval_enabled": false, "lookup_enabled": true, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:12.780079+00:00", "event": "tool_completed", "tool_name": "check_appointment_status", "tool_status": "not_found"}
+{"timestamp": "2026-11-04T19:41:12.826310+00:00", "event": "workflow_routed", "retrieval_enabled": true, "lookup_enabled": true, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:12.900457+00:00", "event": "tool_completed", "tool_name": "search_practo_knowledge_base", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:12.938018+00:00", "event": "tool_completed", "tool_name": "check_appointment_status", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:13.000958+00:00", "event": "workflow_routed", "retrieval_enabled": true, "lookup_enabled": false, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:13.083985+00:00", "event": "tool_completed", "tool_name": "search_practo_knowledge_base", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:13.154325+00:00", "event": "workflow_routed", "retrieval_enabled": true, "lookup_enabled": false, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:13.234266+00:00", "event": "tool_completed", "tool_name": "search_practo_knowledge_base", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:13.297468+00:00", "event": "workflow_routed", "retrieval_enabled": false, "lookup_enabled": true, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:13.350273+00:00", "event": "tool_completed", "tool_name": "check_appointment_status", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:13.419721+00:00", "event": "workflow_routed", "retrieval_enabled": true, "lookup_enabled": true, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:13.504752+00:00", "event": "tool_completed", "tool_name": "search_practo_knowledge_base", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:13.556071+00:00", "event": "tool_completed", "tool_name": "check_appointment_status", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:13.619673+00:00", "event": "workflow_routed", "retrieval_enabled": true, "lookup_enabled": false, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:13.704709+00:00", "event": "tool_completed", "tool_name": "search_practo_knowledge_base", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:13.779112+00:00", "event": "workflow_routed", "retrieval_enabled": true, "lookup_enabled": false, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:13.857154+00:00", "event": "tool_completed", "tool_name": "search_practo_knowledge_base", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:13.921322+00:00", "event": "workflow_routed", "retrieval_enabled": true, "lookup_enabled": false, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:13.995558+00:00", "event": "tool_completed", "tool_name": "search_practo_knowledge_base", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:14.090515+00:00", "event": "request_completed", "trace_id": "9a329d97b0574b3c889182c70006e5e8", "transport": "http", "operation": "health", "outcome": "success", "duration_ms": 1.645, "status_code": 200}
+{"timestamp": "2026-11-04T19:41:14.097423+00:00", "event": "workflow_routed", "trace_id": "e688b1b9fce640c29046ada9352f0f01", "retrieval_enabled": false, "lookup_enabled": true, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:14.159619+00:00", "event": "tool_completed", "trace_id": "e688b1b9fce640c29046ada9352f0f01", "tool_name": "check_appointment_status", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:14.220194+00:00", "event": "request_completed", "trace_id": "e688b1b9fce640c29046ada9352f0f01", "transport": "http", "operation": "query", "outcome": "answered", "duration_ms": 126.418, "status_code": 200}
+{"timestamp": "2026-11-04T19:41:14.226893+00:00", "event": "workflow_routed", "trace_id": "57c412325e7b41258156ca4053a946d6", "retrieval_enabled": false, "lookup_enabled": true, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:14.292466+00:00", "event": "tool_completed", "trace_id": "57c412325e7b41258156ca4053a946d6", "tool_name": "check_appointment_status", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:14.353178+00:00", "event": "request_completed", "trace_id": "57c412325e7b41258156ca4053a946d6", "transport": "websocket", "operation": "websocket_query", "outcome": "answered", "duration_ms": 129.381}
+{"timestamp": "2026-11-04T19:41:14.355488+00:00", "event": "workflow_routed", "trace_id": "6489835048d44478b21a882464215a85", "retrieval_enabled": true, "lookup_enabled": true, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:14.446575+00:00", "event": "tool_completed", "trace_id": "6489835048d44478b21a882464215a85", "tool_name": "search_practo_knowledge_base", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:14.502764+00:00", "event": "tool_completed", "trace_id": "6489835048d44478b21a882464215a85", "tool_name": "check_appointment_status", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:14.571323+00:00", "event": "request_completed", "trace_id": "6489835048d44478b21a882464215a85", "transport": "websocket", "operation": "websocket_query", "outcome": "answered", "duration_ms": 217.722}
+{"timestamp": "2026-11-04T19:41:14.571878+00:00", "event": "request_completed", "trace_id": "905d23fad1664c96968a1f03a33d8e73", "transport": "websocket", "operation": "websocket_connection", "outcome": "disconnected", "duration_ms": 0.003}
+{"timestamp": "2026-11-04T19:41:14.578915+00:00", "event": "workflow_routed", "trace_id": "bd06452b138340b784260a6594e56633", "retrieval_enabled": false, "lookup_enabled": true, "clarification_required": false}
+{"timestamp": "2026-11-04T19:41:14.647457+00:00", "event": "tool_completed", "trace_id": "bd06452b138340b784260a6594e56633", "tool_name": "check_appointment_status", "tool_status": "success"}
+{"timestamp": "2026-11-04T19:41:14.699559+00:00", "event": "request_completed", "trace_id": "bd06452b138340b784260a6594e56633", "transport": "websocket", "operation": "websocket_query", "outcome": "answered", "duration_ms": 123.588}
+{"timestamp": "2026-11-04T19:41:14.699978+00:00", "event": "request_completed", "trace_id": "4dc57af7398c4d0a9d7dc0fecadfe161", "transport": "websocket", "operation": "websocket_connection", "outcome": "disconnected", "duration_ms": 0.002}
