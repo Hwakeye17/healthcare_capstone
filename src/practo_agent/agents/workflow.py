@@ -164,7 +164,9 @@ def run_practo_query(
         if model is None:
             continue
 
-        specialist_output = model.model_validate_json(task_output.raw)
+        specialist_output = model.model_validate_json(
+            _strip_markdown_fences(task_output.raw)
+        )
 
         if (
             isinstance(specialist_output, RetrievalAgentOutput)
@@ -193,7 +195,7 @@ def run_practo_query(
             appointment_record_ids.add(appointment.record_id)
 
     try:
-        response = AgentResponse.model_validate_json(result.raw)
+        response = AgentResponse.model_validate_json(_strip_markdown_fences(result.raw))
     except ValidationError:
         return _groundedness_abstention(
             "The generated response did not conform to the required "
@@ -322,6 +324,22 @@ def _budget_abstention(reason: str) -> AgentResponse:
         ),
         reason=reason,
     )
+
+
+def _strip_markdown_fences(raw: str) -> str:
+    """Strip optional surrounding Markdown code fences before JSON validation."""
+
+    if not isinstance(raw, str):
+        return raw
+    cleaned = raw.strip()
+    if cleaned.startswith("```"):
+        lines = cleaned.splitlines()
+        if lines and lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        return "\n".join(lines).strip()
+    return cleaned
 
 
 def _format_conversation_history(

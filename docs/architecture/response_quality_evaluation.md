@@ -48,4 +48,7 @@ python scripts\evaluate_response_quality.py
 The script selects live mode and evaluates all 15 cases. On success it prints
 the number evaluated, four actual averages on the 1-to-5 scale, and both
 report paths. API errors, invalid judge output, or budget exhaustion stop the
-run without writing success-shaped results.
+run without writing success-shaped results. Completed queries are checkpointed after each
+case to `evaluation/results/response_quality_checkpoint.json` (and resumed
+automatically if a provider rate-limit interrupts the run) before being removed
+when all 15 queries finish.

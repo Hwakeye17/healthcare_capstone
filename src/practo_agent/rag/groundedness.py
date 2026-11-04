@@ -199,6 +199,24 @@ Instructions:
 11. Include an explanation for every claim and for the overall result.
 
 Do not use outside knowledge.
+
+Return only a single valid JSON object (never a JSON array/list) with no
+markdown fences and no extra keys, matching this exact schema:
+{{
+  "grounded": true,
+  "claim_assessments": [
+    {{
+      "claim": "State the individual claim here.",
+      "supported": true,
+      "explanation": "Explain how the evidence supports or fails to support this claim."
+    }}
+  ],
+  "reason": "Explain the overall groundedness decision."
+}}
+Use the exact top-level keys "grounded" (boolean), "claim_assessments"
+(non-empty array of objects), and "reason" (non-empty string). Each object in
+"claim_assessments" must use the exact keys "claim" (non-empty string),
+"supported" (boolean), and "explanation" (non-empty string).
 """,
                 ),
                 (
@@ -214,7 +232,7 @@ Retrieved evidence:
 {evidence}
 </evidence>
 
-Assess every factual claim in the generated answer.
+Assess every factual claim in the generated answer and return only the single JSON object with keys "grounded", "claim_assessments", and "reason".
 """,
                 ),
             ]

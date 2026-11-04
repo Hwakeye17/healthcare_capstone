@@ -19,4 +19,6 @@ venv/
 /data/vectorstores/
 
 # Runtime JSON Lines logs
+# Runtime JSON Lines logs
 /logs/*.jsonl
+/evaluation/results/response_quality_checkpoint.json

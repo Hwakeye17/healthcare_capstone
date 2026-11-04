@@ -66,9 +66,9 @@ workflow raises a `TypeError` rather than proceeding without enforcement.
 | Setting | Default | Rationale |
 |---|---:|---|
 | `MAX_REQUEST_INPUT_TOKENS` | 8,192 | Bounds the user query plus conversation history before routing. This is a guardrail, not a target prompt size. |
-| `MAX_TOTAL_ESTIMATED_TOKENS` | 32,768 | Covers cumulative prompt estimates and output reservations across the multi-agent workflow. The first 16,384-token setting rejected a normal offline integration scenario at an estimated 18,021 tokens, so the default was raised to 32,768 and the existing integration scenario was rerun successfully. |
+| `MAX_TOTAL_ESTIMATED_TOKENS` | 65,536 | Covers cumulative prompt estimates and output reservations across the multi-agent workflow, groundedness verification, two-turn AutoGen review, and LLM-as-a-judge evaluation. The initial 16,384-token setting was raised to 32,768 for CrewAI and then to 65,536 once AutoGen review, post-revision groundedness validation, and live judge evaluation were added to the shared budget. |
 | `MAX_COMPLETION_TOKENS_PER_CALL` | 1,024 | Limits each individual completion and makes its worst-case output reserve predictable across calls. |
-| `MAX_ESTIMATED_COST_USD` | 0.05 | Provides an explicit per-request stop condition when configured input/output rates are applied. Treat as a project default to tune, not as a guarantee of actual charges. |
+| `MAX_ESTIMATED_COST_USD` | 0.10 | Provides an explicit per-request stop condition when configured input/output rates are applied across the full multi-agent, review, and evaluation lifecycle. Treat as a project default to tune, not as a guarantee of actual charges. |
 | `INPUT_COST_PER_MILLION_TOKENS_USD` | 0.80 | Configurable input-rate assumption for the configured Groq model. |
 | `OUTPUT_COST_PER_MILLION_TOKENS_USD` | 4.00 | Configurable output-rate assumption for the configured Groq model. |
 

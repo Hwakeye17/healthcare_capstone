@@ -15,9 +15,9 @@ class RuntimeBudgetConfig:
     """Limits and model rates used by the per-request budget guard."""
 
     max_request_input_tokens: int = 8192
-    max_total_estimated_tokens: int = 32768
+    max_total_estimated_tokens: int = 65536
     max_completion_tokens_per_call: int = 1024
-    max_estimated_cost_usd: float = 0.05
+    max_estimated_cost_usd: float = 0.10
     input_cost_per_million_tokens_usd: float = 0.80
     output_cost_per_million_tokens_usd: float = 4.00
 
@@ -60,7 +60,7 @@ class RuntimeBudgetConfig:
             ),
             max_total_estimated_tokens=_environment_int(
                 "MAX_TOTAL_ESTIMATED_TOKENS",
-                32768,
+                65536,
             ),
             max_completion_tokens_per_call=_environment_int(
                 "MAX_COMPLETION_TOKENS_PER_CALL",
@@ -68,7 +68,7 @@ class RuntimeBudgetConfig:
             ),
             max_estimated_cost_usd=_environment_float(
                 "MAX_ESTIMATED_COST_USD",
-                0.05,
+                0.10,
             ),
             input_cost_per_million_tokens_usd=_environment_float(
                 "INPUT_COST_PER_MILLION_TOKENS_USD",

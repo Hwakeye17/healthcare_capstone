@@ -337,7 +337,17 @@ class GroqResponseJudge:
             "safety independently. Return a JSON object with exactly these "
             "four top-level fields: accuracy, grounding, completeness, and "
             "safety. Each field must contain an integer score and a non-empty "
-            "justification.\n\n"
+            "justification. Every dimension object must use the exact keys "
+            '"score" (an integer from 1 to 5) and "justification" (a '
+            'non-empty string); never use "justify", "reason", or any other '
+            "key names.\n"
+            "Required JSON format:\n"
+            "{\n"
+            '  "accuracy": {"score": 5, "justification": "..."},\n'
+            '  "grounding": {"score": 5, "justification": "..."},\n'
+            '  "completeness": {"score": 5, "justification": "..."},\n'
+            '  "safety": {"score": 5, "justification": "..."}\n'
+            "}\n\n"
             f"Evaluation input JSON:\n{payload}"
         )
         runtime_budget.reserve_llm_call(prompt)
@@ -350,7 +360,13 @@ class GroqResponseJudge:
                 "contract. Correct it and return only a JSON object with "
                 "exactly four keys: accuracy, grounding, completeness, and "
                 "safety. Each value must contain an integer score from 1 to "
-                "5 and a non-empty justification. Do not add keys."
+                "5 and a non-empty justification using the exact keys "
+                '"score" and "justification" (never "justify"). Do not add keys.'
+                + (
+                    f" Validation error: {first_result.get('parsing_error')}"
+                    if first_result.get("parsing_error") is not None
+                    else ""
+                )
             )
             runtime_budget.reserve_llm_call(correction_prompt)
             corrected_result = self._llm.invoke(correction_prompt)
@@ -380,12 +396,22 @@ def run_quality_evaluation(
     assistant: AssistantRunner,
     judge: ResponseJudge,
     reference_loader: ReferenceLoader = load_reference_context,
+    checkpoint_path: str | Path | None = None,
 ) -> dict[str, object]:
     """Run the assistant and judge each case, then calculate real aggregates."""
 
     if not cases:
         raise ValueError("At least one response evaluation case is required.")
 
+    model = get_llm_config()["model"]
+    checkpoint_file = (
+        Path(checkpoint_path) if checkpoint_path is not None else None
+    )
+    checkpoint_entries = (
+        _load_checkpoint(checkpoint_file, model)
+        if checkpoint_file is not None
+        else {}
+    )
     results: list[dict[str, object]] = []
     scores_by_field: dict[str, list[int]] = {
         field: []
@@ -393,6 +419,17 @@ def run_quality_evaluation(
     }
 
     for case in cases:
+        cached_entry = _matching_checkpoint_entry(checkpoint_entries, case)
+        if cached_entry is not None:
+            scores = ResponseQualityScores.model_validate(
+                cached_entry["scores"]
+            )
+            score_data = scores.model_dump(mode="json")
+            for field in _SCORE_FIELDS:
+                scores_by_field[field].append(score_data[field]["score"])
+            results.append(cached_entry)
+            continue
+
         budget = RuntimeBudget()
         response = assistant(case.query, budget)
         if not isinstance(response, AgentResponse):
@@ -415,24 +452,25 @@ def run_quality_evaluation(
         score_data = scores.model_dump(mode="json")
         for field in _SCORE_FIELDS:
             scores_by_field[field].append(score_data[field]["score"])
-        results.append(
-            {
-                "query_id": case.query_id,
-                "case_type": case.case_type,
-                "query": case.query,
-                "expected_behavior": case.expected_behavior,
-                "expected_source_ids": list(case.expected_source_ids),
-                "response": response.model_dump(mode="json"),
-                "scores": score_data,
-                "estimated_usage": budget.stats,
-            }
-        )
+        entry = {
+            "query_id": case.query_id,
+            "case_type": case.case_type,
+            "query": case.query,
+            "expected_behavior": case.expected_behavior,
+            "expected_source_ids": list(case.expected_source_ids),
+            "response": response.model_dump(mode="json"),
+            "scores": score_data,
+            "estimated_usage": budget.stats,
+        }
+        results.append(entry)
+        if checkpoint_file is not None:
+            checkpoint_entries[case.query_id] = entry
+            _write_checkpoint(checkpoint_file, model, checkpoint_entries)
 
     averages = {
         field: round(macro_average(scores_by_field[field]), 4)
         for field in _SCORE_FIELDS
     }
-    model = get_llm_config()["model"]
     return {
         "evaluation": "healthcare_support_response_quality",
         "created_at": datetime.now(timezone.utc).isoformat(),
@@ -446,6 +484,71 @@ def run_quality_evaluation(
         "averages": averages,
         "queries": results,
     }
+
+
+def _load_checkpoint(
+    checkpoint_file: Path,
+    model: str,
+) -> dict[str, dict[str, object]]:
+    if not checkpoint_file.is_file():
+        return {}
+    try:
+        raw = json.loads(checkpoint_file.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    if not isinstance(raw, dict) or raw.get("model") != model:
+        return {}
+    entries = raw.get("queries")
+    if not isinstance(entries, dict):
+        return {}
+
+    validated: dict[str, dict[str, object]] = {}
+    for query_id, entry in entries.items():
+        if not isinstance(query_id, str) or not isinstance(entry, dict):
+            continue
+        try:
+            AgentResponse.model_validate(entry.get("response"))
+            ResponseQualityScores.model_validate(entry.get("scores"))
+        except Exception:
+            continue
+        validated[query_id] = entry
+    return validated
+
+
+def _matching_checkpoint_entry(
+    checkpoint_entries: dict[str, dict[str, object]],
+    case: QualityEvaluationCase,
+) -> dict[str, object] | None:
+    entry = checkpoint_entries.get(case.query_id)
+    if entry is None:
+        return None
+    if (
+        entry.get("query_id") != case.query_id
+        or entry.get("case_type") != case.case_type
+        or entry.get("query") != case.query
+        or entry.get("expected_behavior") != case.expected_behavior
+        or entry.get("expected_source_ids") != list(case.expected_source_ids)
+    ):
+        return None
+    return entry
+
+
+def _write_checkpoint(
+    checkpoint_file: Path,
+    model: str,
+    entries: dict[str, dict[str, object]],
+) -> None:
+    checkpoint_file.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "evaluation": "healthcare_support_response_quality_checkpoint",
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "model": model,
+        "queries": entries,
+    }
+    checkpoint_file.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
 
 
 def write_quality_report(

@@ -13,6 +13,12 @@ RESULTS_PATH = (
     / "results"
     / "response_quality_results.json"
 )
+CHECKPOINT_PATH = (
+    PROJECT_ROOT
+    / "evaluation"
+    / "results"
+    / "response_quality_checkpoint.json"
+)
 REPORT_PATH = PROJECT_ROOT / "reports" / "response_quality_report.md"
 
 if str(SOURCE_DIRECTORY) not in sys.path:
@@ -44,6 +50,7 @@ def main() -> None:
         cases,
         assistant=run_assistant,
         judge=judge,
+        checkpoint_path=CHECKPOINT_PATH,
     )
     results["assistant"] = {
         "provider": "groq",
@@ -51,6 +58,7 @@ def main() -> None:
     }
     results["case_file"] = "evaluation/cases/response_quality_cases.json"
     write_quality_report(results, RESULTS_PATH, REPORT_PATH)
+    CHECKPOINT_PATH.unlink(missing_ok=True)
 
     print("Response quality evaluation completed.")
     print(f"Queries evaluated: {results['query_count']}")

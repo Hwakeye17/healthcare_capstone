@@ -299,4 +299,56 @@ def test_quality_report_contains_per_query_scores_and_justifications(tmp_path):
     assert saved_results["queries"][0]["query_id"] == "QUALITY-TEST"
     assert "Accuracy (4/5)" in report
     assert "The response matches the reference facts." in report
+    assert "The response matches the reference facts." in report
     assert "Average" not in report
+
+
+def test_quality_evaluation_checkpoints_and_resumes_completed_cases(tmp_path):
+    response = AgentResponse(
+        status=ResponseStatus.ABSTAINED,
+        answer="Please contact the clinic for assistance.",
+        reason="Insufficient information is available.",
+    )
+    case_one = _case()
+    case_two = QualityEvaluationCase(
+        query_id="QUALITY-TEST-2",
+        query="How can I cancel an appointment?",
+        case_type="knowledge_base",
+        expected_source_ids=("cancellation_rescheduling",),
+        appointment_record_ids=(),
+        expected_behavior="Describe the documented cancellation process.",
+    )
+    checkpoint_path = tmp_path / "response_quality_checkpoint.json"
+    assistant_calls: list[str] = []
+
+    class InterruptingAssistant:
+        def __call__(self, query: str, budget: RuntimeBudget):
+            assistant_calls.append(query)
+            if query == case_two.query and len(assistant_calls) == 2:
+                raise RuntimeError("Transient provider quota interruption.")
+            return response
+
+    class FakeJudge:
+        def evaluate(self, **kwargs):
+            return _scores()
+
+    with pytest.raises(RuntimeError, match="Transient provider quota"):
+        run_quality_evaluation(
+            [case_one, case_two],
+            assistant=InterruptingAssistant(),
+            judge=FakeJudge(),
+            reference_loader=lambda case: {},
+            checkpoint_path=checkpoint_path,
+        )
+
+    assert checkpoint_path.is_file()
+    results = run_quality_evaluation(
+        [case_one, case_two],
+        assistant=InterruptingAssistant(),
+        judge=FakeJudge(),
+        reference_loader=lambda case: {},
+        checkpoint_path=checkpoint_path,
+    )
+
+    assert assistant_calls == [case_one.query, case_two.query, case_two.query]
+    assert results["query_count"] == 2
