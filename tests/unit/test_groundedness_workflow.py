@@ -2,6 +2,7 @@ from types import SimpleNamespace
 
 from practo_agent.agents import workflow
 from practo_agent.rag.groundedness import MockGroundednessValidator
+from practo_agent.review.schemas import ReviewFeedback, ReviewResult
 from practo_agent.schemas import (
     AgentResponse,
     AppointmentDetails,
@@ -244,3 +245,52 @@ def test_validator_error_fails_closed(monkeypatch):
     assert result.sources == []
     assert result.reason == "Groundedness validation could not be completed."
     assert "Internal validator detail." not in result.answer
+
+
+def test_unsupported_editor_revision_is_rejected(monkeypatch):
+    original_answer = (
+        "Appointment requests remain pending until the clinic or booking "
+        "system confirms the slot."
+    )
+    response = AgentResponse(
+        status=ResponseStatus.ANSWERED,
+        answer=original_answer,
+        sources=[
+            SourceReference(
+                source_id="appointment_booking",
+                title="Appointment Booking",
+            )
+        ],
+    )
+    unsupported_revision = AgentResponse(
+        status=ResponseStatus.ANSWERED,
+        answer="Every appointment is confirmed within one hour.",
+        sources=response.sources,
+    )
+
+    def revise_response(*args, **kwargs):
+        return ReviewResult(
+            response=unsupported_revision,
+            feedback=ReviewFeedback(
+                approved=False,
+                issues=["The one-hour guarantee is unsupported."],
+            ),
+            revised=True,
+            agent_turns=2,
+        )
+
+    monkeypatch.setattr(workflow, "review_response", revise_response)
+    result = _run_with_crew_output(
+        monkeypatch,
+        query="When is an appointment confirmed?",
+        response=response,
+        specialist_role="Practo Knowledge Retrieval Specialist",
+        specialist_output=_retrieval_output(),
+    )
+
+    assert result.status == ResponseStatus.ABSTAINED
+    assert result.sources == []
+    assert result.reason == (
+        "The revised response contains one or more unsupported claims."
+    )
+    assert "one hour" not in result.answer

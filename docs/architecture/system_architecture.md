@@ -159,13 +159,13 @@ Retrieval results should retain their source information so answers and evaluati
 The current implementation includes LangChain session memory, input and
 output guardrails, a FastAPI HTTP/WebSocket interface, runtime token/cost
 budgets, session-aware response caching, and privacy-safe JSONL request
-observability. The API details and process-local session limitations are
-documented in
+observability, and the two-agent AutoGen response-review stage. The API
+details and process-local session limitations are documented in
 [`docs/architecture/api.md`](api.md).
 
-Remaining system work includes the final evaluation workflow, the AutoGen
-review stage, and governance enforcement. Update this architecture as those
-components are implemented and tested.
+Remaining system work includes the final evaluation workflow and governance
+enforcement. Update this architecture as those components are implemented
+and tested.
 
 ## 7. Quality and Safety Principles
 
@@ -185,14 +185,16 @@ The implementation should follow these principles:
 The project has unit and integration tests for dataset generation,
 knowledge-base validation, retrieval, routing, specialist tools, structured
 response validation, runtime budgets, HTTP validation, WebSocket session
-context, and the offline CrewAI workflow.
+context, the offline CrewAI workflow, and the two-agent AutoGen review.
 
-The latest verified full test run contains 337 passing tests and 31 passing
-subtests. The API demonstration exercises a real local retrieval/appointment
-workflow through HTTP and a context-dependent WebSocket follow-up. The offline
-CrewAI integration test rejects external network connections. Dependency
-deprecation warnings remain. These results are evidence of tested behavior,
-not proof of general semantic retrieval quality.
+The latest verified full test run contains 344 passing tests and 31 passing
+subtests. The AutoGen demonstration verifies an approved response remains
+unchanged and an unsupported draft is corrected in exactly two agent turns.
+The API demonstration exercises a real local retrieval/appointment workflow
+through HTTP and a context-dependent WebSocket follow-up. The offline CrewAI
+integration test rejects external network connections. Dependency deprecation
+warnings remain. These results are evidence of tested behavior, not proof of
+general semantic retrieval quality.
 
 The remaining assignment reconciliation includes verifying both collections
 against the required dataset and evaluation specifications and comparing the

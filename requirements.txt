@@ -8,3 +8,5 @@ python-dotenv
 crewai
 fastapi
 uvicorn[standard]
+autogen-agentchat
+autogen-ext[openai]

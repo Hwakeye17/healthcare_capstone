@@ -17,6 +17,7 @@ from practo_agent.rag.groundedness import (
     GroundednessValidator,
     create_groundedness_validator,
 )
+from practo_agent.review import review_response
 from practo_agent.guardrails import (
     detect_prompt_injection,
     mask_contact_numbers,
@@ -238,7 +239,37 @@ def run_practo_query(
             "Groundedness validation found one or more unsupported claims."
         )
 
-    return response
+    try:
+        review = review_response(
+            response,
+            evidence,
+            query=normalized_query,
+            runtime_budget=budget,
+        )
+    except RuntimeBudgetExceeded as exc:
+        return _budget_abstention(str(exc))
+
+    if review.response.status == ResponseStatus.ABSTAINED:
+        return review.response
+
+    if review.revised:
+        try:
+            final_validation = GroundednessAssessment.model_validate(
+                validator.validate(review.response.answer, evidence)
+            )
+        except RuntimeBudgetExceeded as exc:
+            return _budget_abstention(str(exc))
+        except Exception:
+            return _groundedness_abstention(
+                "Groundedness validation could not be completed."
+            )
+
+        if not final_validation.grounded:
+            return _groundedness_abstention(
+                "The revised response contains one or more unsupported claims."
+            )
+
+    return review.response
 
 
 def _appointment_as_evidence(

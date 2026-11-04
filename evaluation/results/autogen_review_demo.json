@@ -1,0 +1,30 @@
+{
+  "demo": "autogen_two_agent_response_review",
+  "mock_llm": true,
+  "cases": [
+    {
+      "name": "approved_unchanged",
+      "query": "When is an appointment confirmed?",
+      "reviewer_approved": true,
+      "issues": [],
+      "draft": "Appointment requests remain pending until the clinic or booking system confirms the slot.",
+      "final_answer": "Appointment requests remain pending until the clinic or booking system confirms the slot.",
+      "preserved_unchanged": true,
+      "agent_turns": 2
+    },
+    {
+      "name": "unsupported_draft_revised",
+      "query": "When is an appointment confirmed?",
+      "reviewer_approved": false,
+      "issues": [
+        "The claim of automatic confirmation is not supported by the evidence."
+      ],
+      "draft": "Every appointment is automatically confirmed.",
+      "final_answer": "Appointment requests remain pending until the clinic or booking system confirms the slot.",
+      "preserved_unchanged": false,
+      "agent_turns": 2
+    }
+  ],
+  "final_outputs_grounded": true,
+  "passed": true
+}

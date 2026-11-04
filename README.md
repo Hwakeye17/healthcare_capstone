@@ -162,6 +162,17 @@ The API writes trace-correlated JSON Lines request and workflow events to
 and contact numbers are excluded; see
 [`docs/architecture/observability.md`](docs/architecture/observability.md).
 
+Demonstrate the two-agent AutoGen review stage offline:
+
+```powershell
+$env:PYTHONPATH = Join-Path (Get-Location) 'src'
+python scripts\demo_autogen_review.py
+```
+
+The demonstration checks both an unchanged approved response and a corrected
+unsupported draft. See
+[`docs/architecture/autogen_review.md`](docs/architecture/autogen_review.md).
+
 Demonstrate the output-side groundedness check by injecting an unsupported
 claim into a controlled offline Crew result. The application workflow must
 reject it and save a transcript:
@@ -196,12 +207,12 @@ python -m pytest -q
 
 The RAG and core CrewAI workflow are implemented and covered by tests.
 Fixed-format contact-number masking, phrase-based prompt-injection detection,
-CrewAI response groundedness validation, and session-based conversation
-memory, and context-aware response caching are implemented and demonstrated.
+CrewAI response groundedness validation, session-based conversation memory,
+and context-aware response caching are implemented and demonstrated.
 Runtime token/cost controls and the FastAPI HTTP/WebSocket interface are
 implemented with offline demonstrations. Privacy-safe structured logging is
-implemented and demonstrated. Remaining work includes the 15-query
-four-dimension evaluation, the AutoGen review stage, governance controls, and
-final acceptance demonstrations.
+implemented and demonstrated. The AutoGen review stage is implemented and
+demonstrated. Remaining work includes the 15-query four-dimension evaluation,
+governance controls, and final acceptance demonstrations.
 Track remaining requirements in the internal handoff; do not mark a feature
 complete until its behavior is demonstrated and tested.
